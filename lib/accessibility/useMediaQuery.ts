@@ -1,33 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+function subscribeToQuery(query: string) {
+  return (callback: () => void) => {
+    const mql = window.matchMedia(query);
+    mql.addEventListener("change", callback);
+    return () => mql.removeEventListener("change", callback);
+  };
+}
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    setMatches(mql.matches);
-    const handler = (event: MediaQueryListEvent) => setMatches(event.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [query]);
-
-  return matches;
+  return useSyncExternalStore(
+    subscribeToQuery(query),
+    () => window.matchMedia(query).matches,
+    () => false
+  );
 }
 
 export function useIsDesktopFinePointer(): boolean {
   return useMediaQuery("(min-width: 1024px) and (pointer: fine)");
 }
 
+type NavigatorConnection = Navigator & {
+  connection?: {
+    saveData?: boolean;
+    addEventListener?: (type: string, cb: () => void) => void;
+    removeEventListener?: (type: string, cb: () => void) => void;
+  };
+};
+
+function subscribeToSaveData(callback: () => void) {
+  const connection = (navigator as NavigatorConnection).connection;
+  if (!connection?.addEventListener) return () => {};
+  connection.addEventListener("change", callback);
+  return () => connection.removeEventListener?.("change", callback);
+}
+
 export function useSaveData(): boolean {
-  const [saveData, setSaveData] = useState(false);
-  useEffect(() => {
-    const connection = (navigator as Navigator & {
-      connection?: { saveData?: boolean; addEventListener?: (e: string, cb: () => void) => void };
-    }).connection;
-    if (!connection) return;
-    setSaveData(Boolean(connection.saveData));
-  }, []);
-  return saveData;
+  return useSyncExternalStore(
+    subscribeToSaveData,
+    () => Boolean((navigator as NavigatorConnection).connection?.saveData),
+    () => false
+  );
 }

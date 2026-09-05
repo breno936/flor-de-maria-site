@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { reservationSchema, type ReservationInput } from "@/lib/validation/reservation";
 import { reservation } from "@/data/content";
 import { products } from "@/data/products";
+import AtelierButton from "@/components/ui/AtelierButton";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -69,7 +70,7 @@ export default function ReservationForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="grid gap-5 sm:grid-cols-2"
+      className="grid gap-5 rounded-[3px] border border-gold/15 bg-noir-soft/50 p-6 shadow-[0_0_0_1px_rgba(7,5,4,0.4)] sm:grid-cols-2 sm:p-8"
     >
       {/* Honeypot — hidden from sighted and screen-reader users, bots still fill it */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
@@ -167,21 +168,17 @@ export default function ReservationForm() {
       )}
 
       <div className="sm:col-span-2">
-        <button
-          type="submit"
-          disabled={status === "submitting"}
-          className="w-full rounded-full bg-rouge px-7 py-4 font-sans text-xs uppercase tracking-[0.2em] text-ivory transition-transform hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-        >
+        <AtelierButton type="submit" variant="submit" loading={status === "submitting"}>
           {status === "submitting" ? "Enviando..." : reservation.ctaPrimary}
-        </button>
+        </AtelierButton>
       </div>
     </form>
   );
 }
 
 function inputClass(hasError: boolean) {
-  return `w-full rounded border bg-noir-soft px-4 py-3 font-sans text-sm text-ivory outline-none transition-colors placeholder:text-muted/60 focus:border-gold ${
-    hasError ? "border-rouge" : "border-gold/20"
+  return `w-full rounded-[3px] border bg-noir-soft/80 px-4 py-3 font-sans text-sm text-ivory outline-none ring-1 ring-inset ring-transparent transition-colors placeholder:text-muted/50 focus:border-gold focus:ring-gold/30 ${
+    hasError ? "border-rouge" : "border-gold/25 hover:border-gold/40"
   }`;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ritual } from "@/data/content";
 import ManagedVideo from "@/components/media/ManagedVideo";
 import type { MediaClipId } from "@/data/media-manifest";
@@ -37,26 +37,57 @@ export default function CreationRitual() {
   );
 }
 
+const CROSSFADE_MS = 450;
+
 function RitualDesktop() {
   const [active, setActive] = useState(0);
+  const [previous, setPrevious] = useState<number | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const select = (index: number) => {
+    if (index === active) return;
+    setPrevious(active);
+    setActive(index);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setPrevious(null), CROSSFADE_MS);
+  };
+
+  useEffect(() => () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  }, []);
+
   const activeStep = ritual.steps[active];
 
   return (
     <div className="container-lga grid grid-cols-12 gap-8">
-      <div className="col-span-8 aspect-[16/9] overflow-hidden">
-        <ManagedVideo
-          key={activeStep}
-          clipId={stepClip[activeStep]}
-          description={`Etapa do ritual de criação: ${activeStep}.`}
-          aspectClassName="h-full w-full"
-        />
+      <div className="relative col-span-8 aspect-[16/9] overflow-hidden">
+        {previous !== null && (
+          <div className="absolute inset-0" aria-hidden="true">
+            <ManagedVideo
+              clipId={stepClip[ritual.steps[previous]]}
+              description=""
+              aspectClassName="h-full w-full"
+              showDebugLabel={false}
+            />
+          </div>
+        )}
+        <div
+          key={active}
+          className="absolute inset-0 animate-[ritual-in_450ms_ease-out_forwards]"
+        >
+          <ManagedVideo
+            clipId={stepClip[activeStep]}
+            description={`Etapa do ritual de criação: ${activeStep}.`}
+            aspectClassName="h-full w-full"
+          />
+        </div>
       </div>
       <ol className="col-span-4 flex flex-col justify-center gap-1">
         {ritual.steps.map((step, i) => (
           <li key={step}>
             <button
               type="button"
-              onClick={() => setActive(i)}
+              onClick={() => select(i)}
               aria-current={i === active}
               className={`group flex w-full items-center gap-4 border-b border-gold/10 py-3 text-left font-display text-xl transition-colors ${
                 i === active ? "text-gold" : "text-ivory/60 hover:text-ivory"

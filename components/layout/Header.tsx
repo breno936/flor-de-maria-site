@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { nav, hero } from "@/data/content";
 import LogoMark from "./LogoMark";
+import AtelierButton from "@/components/ui/AtelierButton";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -48,12 +49,11 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <a
-            href="#reserva"
-            className="hidden rounded-full border border-gold/60 px-5 py-2 font-sans text-xs uppercase tracking-[0.2em] text-gold transition-colors hover:bg-gold hover:text-noir sm:inline-block"
-          >
-            {hero.ctaPrimary}
-          </a>
+          <span className="hidden sm:inline-block">
+            <AtelierButton href="#reserva" variant="header">
+              {hero.ctaPrimary}
+            </AtelierButton>
+          </span>
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
@@ -95,13 +95,14 @@ export default function Header() {
               </a>
             ))}
           </nav>
-          <a
+          <AtelierButton
             href="#reserva"
+            variant="primary"
             onClick={() => setMenuOpen(false)}
-            className="mt-10 rounded-full border border-gold px-6 py-3 text-center font-sans text-xs uppercase tracking-[0.2em] text-gold"
+            className="mt-10 w-full"
           >
             {hero.ctaPrimary}
-          </a>
+          </AtelierButton>
         </div>
       )}
     </header>

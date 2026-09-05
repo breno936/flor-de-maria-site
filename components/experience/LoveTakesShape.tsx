@@ -7,6 +7,7 @@ import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { loveTakesShape } from "@/data/content";
 import ManagedVideo from "@/components/media/ManagedVideo";
 import LogoMark from "@/components/layout/LogoMark";
+import AtelierButton from "@/components/ui/AtelierButton";
 import type { MediaClipId } from "@/data/media-manifest";
 
 type Layer = {
@@ -54,9 +55,10 @@ function LoveTakesShapeDesktop() {
   const outerRef = useRef<HTMLDivElement>(null);
   const layerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const logoRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
+  const ctaRef = useRef<HTMLSpanElement>(null);
   const [activeStage, setActiveStage] = useState(loveTakesShape.stages[0]);
   const lastStageId = useRef(loveTakesShape.stages[0].id);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     registerGsap();
@@ -82,6 +84,9 @@ function LoveTakesShapeDesktop() {
         }
         if (ctaRef.current) {
           gsap.set(ctaRef.current, { opacity: trapezoid(progress, [88, 92, 100, 100]) });
+        }
+        if (progressRef.current) {
+          gsap.set(progressRef.current, { scaleY: self.progress });
         }
 
         const stage = loveTakesShape.stages.find(
@@ -146,6 +151,18 @@ function LoveTakesShapeDesktop() {
 
         <div className="eyebrow absolute left-6 top-8 md:left-12">{loveTakesShape.eyebrow}</div>
 
+        {/* Minimal editorial progress line — deliberately not carousel dots */}
+        <div
+          aria-hidden="true"
+          className="absolute right-6 top-24 hidden h-[calc(100%-12rem)] w-px bg-ivory/10 md:right-12 md:block"
+        >
+          <div
+            ref={progressRef}
+            className="h-full w-full origin-top bg-gold"
+            style={{ transform: "scaleY(0)" }}
+          />
+        </div>
+
         <div className="container-lga absolute inset-x-0 bottom-16 flex flex-col items-start gap-6">
           <p
             key={activeStage.id}
@@ -154,14 +171,11 @@ function LoveTakesShapeDesktop() {
             {activeStage.text}
           </p>
           {activeStage.cta && (
-            <a
-              ref={ctaRef}
-              href="#criacoes"
-              style={{ opacity: 0 }}
-              className="rounded-full border border-gold px-7 py-3 font-sans text-xs uppercase tracking-[0.2em] text-gold transition-colors hover:bg-gold hover:text-noir"
-            >
-              {activeStage.cta}
-            </a>
+            <span ref={ctaRef} style={{ opacity: 0 }}>
+              <AtelierButton href="#criacoes" variant="secondary">
+                {activeStage.cta}
+              </AtelierButton>
+            </span>
           )}
         </div>
       </div>
@@ -196,12 +210,9 @@ function LoveTakesShapeMobile() {
           </div>
         ))}
         <div className="container-lga">
-          <a
-            href="#criacoes"
-            className="inline-block rounded-full border border-gold px-7 py-3 font-sans text-xs uppercase tracking-[0.2em] text-gold"
-          >
+          <AtelierButton href="#criacoes" variant="secondary">
             {loveTakesShape.stages[loveTakesShape.stages.length - 1].cta}
-          </a>
+          </AtelierButton>
         </div>
       </div>
     </section>

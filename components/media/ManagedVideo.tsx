@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import type { MediaClipId } from "@/data/media-manifest";
 import { mediaClips } from "@/data/media-manifest";
+import { temporaryMedia } from "@/data/temporary-media";
 import { AVAILABLE_CLIPS } from "@/lib/video/availableClips";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useSaveData } from "@/lib/accessibility/useMediaQuery";
@@ -23,10 +25,18 @@ export type ManagedVideoProps = {
 };
 
 /**
- * Single source of truth for how every decorative film clip behaves:
- * lazy-loads near viewport, autoplays muted only when visible, pauses
- * off-screen and on tab blur, respects reduced-motion and Save-Data,
- * and degrades to an art-directed placeholder when the file isn't ready.
+ * Single source of truth for how every decorative film clip behaves.
+ *
+ * Render priority:
+ *   1. official clip (AVAILABLE_CLIPS)      — the real studio footage, once shot;
+ *   2. temporary video (data/temporary-media) — a licensed-stock Ken Burns loop;
+ *   3. temporary image (data/temporary-media) — a graded editorial still;
+ *   4. VideoPoster                           — last-resort art-directed gradient.
+ *
+ * Tiers 2–3 are marked `data-temporary-media="true"` and carry an honest,
+ * non-misleading alt/description — see MEDIA-MANIFEST.md. The moment an id is
+ * added to AVAILABLE_CLIPS, it wins automatically and the temporary tier is
+ * never consulted for that clip again — no other code needs to change.
  */
 export default function ManagedVideo({
   clipId,
@@ -42,16 +52,26 @@ export default function ManagedVideo({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [tempVideoError, setTempVideoError] = useState(false);
   const reducedMotion = useReducedMotion();
   const saveData = useSaveData();
 
   const clip = mediaClips[clipId];
-  const isAvailable = AVAILABLE_CLIPS.has(clipId) && !hasError;
-  const shouldRenderVideo = isAvailable && !reducedMotion && !saveData;
+  const temp = temporaryMedia[clipId];
+  const isOfficialAvailable = AVAILABLE_CLIPS.has(clipId) && !hasError;
+  const canPlayMotion = !reducedMotion && !saveData;
+
+  const showOfficialVideo = isOfficialAvailable;
+  const showTemporaryVideo =
+    !showOfficialVideo && Boolean(temp?.temporaryVideo) && canPlayMotion && !tempVideoError;
+  const showTemporaryImage =
+    !showOfficialVideo && !showTemporaryVideo && Boolean(temp?.temporaryImage);
+
+  const shouldObserve = showOfficialVideo || showTemporaryVideo;
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || !shouldRenderVideo) return;
+    if (!el || !shouldObserve) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsInView(entry.isIntersecting),
@@ -59,11 +79,11 @@ export default function ManagedVideo({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [shouldRenderVideo]);
+  }, [shouldObserve]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !shouldRenderVideo) return;
+    if (!video || !shouldObserve) return;
 
     if (isInView) {
       video.play().catch(() => {
@@ -72,10 +92,10 @@ export default function ManagedVideo({
     } else {
       video.pause();
     }
-  }, [isInView, shouldRenderVideo]);
+  }, [isInView, shouldObserve]);
 
   useEffect(() => {
-    if (!shouldRenderVideo) return;
+    if (!shouldObserve) return;
     const handleVisibility = () => {
       const video = videoRef.current;
       if (!video) return;
@@ -84,7 +104,7 @@ export default function ManagedVideo({
     };
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [isInView, shouldRenderVideo]);
+  }, [isInView, shouldObserve]);
 
   return (
     <div
@@ -93,7 +113,7 @@ export default function ManagedVideo({
       role="img"
       aria-label={description}
     >
-      {shouldRenderVideo ? (
+      {showOfficialVideo ? (
         <video
           ref={videoRef}
           className={`h-full w-full object-cover ${objectPositionClassName}`}
@@ -105,14 +125,51 @@ export default function ManagedVideo({
           onError={() => setHasError(true)}
           aria-hidden="true"
         >
-          <source
-            media="(max-width: 767px)"
-            src={`${clip.basePath}/mobile.mp4`}
-            type="video/mp4"
-          />
+          <source media="(max-width: 767px)" src={`${clip.basePath}/mobile.mp4`} type="video/mp4" />
           <source src={`${clip.basePath}/desktop.webm`} type="video/webm" />
           <source src={`${clip.basePath}/desktop.mp4`} type="video/mp4" />
         </video>
+      ) : showTemporaryVideo && temp?.temporaryVideo ? (
+        <video
+          ref={videoRef}
+          className={`h-full w-full object-cover ${objectPositionClassName}`}
+          muted
+          playsInline
+          loop={loop}
+          preload={priority ? "metadata" : "none"}
+          poster={temp.temporaryVideo.poster}
+          onError={() => setTempVideoError(true)}
+          aria-hidden="true"
+          data-temporary-media="true"
+        >
+          {temp.temporaryVideo.webm && <source src={temp.temporaryVideo.webm} type="video/webm" />}
+          <source src={temp.temporaryVideo.mp4} type="video/mp4" />
+        </video>
+      ) : showTemporaryImage && temp ? (
+        <>
+          <Image
+            src={temp.temporaryImage}
+            alt={temp.alt}
+            fill
+            sizes="(max-width: 767px) 100vw, 60vw"
+            className={`object-cover ${objectPositionClassName} ${temp.mobileImage ? "hidden md:block" : ""}`}
+            priority={priority}
+            data-temporary-media="true"
+            quality={80}
+          />
+          {temp.mobileImage && (
+            <Image
+              src={temp.mobileImage}
+              alt={temp.alt}
+              fill
+              sizes="100vw"
+              className={`object-cover md:hidden ${objectPositionClassName}`}
+              priority={priority}
+              data-temporary-media="true"
+              quality={80}
+            />
+          )}
+        </>
       ) : (
         <VideoPoster clipId={clipId} showDebugLabel={showDebugLabel} />
       )}

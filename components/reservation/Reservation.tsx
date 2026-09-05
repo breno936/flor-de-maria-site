@@ -1,5 +1,6 @@
 import { reservation, contact } from "@/data/content";
 import ReservationForm from "./ReservationForm";
+import AtelierButton from "@/components/ui/AtelierButton";
 
 function buildWhatsAppUrl() {
   if (!contact.whatsappNumber) return null;
@@ -21,14 +22,9 @@ export default function Reservation() {
           <p className="mt-5 font-sans text-sm leading-relaxed text-muted">{reservation.body}</p>
 
           {whatsappUrl && (
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-gold/50 px-6 py-3 font-sans text-xs uppercase tracking-[0.2em] text-gold transition-colors hover:bg-gold hover:text-noir"
-            >
+            <AtelierButton href={whatsappUrl} target="_blank" rel="noopener noreferrer" variant="secondary" className="mt-8">
               {reservation.ctaSecondary}
-            </a>
+            </AtelierButton>
           )}
         </div>
 

@@ -59,7 +59,7 @@ export default function ProductCursorLabel({ containerRef, label }: ProductCurso
     <div
       ref={badgeRef}
       aria-hidden="true"
-      className="pointer-events-none absolute left-0 top-0 z-20 flex items-center justify-center rounded-full border border-gold/70 bg-noir/70 text-center font-sans text-[10px] uppercase tracking-[0.14em] text-gold backdrop-blur-sm transition-opacity duration-300"
+      className="pointer-events-none absolute left-0 top-0 z-20 flex items-center justify-center rounded-full border border-gold/60 bg-noir/75 text-center font-sans text-[10px] uppercase tracking-[0.16em] text-gold shadow-[inset_0_0_0_1px_rgba(181,138,74,0.15)] backdrop-blur-sm transition-opacity duration-300"
       style={{ width: SIZE, height: SIZE, opacity: visible ? 1 : 0 }}
     >
       {label}

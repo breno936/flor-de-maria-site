@@ -1,26 +1,49 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
+import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { products } from "@/data/products";
 import ManagedVideo from "@/components/media/ManagedVideo";
+import AtelierButton from "@/components/ui/AtelierButton";
 import ProductCursorLabel from "./ProductCursorLabel";
 
 const product = products.find((p) => p.id === "le-bouquet")!;
 
 export default function LeBouquet() {
   const mediaRef = useRef<HTMLDivElement>(null);
+  const zoomRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    registerGsap();
+    const zoom = zoomRef.current;
+    if (!zoom || reducedMotion) return;
+
+    gsap.set(zoom, { scale: 1 });
+    const trigger = ScrollTrigger.create({
+      trigger: zoom,
+      start: "top 85%",
+      end: "top 30%",
+      scrub: 0.6,
+      onUpdate: (self) => gsap.set(zoom, { scale: 1 + self.progress * 0.035 }),
+    });
+    return () => trigger.kill();
+  }, [reducedMotion]);
 
   return (
     <section id="criacoes" className="relative py-20 md:py-28" aria-labelledby="le-bouquet-title">
       <div className="container-lga grid gap-10 lg:grid-cols-12 lg:items-center">
         <div ref={mediaRef} className="relative lg:col-span-7">
           <div className="aspect-[4/5] w-full overflow-hidden md:aspect-[16/11]">
-            <ManagedVideo
-              clipId="bouquet-assembly"
-              description="Pessoa recebendo e segurando o buquê monumental Le Bouquet, rosas e fita visíveis, escala perceptível."
-              aspectClassName="h-full w-full"
-              className="cursor-none"
-            />
+            <div ref={zoomRef} className="h-full w-full">
+              <ManagedVideo
+                clipId="bouquet-assembly"
+                description="Composição densa de rosas vermelhas, referência de escala e volume monumental para o buquê Le Bouquet."
+                aspectClassName="h-full w-full"
+                className="cursor-none"
+              />
+            </div>
           </div>
           <ProductCursorLabel containerRef={mediaRef} label={product.cursorLabel} />
 
@@ -50,12 +73,9 @@ export default function LeBouquet() {
             ))}
           </ul>
 
-          <a
-            href="#reserva"
-            className="mt-8 inline-block rounded-full bg-rouge px-7 py-3 font-sans text-xs uppercase tracking-[0.2em] text-ivory transition-transform hover:scale-[1.02]"
-          >
+          <AtelierButton href="#reserva" variant="primary" className="mt-8">
             {product.cta}
-          </a>
+          </AtelierButton>
         </div>
       </div>
     </section>

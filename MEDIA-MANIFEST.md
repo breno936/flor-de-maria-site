@@ -3,9 +3,39 @@
 Nenhum vídeo ou fotografia oficial da coleção existe hoje. A apresentação da
 parceria (Flor de Maria × Patrícia Marchi) lista a diária de estúdio como um
 item em **"Próximos passos"** — ou seja, a gravação ainda não aconteceu.
-Todo slot de vídeo do site está, portanto, renderizando um placeholder
-artístico (gradiente escuro + textura, sem ícone de mídia quebrada) através
-de `components/media/VideoPoster.tsx`.
+
+## Pacote de mídia editorial provisória (`public/media/temporary/`)
+
+Enquanto o ensaio oficial não existe, cada clipe usa uma fotografia de banco
+licenciada (Pexels License — uso comercial livre, sem atribuição obrigatória),
+color-graded para uma única direção coerente (preto/vinho, rosas vermelhas
+profundas, luz lateral, dourado discreto). Os três clipes mais visíveis (hero,
+macro de pétala, mãos) ganharam também um loop de vídeo Ken Burns (zoom lento
+gerado via `ffmpeg zoompan` a partir da própria fotografia) para que o site
+deixe de depender só de estáticas.
+
+Registro central: `data/temporary-media.ts`. `components/media/ManagedVideo.tsx`
+resolve, para cada `clipId`, nesta ordem: **(1)** clipe oficial em
+`AVAILABLE_CLIPS` → **(2)** vídeo provisório → **(3)** imagem provisória →
+**(4)** gradiente de último recurso. Todo elemento provisório carrega
+`data-temporary-media="true"` e um `alt`/descrição que deixa explícito que é
+uma imagem conceitual, não a fotografia final — nunca é apresentado como se
+fosse Patrícia Marchi ou o produto real.
+
+| Arquivo | Fonte (Pexels, ID da foto) | Usado para |
+|---|---|---|
+| `hero-editorial-desktop.webp` / `hero-editorial-mobile.webp` / `hero-editorial-loop.mp4(+webm)` | foto 19793276 (mão erguendo uma rosa) | Hero — plano de fundo (`rose-lateral-light`) |
+| `petal-macro.webp` / `petal-macro-loop.mp4(+webm)` | foto 9951169 | Macro de pétala (`petal-macro`) |
+| `hands-selecting.webp` / `hands-selecting-loop.mp4(+webm)` | foto 19793276 (recorte diferente) | Mãos selecionando (`hands-selecting`) |
+| `bouquet-concept.webp` | foto 10217721 (rosas densas) | Referência de escala/volume — Le Bouquet (`bouquet-assembly`) |
+| `coeur-concept.webp` | foto 10217721 (recorte distinto, com máscara de coração em CSS) | Le Cœur Royale (`coeur-assembly`) |
+| `woman-editorial.webp` | foto 31085356, tratamento duotone vinho/preto | Placeholder não identificável para Patrícia Marchi (`patricia-film`) |
+| `ribbon-detail.webp` | foto 5624975 | Detalhe de fita (`ribbon-detail`) |
+| `delivery-concept.webp` | foto 14737905 (rosas sobre carro, chuva) | Referência de entrega (`delivery-moment`) |
+
+`woman-editorial.webp` recebeu deliberadamente um tratamento gráfico
+duotone (não fotorrealista) — silhueta a contraluz, irreconhecível — para que
+nenhum visitante confunda a modelo do banco de imagens com Patrícia Marchi.
 
 ## Como ativar um clipe real
 

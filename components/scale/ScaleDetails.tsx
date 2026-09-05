@@ -33,15 +33,15 @@ export default function ScaleDetails() {
         </div>
         <div className="aspect-square overflow-hidden">
           <ManagedVideo
-            clipId="bouquet-assembly"
-            description="Detalhe do buquê próximo às mãos, evidenciando volume e escala."
+            clipId="hands-selecting"
+            description="Rosa junto às mãos, evidenciando volume e escala reais."
             aspectClassName="h-full w-full"
           />
         </div>
         <div className="aspect-square overflow-hidden">
           <ManagedVideo
-            clipId="coeur-assembly"
-            description="Caixa Le Cœur Royale junto ao corpo, evidenciando dimensão real."
+            clipId="patricia-film"
+            description="Silhueta junto ao corpo, evidenciando dimensão real da criação."
             aspectClassName="h-full w-full"
           />
         </div>

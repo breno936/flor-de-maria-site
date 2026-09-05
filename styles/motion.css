@@ -1,0 +1,59 @@
+/* Shared motion primitives. GSAP drives timelines; these classes define
+   the resting/entering states so content is never invisible without JS. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.9s var(--ease-signature), transform 0.9s var(--ease-signature);
+}
+
+.gold-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.gold-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: translateX(-100%);
+}
+
+.gold-line-draw::after {
+  animation: gold-sweep 1.1s var(--ease-signature) forwards;
+}
+
+@keyframes gold-sweep {
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-in {
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.no-motion * {
+  animation: none !important;
+  transition: none !important;
+}

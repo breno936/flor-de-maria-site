@@ -11,20 +11,35 @@ uma faixa de rolagem alta (`h-[…svh]`) com um estágio `position: sticky`
 dentro — o mesmo padrão já usado por "O Amor Toma Forma" na versão anterior,
 reaplicado às três cenas em vez de introduzido do zero:
 
-1. **`components/hero/HeroExpand.tsx`** — a janela de mídia cresce por
-   `clip-path` entre as duas linhas do título (que se afastam via
-   `yPercent`), com três planos reais (fundo/gesto/primeiro-plano) em
-   velocidades diferentes. Substitui `PetalReveal` + `HeroFilm`, que foram
-   removidos — não há mais preloader obrigatório.
+1. **`components/hero/HeroExpand.tsx`** — em repouso (0%) o título ("LE
+   GRAND" + "AMOUR") fica coeso, sem vão entre as linhas, e a foto já ocupa
+   um bloco substancial abaixo dele — nada de "faixa fotográfica perdida".
+   Ao rolar, a janela cresce por `clip-path` comendo as faixas escuras de
+   cima (título) e de baixo (CTA) ao mesmo tempo, com as duas linhas do
+   título saindo para cima (em velocidades levemente diferentes uma da
+   outra) e o grupo de CTA saindo para baixo, sincronizados com as bordas da
+   janela — nada fica como resíduo semi-visível. Só dois planos reais (fundo
+   + um acento desfocado em primeiro plano); uma primeira versão também
+   sobrepunha um segundo recorte da mesma foto mão+rosa como "plano
+   intermediário", o que produzia um artefato de mão duplicada/fantasma —
+   removido. Substitui `PetalReveal` + `HeroFilm`, que foram removidos — não
+   há mais preloader obrigatório.
 2. **`components/products/LeCoeurRoyale.tsx`** — substitui `LoveTakesShape`.
-   A câmera reenquadra de um detalhe da caixa até a caixa inteira; ver nota
-   de pendência de asset abaixo.
+   A câmera reenquadra (zoom real, centrado no laço) de um detalhe até a
+   caixa inteira em menos de metade da faixa de rolagem, e passa o resto do
+   tempo estável com nome/descrição/CTA já visíveis — não é mais uma cena
+   longa com vários quadros quase idênticos. Ver nota de pendência de asset
+   abaixo.
 3. **`components/reservation/ReservationScene.tsx`** — substitui `Closing` +
-   o topo de `Reservation`. Uma imagem editorial ancora a tela, encolhe por
-   `clip-path` para um painel à esquerda enquanto o título/CTA da reserva
-   entram à direita, e o formulário (`id="reserva"`) segue em fluxo normal
-   — nunca dentro da faixa de pin, para que o link `#reserva` sempre caia
-   direto nele.
+   o topo de `Reservation`. Uma imagem editorial ancora a tela e depois
+   *encolhe inteira* (via `transform: scale()` a partir da borda esquerda,
+   não `clip-path`) até virar um painel à esquerda, enquanto o título/CTA da
+   reserva entram à direita; o formulário (`id="reserva"`) segue em fluxo
+   normal — nunca dentro da faixa de pin, para que o link `#reserva` sempre
+   caia direto nele. Importante: a rosa está centralizada na foto-fonte, então
+   um `clip-path` que corta um dos lados cortaria a flor ao meio — só
+   escalar a foto inteira preserva o assunto principal em qualquer ponto da
+   transição.
 
 Em mobile e com `prefers-reduced-motion`, as três cenas trocam para uma
 variante sem pin/scrub (`HeroStatic`, `BoxStatic`, `TransitionStatic`) com
@@ -56,13 +71,31 @@ fosse Patrícia Marchi ou o produto real.
 
 | Arquivo | Fonte | Usado para |
 |---|---|---|
-| `hero-editorial-desktop.webp` / `hero-editorial-mobile.webp` / `hero-editorial-loop.mp4(+webm)` | Pexels 19793276 (mão erguendo uma rosa) | Cena 1 (Hero) — plano de fundo (`rose-lateral-light`) |
-| `hands-selecting.webp` / `hands-selecting-loop.mp4(+webm)` | Pexels 19793276 (recorte diferente) | Cena 1 (Hero) — plano intermediário (`hands-selecting`); Ritual (seleção); Escala |
+| `hero-editorial-desktop.webp` / `hero-editorial-mobile.webp` | Pexels 19793276 (mão erguendo uma rosa), recorte com folga generosa acima da rosa | Cena 1 (Hero) — plano de fundo (`rose-lateral-light`) |
+| `hands-selecting.webp` / `hands-selecting-loop.mp4(+webm)` | Pexels 19793276 (recorte diferente) | Ritual (seleção); Escala |
 | `ribbon-detail.webp` | Pexels 30412959 (fita de cetim vermelha, borda metálica) | Cena 1 (Hero) — primeiro plano desfocado (`ribbon-detail`); detalhe em Le Bouquet; Ritual (fita/cartão/embalagem) |
 | `petal-macro.webp` / `petal-macro-loop.mp4(+webm)` | Pexels 9951169 | Manifesto, Ritual (preparação) (`petal-macro`) |
 | `bouquet-full.webp` | Pexels 12032362 (buquê real, embalagem em papel kraft) | Le Bouquet — mídia principal (`bouquet-assembly`) |
-| `coeur-box.webp` | Pixabay 3976583/3976584 (caixa rígida real em formato de coração, laço, fechada) | Cena 2 (Le Cœur Royale) — mídia principal (`coeur-assembly`) |
-| `closing-editorial.webp` / `closing-editorial-mobile.webp` | Pexels 9951169 (recorte panorâmico distinto do petal-macro) | Cena 3 (transição para reserva) — âncora editorial |
+| `coeur-box.webp` | Pixabay 3976583/3976584, quadro quase completo (não recortado ao limite da caixa) | Cena 2 (Le Cœur Royale) — mídia principal (`coeur-assembly`) |
+| `closing-editorial.webp` / `closing-editorial-mobile.webp` | Pexels 9951169, espelhado horizontalmente | Cena 3 (transição para reserva) — âncora editorial |
+
+**Duas lições da rodada de correção de arte-direção que valem registrar:**
+
+- **`coeur-box.webp` estava recortado quase quadrado (800×854).** Numa
+  viewport larga (1440×900), `object-cover` cobre a largura e corta ~37% de
+  cada lado vertical — o suficiente para cortar o contorno do coração.
+  Corrigido usando o quadro quase inteiro da foto-fonte (1280×854, mais
+  próximo da proporção da tela), que deixa margem de sobra ao redor da caixa
+  para o `cover` cortar sem tocar a silhueta.
+- **`hero-editorial-desktop.webp` original tinha pouca folga acima da rosa**
+  (ela ficava perto do topo do enquadramento fonte). Como a foto é
+  proporcionalmente mais larga que a viewport, `object-cover` nesse caso não
+  corta verticalmente quase nada — então qualquer falta de espaço já vem da
+  própria foto, não do CSS. Foi re-recortada a partir do arquivo original em
+  alta resolução com bastante preto acima da rosa. (Durante a depuração
+  também descobrimos que o cache de build do Next — `.next/cache/images` —
+  pode continuar servindo dimensões antigas de um arquivo já substituído no
+  disco; `rm -rf .next` + reiniciar o `next dev` resolve.)
 | `woman-editorial.webp` | Pexels 31085356, tratamento duotone vinho/preto | Placeholder não identificável para Patrícia Marchi (`patricia-film`) |
 | `delivery-concept.webp` | Pexels 14737905 (rosas sobre carro, chuva) | Referência de entrega (`delivery-moment`) |
 

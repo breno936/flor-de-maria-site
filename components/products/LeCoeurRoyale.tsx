@@ -38,13 +38,13 @@ function BoxReveal() {
     const outer = outerRef.current;
     if (!outer) return;
 
-    gsap.set(imgWrapRef.current, { scale: 1.85, xPercent: 6, yPercent: -4 });
-    gsap.set(textRef.current, { opacity: 0, y: 28 });
+    gsap.set(imgWrapRef.current, { scale: 2.1 });
+    gsap.set(textRef.current, { opacity: 0, y: 24 });
     gsap.set(eyebrowRef.current, { opacity: 0.001 });
 
     const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px)", () => build(() => window.innerHeight * 0.9));
-    mm.add("(max-width: 767px)", () => build(() => window.innerHeight * 0.55));
+    mm.add("(min-width: 768px)", () => build(() => window.innerHeight * 0.75));
+    mm.add("(max-width: 767px)", () => build(() => window.innerHeight * 0.45));
 
     function build(endPx: () => number) {
       const trigger = ScrollTrigger.create({
@@ -54,19 +54,15 @@ function BoxReveal() {
         scrub: 0.5,
         onUpdate: (self) => {
           const p = self.progress * 100;
-          const reveal = phase(p, 8, 78);
+          const reveal = phase(p, 4, 46);
           const ease = reveal * reveal * (3 - 2 * reveal);
 
-          gsap.set(imgWrapRef.current, {
-            scale: 1.85 - ease * 0.85,
-            xPercent: 6 - ease * 6,
-            yPercent: -4 + ease * 4,
-          });
-          gsap.set(scrimRef.current, { opacity: 0.35 + phase(p, 60, 90) * 0.45 });
-          gsap.set(eyebrowRef.current, { opacity: 0.001 + phase(p, 4, 20) });
+          gsap.set(imgWrapRef.current, { scale: 2.1 - ease * 1.1 });
+          gsap.set(scrimRef.current, { opacity: 0.3 + phase(p, 42, 68) * 0.5 });
+          gsap.set(eyebrowRef.current, { opacity: 0.001 + phase(p, 2, 14) });
 
-          const textP = phase(p, 78, 94);
-          gsap.set(textRef.current, { opacity: textP, y: 28 - textP * 28 });
+          const textP = phase(p, 46, 64);
+          gsap.set(textRef.current, { opacity: textP, y: 24 - textP * 24 });
         },
       });
       return () => trigger.kill();
@@ -78,7 +74,7 @@ function BoxReveal() {
   return (
     <section
       ref={outerRef}
-      className="relative h-[130svh] md:h-[180svh]"
+      className="relative h-[120svh] md:h-[155svh]"
       aria-labelledby="le-coeur-title"
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-noir">
@@ -88,7 +84,7 @@ function BoxReveal() {
             alt={boxMedia.alt}
             fill
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-[41%_52%]"
             data-temporary-media="true"
             priority
           />
@@ -157,13 +153,13 @@ function BoxStatic() {
             {product.cta}
           </AtelierButton>
         </div>
-        <div className="relative order-1 mx-auto aspect-square w-full max-w-xl overflow-hidden lg:order-2 lg:col-span-7">
+        <div className="relative order-1 mx-auto aspect-[3/2] w-full max-w-xl overflow-hidden lg:order-2 lg:col-span-7">
           <Image
             src={boxMedia.temporaryImage}
             alt={boxMedia.alt}
             fill
             sizes="(max-width: 1024px) 100vw, 55vw"
-            className="object-cover"
+            className="object-cover object-center"
             data-temporary-media="true"
           />
         </div>

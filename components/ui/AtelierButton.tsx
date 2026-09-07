@@ -35,17 +35,17 @@ function isAnchor(props: AtelierButtonProps): props is AnchorProps {
 }
 
 const base =
-  "group relative inline-flex items-center justify-center gap-2 rounded-[2px] font-sans text-[11px] font-medium uppercase tracking-[0.22em] transition-colors duration-300 focus-visible:outline focus-visible:outline-1 focus-visible:outline-gold focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-50";
+  "group relative inline-flex items-center justify-center gap-2 rounded-[2px] font-sans text-[11px] font-medium uppercase tracking-[0.16em] transition-[background-color,border-color,box-shadow,transform] duration-300 focus-visible:outline focus-visible:outline-1 focus-visible:outline-gold focus-visible:outline-offset-4 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100";
 
 const shapes: Record<Variant, string> = {
   primary:
-    "h-[50px] px-8 min-w-[44px] bg-rouge text-ivory border border-gold/40 hover:border-gold hover:bg-bordeaux",
+    "h-[48px] px-7 min-w-[44px] bg-gradient-to-b from-rouge to-bordeaux text-ivory border border-gold/35 shadow-[inset_0_1px_0_rgba(216,189,139,0.12)] hover:border-gold/70 hover:from-[#a10c17] hover:to-bordeaux",
   secondary: "h-[48px] px-1 min-w-[44px] bg-transparent text-champagne hover:text-ivory",
   text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne/90 underline decoration-gold/40 underline-offset-4 hover:text-ivory hover:decoration-gold",
   header:
     "h-10 px-5 min-w-[44px] bg-transparent text-gold border border-gold/50 hover:border-gold hover:bg-gold/10",
   submit:
-    "h-[50px] w-full px-8 sm:w-auto min-w-[44px] bg-rouge text-ivory border border-gold/40 hover:border-gold hover:bg-bordeaux",
+    "h-[48px] w-full px-7 sm:w-auto min-w-[44px] bg-gradient-to-b from-rouge to-bordeaux text-ivory border border-gold/35 shadow-[inset_0_1px_0_rgba(216,189,139,0.12)] hover:border-gold/70 hover:from-[#a10c17] hover:to-bordeaux",
 };
 
 /**

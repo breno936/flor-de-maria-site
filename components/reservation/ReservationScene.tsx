@@ -66,7 +66,7 @@ function TransitionDesktop({ whatsappUrl }: { whatsappUrl: string | null }) {
     const outer = outerRef.current;
     if (!outer) return;
 
-    gsap.set(imageRef.current, { clipPath: "inset(0% 0% 0% 0%)" });
+    gsap.set(imageRef.current, { scale: 1, transformOrigin: "6% 44%" });
     gsap.set(panelRef.current, { opacity: 0, y: 24 });
     gsap.set(quoteRef.current, { opacity: 1 });
 
@@ -79,11 +79,13 @@ function TransitionDesktop({ whatsappUrl }: { whatsappUrl: string | null }) {
         const p = self.progress * 100;
         const dock = phase(p, 15, 72);
         const ease = dock * dock * (3 - 2 * dock);
-        gsap.set(imageRef.current, {
-          clipPath: `inset(${ease * 7}% ${ease * 52}% ${ease * 7}% ${ease * 5}%)`,
-        });
-        gsap.set(scrimRef.current, { opacity: 0.3 + ease * 0.35 });
-        gsap.set(quoteRef.current, { opacity: 1 - phase(p, 5, 32) });
+        // The whole photo shrinks toward its left edge instead of being
+        // cropped — the rose sits centered in the source photo, so clipping
+        // one side away would slice through the bloom. Scaling keeps it
+        // intact, just smaller.
+        gsap.set(imageRef.current, { scale: 1 - ease * 0.56 });
+        gsap.set(scrimRef.current, { opacity: 1 - phase(p, 5, 20) });
+        gsap.set(quoteRef.current, { opacity: 1 - phase(p, 5, 20) });
 
         const panelP = phase(p, 52, 82);
         gsap.set(panelRef.current, { opacity: panelP, y: 24 - panelP * 24 });
@@ -97,15 +99,18 @@ function TransitionDesktop({ whatsappUrl }: { whatsappUrl: string | null }) {
   return (
     <div ref={outerRef} className="relative h-[160svh]" aria-label="Da emoção ao gesto">
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-noir">
-        <div ref={imageRef} className="absolute inset-0 will-change-[clip-path]">
+        <div ref={imageRef} className="absolute inset-0 will-change-transform">
           <Image src={IMAGE} alt={IMAGE_ALT} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+          <div
+            ref={scrimRef}
+            aria-hidden="true"
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(60% 45% at 50% 50%, rgba(7,5,4,0.55) 0%, transparent 70%), linear-gradient(0deg, rgba(7,5,4,0.4) 0%, transparent 25%)",
+            }}
+          />
         </div>
-        <div
-          ref={scrimRef}
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(90deg, rgba(7,5,4,0.2) 0%, rgba(7,5,4,0.55) 55%, rgba(7,5,4,0.85) 100%)" }}
-        />
 
         <p ref={eyebrowRef} className="eyebrow absolute left-12 top-12">
           {brand.collabLine}

@@ -1,15 +1,12 @@
-import PetalReveal from "@/components/hero/PetalReveal";
-import HeroFilm from "@/components/hero/HeroFilm";
+import HeroExpand from "@/components/hero/HeroExpand";
 import Manifesto from "@/components/manifesto/Manifesto";
-import LoveTakesShape from "@/components/experience/LoveTakesShape";
 import RedThread from "@/components/experience/RedThread";
 import LeBouquet from "@/components/products/LeBouquet";
 import LeCoeurRoyale from "@/components/products/LeCoeurRoyale";
 import PatriciaFilm from "@/components/ambassador/PatriciaFilm";
 import CreationRitual from "@/components/ritual/CreationRitual";
 import ScaleDetails from "@/components/scale/ScaleDetails";
-import Reservation from "@/components/reservation/Reservation";
-import Closing from "@/components/closing/Closing";
+import ReservationScene from "@/components/reservation/ReservationScene";
 import { contact } from "@/data/content";
 
 const jsonLd = {
@@ -33,18 +30,15 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PetalReveal />
-      <HeroFilm />
+      <HeroExpand />
       <Manifesto />
-      <LoveTakesShape />
       <LeBouquet />
       <RedThread />
       <LeCoeurRoyale />
       <PatriciaFilm />
       <CreationRitual />
       <ScaleDetails />
-      <Reservation />
-      <Closing />
+      <ReservationScene />
     </>
   );
 }

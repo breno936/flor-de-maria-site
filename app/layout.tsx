@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Manrope, Parisienne } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import HashScrollFix from "@/components/layout/HashScrollFix";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -72,6 +73,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${cormorant.variable} ${manrope.variable} ${parisienne.variable}`}>
       <body>
+        <HashScrollFix />
         <a href="#conteudo-principal" className="skip-link">
           Pular para o conteúdo principal
         </a>

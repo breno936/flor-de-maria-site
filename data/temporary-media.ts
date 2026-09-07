@@ -60,15 +60,15 @@ export const temporaryMedia: Partial<Record<MediaClipId, TemporaryMedia>> = {
   },
   "bouquet-assembly": {
     clipId: "bouquet-assembly",
-    temporaryImage: `${BASE}/bouquet-concept.webp`,
-    alt: "Imagem conceitual provisória: composição densa de rosas vermelhas, referência de escala e volume para Le Bouquet — não é fotografia do produto final.",
+    temporaryImage: `${BASE}/bouquet-full.webp`,
+    alt: "Imagem conceitual provisória: buquê real de rosas vermelhas, com embalagem em papel kraft, referência de material e cor para Le Bouquet — não é a fotografia oficial do produto final (a contagem exata de rosas e o acabamento definitivo ainda serão fotografados).",
     isTemporary: true,
   },
   "coeur-assembly": {
     clipId: "coeur-assembly",
-    temporaryImage: `${BASE}/coeur-concept.webp`,
+    temporaryImage: `${BASE}/coeur-box.webp`,
     objectPosition: "object-center",
-    alt: "Imagem conceitual provisória: rosas vermelhas em composição densa, referência de atmosfera para Le Cœur Royale — não é fotografia do produto final.",
+    alt: "Imagem conceitual provisória: caixa rígida em formato de coração, fechada, com pétalas de rosa vermelha ao redor — referência real de formato e material para Le Cœur Royale. Não é a caixa autoral final da coleção; a sequência de abertura ainda depende do ensaio oficial.",
     isTemporary: true,
   },
   "patricia-film": {
@@ -80,7 +80,7 @@ export const temporaryMedia: Partial<Record<MediaClipId, TemporaryMedia>> = {
   "ribbon-detail": {
     clipId: "ribbon-detail",
     temporaryImage: `${BASE}/ribbon-detail.webp`,
-    alt: "Imagem conceitual provisória: laço de cetim vermelho sobre fundo escuro.",
+    alt: "Imagem conceitual provisória: macro de fita de cetim vermelha com borda metálica, sobre fundo escuro.",
     isTemporary: true,
   },
   "delivery-moment": {

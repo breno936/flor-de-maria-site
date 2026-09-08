@@ -48,7 +48,7 @@ export default function RedThread() {
   }, [reducedMotion]);
 
   return (
-    <div ref={wrapperRef} className="relative mx-auto h-[46vh] max-w-4xl md:h-[56vh]" aria-hidden="true">
+    <div ref={wrapperRef} className="relative mx-auto h-[36vh] max-w-4xl md:h-[44vh]" aria-hidden="true">
       <svg
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 200 600"

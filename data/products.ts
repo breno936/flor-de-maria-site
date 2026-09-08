@@ -5,7 +5,6 @@ export type Product = {
   tagline: string;
   facts: string[];
   cta: string;
-  cursorLabel: string;
 };
 
 /**
@@ -25,7 +24,6 @@ export const products: Product[] = [
       "Acabamento premium",
     ],
     cta: "Tenho interesse nesta criação",
-    cursorLabel: "VER LE BOUQUET",
   },
   {
     id: "le-coeur-royale",
@@ -39,6 +37,5 @@ export const products: Product[] = [
       "Acabamento premium",
     ],
     cta: "Tenho interesse nesta criação",
-    cursorLabel: "VER LE CŒUR",
   },
 ];

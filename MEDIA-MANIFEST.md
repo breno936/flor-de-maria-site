@@ -4,6 +4,53 @@ Nenhum vídeo ou fotografia oficial da coleção existe hoje. A apresentação d
 parceria (Flor de Maria × Patrícia Marchi) lista a diária de estúdio como um
 item em **"Próximos passos"** — ou seja, a gravação ainda não aconteceu.
 
+## As três cenas de composição (`feat/editorial-scroll-scenes`)
+
+Cada uma é uma única timeline GSAP `ScrollTrigger` (scrub) por cena, sobre
+uma faixa de rolagem alta (`h-[…svh]`) com um estágio `position: sticky`
+dentro — o mesmo padrão já usado por "O Amor Toma Forma" na versão anterior,
+reaplicado às três cenas em vez de introduzido do zero:
+
+1. **`components/hero/HeroExpand.tsx`** — em repouso (0%) o título ("LE
+   GRAND" + "AMOUR") fica coeso, sem vão entre as linhas, e a foto já ocupa
+   um bloco substancial abaixo dele — nada de "faixa fotográfica perdida".
+   Ao rolar, a janela cresce por `clip-path` comendo as faixas escuras de
+   cima (título) e de baixo (CTA) ao mesmo tempo, com as duas linhas do
+   título saindo para cima (em velocidades levemente diferentes uma da
+   outra) e o grupo de CTA saindo para baixo, sincronizados com as bordas da
+   janela — nada fica como resíduo semi-visível. Só dois planos reais (fundo
+   + um acento desfocado em primeiro plano); uma primeira versão também
+   sobrepunha um segundo recorte da mesma foto mão+rosa como "plano
+   intermediário", o que produzia um artefato de mão duplicada/fantasma —
+   removido. Substitui `PetalReveal` + `HeroFilm`, que foram removidos — não
+   há mais preloader obrigatório.
+2. **`components/products/LeCoeurRoyale.tsx`** — substitui `LoveTakesShape`.
+   A câmera reenquadra (zoom real, centrado no laço) de um detalhe até a
+   caixa inteira em menos de metade da faixa de rolagem, e passa o resto do
+   tempo estável com nome/descrição/CTA já visíveis — não é mais uma cena
+   longa com vários quadros quase idênticos. Ver nota de pendência de asset
+   abaixo.
+3. **`components/reservation/ReservationScene.tsx`** — substitui `Closing` +
+   o topo de `Reservation`. Uma imagem editorial ancora a tela e depois
+   *encolhe inteira* (via `transform: scale()` a partir da borda esquerda,
+   não `clip-path`) até virar um painel à esquerda, enquanto o título/CTA da
+   reserva entram à direita; o formulário (`id="reserva"`) segue em fluxo
+   normal — nunca dentro da faixa de pin, para que o link `#reserva` sempre
+   caia direto nele. Importante: a rosa está centralizada na foto-fonte, então
+   um `clip-path` que corta um dos lados cortaria a flor ao meio — só
+   escalar a foto inteira preserva o assunto principal em qualquer ponto da
+   transição.
+
+Em mobile e com `prefers-reduced-motion`, as três cenas trocam para uma
+variante sem pin/scrub (`HeroStatic`, `BoxStatic`, `TransitionStatic`) com
+todo o conteúdo já visível.
+
+`components/layout/HashScrollFix.tsx` corrige um efeito colateral do
+`scroll-behavior: smooth` global: o salto nativo do navegador para `#hash`
+pode ficar "preso" a meio caminho quando as fontes web trocam (swap) e
+deslocam o layout logo depois do primeiro paint. O componente reemite o
+`scrollIntoView` depois que fontes e `load` terminam.
+
 ## Pacote de mídia editorial provisória (`public/media/temporary/`)
 
 Enquanto o ensaio oficial não existe, cada clipe usa uma fotografia de banco
@@ -22,20 +69,60 @@ resolve, para cada `clipId`, nesta ordem: **(1)** clipe oficial em
 uma imagem conceitual, não a fotografia final — nunca é apresentado como se
 fosse Patrícia Marchi ou o produto real.
 
-| Arquivo | Fonte (Pexels, ID da foto) | Usado para |
+| Arquivo | Fonte | Usado para |
 |---|---|---|
-| `hero-editorial-desktop.webp` / `hero-editorial-mobile.webp` / `hero-editorial-loop.mp4(+webm)` | foto 19793276 (mão erguendo uma rosa) | Hero — plano de fundo (`rose-lateral-light`) |
-| `petal-macro.webp` / `petal-macro-loop.mp4(+webm)` | foto 9951169 | Macro de pétala (`petal-macro`) |
-| `hands-selecting.webp` / `hands-selecting-loop.mp4(+webm)` | foto 19793276 (recorte diferente) | Mãos selecionando (`hands-selecting`) |
-| `bouquet-concept.webp` | foto 10217721 (rosas densas) | Referência de escala/volume — Le Bouquet (`bouquet-assembly`) |
-| `coeur-concept.webp` | foto 10217721 (recorte distinto, com máscara de coração em CSS) | Le Cœur Royale (`coeur-assembly`) |
-| `woman-editorial.webp` | foto 31085356, tratamento duotone vinho/preto | Placeholder não identificável para Patrícia Marchi (`patricia-film`) |
-| `ribbon-detail.webp` | foto 5624975 | Detalhe de fita (`ribbon-detail`) |
-| `delivery-concept.webp` | foto 14737905 (rosas sobre carro, chuva) | Referência de entrega (`delivery-moment`) |
+| `hero-editorial-desktop.webp` / `hero-editorial-mobile.webp` | Pexels 19793276 (mão erguendo uma rosa), recorte com folga generosa acima da rosa | Cena 1 (Hero) — plano de fundo (`rose-lateral-light`) |
+| `hands-selecting.webp` / `hands-selecting-loop.mp4(+webm)` | Pexels 19793276 (recorte diferente) | Ritual (seleção); Escala |
+| `ribbon-detail.webp` | Pexels 30412959 (fita de cetim vermelha, borda metálica) | Cena 1 (Hero) — primeiro plano desfocado (`ribbon-detail`); detalhe em Le Bouquet; Ritual (fita/cartão/embalagem) |
+| `petal-macro.webp` / `petal-macro-loop.mp4(+webm)` | Pexels 9951169 | Manifesto, Ritual (preparação) (`petal-macro`) |
+| `bouquet-full.webp` | Pexels 12032362 (buquê real, embalagem em papel kraft) | Le Bouquet — mídia principal (`bouquet-assembly`) |
+| `coeur-box.webp` | Pixabay 3976583/3976584, quadro quase completo (não recortado ao limite da caixa) | Cena 2 (Le Cœur Royale) — mídia principal (`coeur-assembly`) |
+| `closing-editorial.webp` / `closing-editorial-mobile.webp` | Pexels 9951169, espelhado horizontalmente | Cena 3 (transição para reserva) — âncora editorial |
 
-`woman-editorial.webp` recebeu deliberadamente um tratamento gráfico
-duotone (não fotorrealista) — silhueta a contraluz, irreconhecível — para que
-nenhum visitante confunda a modelo do banco de imagens com Patrícia Marchi.
+**Duas lições da rodada de correção de arte-direção que valem registrar:**
+
+- **`coeur-box.webp` estava recortado quase quadrado (800×854).** Numa
+  viewport larga (1440×900), `object-cover` cobre a largura e corta ~37% de
+  cada lado vertical — o suficiente para cortar o contorno do coração.
+  Corrigido usando o quadro quase inteiro da foto-fonte (1280×854, mais
+  próximo da proporção da tela), que deixa margem de sobra ao redor da caixa
+  para o `cover` cortar sem tocar a silhueta.
+- **`hero-editorial-desktop.webp` original tinha pouca folga acima da rosa**
+  (ela ficava perto do topo do enquadramento fonte). Como a foto é
+  proporcionalmente mais larga que a viewport, `object-cover` nesse caso não
+  corta verticalmente quase nada — então qualquer falta de espaço já vem da
+  própria foto, não do CSS. Foi re-recortada a partir do arquivo original em
+  alta resolução com bastante preto acima da rosa. (Durante a depuração
+  também descobrimos que o cache de build do Next — `.next/cache/images` —
+  pode continuar servindo dimensões antigas de um arquivo já substituído no
+  disco; `rm -rf .next` + reiniciar o `next dev` resolve.)
+| `woman-editorial.webp` | Pexels 31085356, tratamento duotone vinho/preto | Placeholder não identificável para Patrícia Marchi (`patricia-film`) |
+| `delivery-concept.webp` | Pexels 14737905 (rosas sobre carro, chuva) | Referência de entrega (`delivery-moment`) |
+
+Todas as fotos-fonte são Pexels License ou Pixabay Content License (uso
+comercial livre, sem atribuição obrigatória), regradadas com `ffmpeg`
+(`eq`/`curves`/`vignette`/`colorbalance`) para a mesma direção de cor
+preto/vinho/dourado. `woman-editorial.webp` recebeu deliberadamente um
+tratamento gráfico duotone (não fotorrealista) — silhueta a contraluz,
+irreconhecível — para que nenhum visitante confunda a modelo do banco de
+imagens com Patrícia Marchi.
+
+### Cena 2 (Le Cœur Royale) — pendente de asset
+
+`coeur-box.webp` é uma fotografia real de uma caixa rígida em formato de
+coração, fechada, com laço — corrige o problema da versão anterior (máscara
+de coração aplicada sobre textura de rosas, que não mostrava a caixa real).
+Nenhuma foto com a tampa aberta/rosas visíveis foi encontrada sob licença de
+uso livre para o mesmo produto. Por isso `LeCoeurRoyale.tsx` implementa **só**
+a parte honesta do pedido: a câmera reenquadra (zoom/pan real, guiado pelo
+scroll) de um detalhe do laço até a caixa inteira, e o nome/descrição/CTA
+entram quando o reenquadramento termina. **O movimento físico de abertura da
+tampa (fita se soltando, tampa subindo, rosas aparecendo) não foi
+implementado** — não existe o segundo frame necessário para isso ser real, e
+o briefing é explícito em não fabricar um movimento fisicamente incoerente.
+Quando a diária de estúdio acontecer, gravar a abertura real da caixa
+(mesma caixa, mesma câmera, mesma luz) resolve isso sem precisar tocar no
+componente além de trocar o asset.
 
 ## Como ativar um clipe real
 
@@ -53,13 +140,13 @@ nenhum visitante confunda a modelo do banco de imagens com Patrícia Marchi.
 
 | id | O que mostrar | Usado em |
 |---|---|---|
-| `petal-macro` | Macro de pétalas — textura, veios, luz percorrendo lentamente | Petal Reveal, Manifesto, Ritual (seleção/preparação), O Amor Toma Forma (origem) |
-| `rose-lateral-light` | Rosas recebendo luz lateral, atmosfera editorial | Hero (fundo), Ritual (estrutura) |
-| `hands-selecting` | Mãos selecionando e preparando rosas | O Amor Toma Forma (gesto), Ritual (seleção) |
-| `bouquet-assembly` | Montagem de Le Bouquet — volume crescendo | O Amor Toma Forma (composição/revelação), Le Bouquet (mídia principal), Escala |
-| `coeur-assembly` | Abertura/montagem de Le Cœur Royale — tampa, rosas em coração | Le Cœur Royale (mídia principal), Ritual (acabamento), Escala |
-| `patricia-film` | Patrícia caminhando, observando, tocando as rosas, olhando para a câmera | Hero (plano intermediário), Seção Patrícia Marchi |
-| `ribbon-detail` | Fita vermelha e embalagem — acabamento, gesto | Hero (primeiro plano), The Red Thread (contexto), Ritual (fita/cartão/embalagem), detalhes de produto, Encerramento |
+| `petal-macro` | Macro de pétalas — textura, veios, luz percorrendo lentamente | Manifesto, Ritual (preparação) |
+| `rose-lateral-light` | Rosas recebendo luz lateral, atmosfera editorial | Cena 1 — Hero (plano de fundo), Ritual (estrutura) |
+| `hands-selecting` | Mãos selecionando e preparando rosas | Cena 1 — Hero (plano intermediário), Ritual (seleção), Escala |
+| `bouquet-assembly` | Buquê completo — flores, embalagem, volume | Le Bouquet (mídia principal), Ritual (montagem) |
+| `coeur-assembly` | Caixa em formato de coração | Cena 2 — Le Cœur Royale (mídia principal), Ritual (acabamento) |
+| `patricia-film` | Patrícia caminhando, observando, tocando as rosas, olhando para a câmera | Seção Patrícia Marchi, Escala |
+| `ribbon-detail` | Fita de cetim vermelha — acabamento, gesto | Cena 1 — Hero (primeiro plano), Le Bouquet (detalhe), Ritual (fita/cartão/embalagem) |
 | `delivery-moment` | Entrega ou reação autorizada, produto em ambiente real | Escala e Detalhes, Ritual (entrega) |
 
 ## Ainda faltam (não inventados)

@@ -6,12 +6,10 @@ import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { products } from "@/data/products";
 import ManagedVideo from "@/components/media/ManagedVideo";
 import AtelierButton from "@/components/ui/AtelierButton";
-import ProductCursorLabel from "./ProductCursorLabel";
 
 const product = products.find((p) => p.id === "le-bouquet")!;
 
 export default function LeBouquet() {
-  const mediaRef = useRef<HTMLDivElement>(null);
   const zoomRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -34,18 +32,16 @@ export default function LeBouquet() {
   return (
     <section id="criacoes" className="relative py-20 md:py-28" aria-labelledby="le-bouquet-title">
       <div className="container-lga grid gap-10 lg:grid-cols-12 lg:items-center">
-        <div ref={mediaRef} className="relative lg:col-span-7">
+        <div className="relative lg:col-span-7">
           <div className="aspect-[4/5] w-full overflow-hidden md:aspect-[16/11]">
             <div ref={zoomRef} className="h-full w-full">
               <ManagedVideo
                 clipId="bouquet-assembly"
-                description="Composição densa de rosas vermelhas, referência de escala e volume monumental para o buquê Le Bouquet."
+                description="Buquê real de rosas vermelhas com embalagem em papel kraft, referência de material e cor para Le Bouquet."
                 aspectClassName="h-full w-full"
-                className="cursor-none"
               />
             </div>
           </div>
-          <ProductCursorLabel containerRef={mediaRef} label={product.cursorLabel} />
 
           <div className="absolute -bottom-8 left-6 hidden h-28 w-28 overflow-hidden border border-gold/20 sm:block">
             <ManagedVideo

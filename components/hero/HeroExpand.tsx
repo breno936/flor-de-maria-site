@@ -8,6 +8,7 @@ import { useIsDesktopFinePointer } from "@/lib/accessibility/useMediaQuery";
 import { hero, brand } from "@/data/content";
 import { temporaryMedia } from "@/data/temporary-media";
 import AtelierButton from "@/components/ui/AtelierButton";
+import ManagedVideo from "@/components/media/ManagedVideo";
 
 const words = hero.title.split(" ");
 const line1 = words.slice(0, -1).join(" ");
@@ -17,19 +18,28 @@ const bgMedia = temporaryMedia["rose-lateral-light"];
 const fgMedia = temporaryMedia["ribbon-detail"];
 
 /**
- * Scene 1 — "a declaração se abre". At rest (0%) this reads as a finished
- * campaign cover: the two title lines sit tight together as one name, a
- * substantial photograph already fills the middle of the frame (not a thin
- * strip), and the CTA row sits on solid dark ground below it — nothing is
- * overlaid on the photo, so nothing can look forgotten there.
+ * Scene 1 — "a declaração se abre". Two independent choreographies share the
+ * same clip-path/opacity/transform properties, but never run at once:
  *
- * On scroll, the photo's clip-path grows from that already-large frame to
- * full-bleed, eating the dark bands above and below it; the title exits
- * upward (the two lines drifting apart from each other as they go) and the
- * CTA group exits downward, in sync with the frame's edges reaching them —
- * so nothing lingers as a half-faded residue once the photo takes over.
+ *   1. Entrance (plays once on mount, no scroll needed): the photo window
+ *      opens from a narrow letterboxed sliver to its resting frame, the
+ *      title lines and CTA rise into place staggered behind it. Once this
+ *      finishes, the session already reads as a complete, settled cover —
+ *      background is a real (temporary, licensed-stock) video loop via
+ *      `ManagedVideo`, so it keeps breathing on its own even before anyone
+ *      scrolls. The moment the real Patrícia Marchi footage exists, adding
+ *      "rose-lateral-light" to `AVAILABLE_CLIPS` swaps it in — no component
+ *      change needed.
+ *   2. Scroll (unchanged): from that same resting frame, the window grows to
+ *      full-bleed, the title exits upward, the CTA exits downward.
  *
- * Only two real photographs are layered (background + a soft blurred
+ * `enteredRef` is the handoff: the entrance timeline only ever plays once
+ * (guarded so a matchMedia breakpoint crossing after mount can't replay it),
+ * and every value it animates toward is exactly the scroll timeline's own
+ * p=0 rest state — so if a fast scroll interrupts the entrance, the scroll
+ * timeline's gsap.set calls simply land on the same target, no fight.
+ *
+ * Only two real media layers sit in the window (background + a soft blurred
  * foreground accent) — an earlier version also layered a second crop of the
  * same hand-and-rose photo as a "midground", which produced a visible
  * double-exposure/duplicated-hand artifact. Fewer coherent layers beat more
@@ -56,6 +66,7 @@ function HeroMotion() {
   const fgCursorRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
   const finePointer = useIsDesktopFinePointer();
+  const enteredRef = useRef(false);
 
   useEffect(() => {
     registerGsap();
@@ -81,9 +92,45 @@ function HeroMotion() {
       bottomInset: number;
       sideInset: number;
     }) {
-      gsap.set(windowRef.current, {
-        clipPath: `inset(${topInset}% ${sideInset}% ${bottomInset}% ${sideInset}% round 3px)`,
-      });
+      const restClip = `inset(${topInset}% ${sideInset}% ${bottomInset}% ${sideInset}% round 3px)`;
+      let entrance: gsap.core.Timeline | undefined;
+
+      if (!enteredRef.current) {
+        // Closed frame: a narrow letterboxed sliver on the same rest
+        // position, so "opening" reads as the same gesture as the scroll
+        // expansion later — just triggered by mount instead of scroll.
+        const closedClip = `inset(${Math.min(48, topInset + 20)}% ${Math.min(46, sideInset + 20)}% ${Math.min(
+          48,
+          bottomInset + 20
+        )}% ${Math.min(46, sideInset + 20)}% round 20px)`;
+
+        gsap.set(windowRef.current, { clipPath: closedClip });
+        gsap.set(bgOuterRef.current, { scale: 1.1 });
+        gsap.set(fgOuterRef.current, { opacity: 0, scale: 1.15 });
+        gsap.set(eyebrowRef.current, { opacity: 0, yPercent: 30 });
+        gsap.set(line1Ref.current, { opacity: 0, yPercent: 45 });
+        gsap.set(line2Ref.current, { opacity: 0, yPercent: 60 });
+        gsap.set(ctaZoneRef.current, { opacity: 0, yPercent: 22 });
+        gsap.set(scrollCueRef.current, { opacity: 0 });
+
+        entrance = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          onComplete: () => {
+            enteredRef.current = true;
+          },
+        });
+        entrance
+          .to(windowRef.current, { clipPath: restClip, duration: 1.15, ease: "power4.out" }, 0)
+          .to(bgOuterRef.current, { scale: 1, duration: 1.3, ease: "power2.out" }, 0)
+          .to(eyebrowRef.current, { opacity: 1, yPercent: 0, duration: 0.6 }, 0.15)
+          .to(line1Ref.current, { opacity: 1, yPercent: 0, duration: 0.75 }, 0.3)
+          .to(line2Ref.current, { opacity: 1, yPercent: 0, duration: 0.75 }, 0.4)
+          .to(fgOuterRef.current, { opacity: 0.55, scale: 1.05, duration: 0.85 }, 0.45)
+          .to(ctaZoneRef.current, { opacity: 1, yPercent: 0, duration: 0.65 }, 0.6)
+          .to(scrollCueRef.current, { opacity: 1, duration: 0.5 }, 0.9);
+      } else {
+        gsap.set(windowRef.current, { clipPath: restClip });
+      }
 
       const trigger = ScrollTrigger.create({
         trigger: outer,
@@ -120,7 +167,10 @@ function HeroMotion() {
         },
       });
 
-      return () => trigger.kill();
+      return () => {
+        trigger.kill();
+        entrance?.kill();
+      };
     }
 
     return () => mm.revert();
@@ -159,17 +209,14 @@ function HeroMotion() {
       <div ref={stickyRef} className="sticky top-0 h-svh w-full overflow-hidden bg-noir">
         <div ref={windowRef} className="absolute inset-0 overflow-hidden">
           <Layer outerRef={bgOuterRef} cursorRef={bgCursorRef}>
-            {bgMedia && (
-              <Image
-                src={bgMedia.temporaryImage}
-                alt={bgMedia.alt}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover object-[50%_38%]"
-                data-temporary-media="true"
-              />
-            )}
+            <ManagedVideo
+              clipId="rose-lateral-light"
+              description={bgMedia?.alt ?? "Filme de abertura da campanha Le Grand Amour."}
+              aspectClassName="h-full w-full"
+              objectPositionClassName="object-[50%_38%]"
+              priority
+              showDebugLabel={false}
+            />
           </Layer>
 
           <Layer

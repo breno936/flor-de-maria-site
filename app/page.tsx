@@ -1,6 +1,6 @@
-import HeroExpand from "@/components/hero/HeroExpand";
+import Hero from "@/components/hero/Hero";
 import Manifesto from "@/components/manifesto/Manifesto";
-import RedThread from "@/components/experience/RedThread";
+import LastTouch from "@/components/interlude/LastTouch";
 import LeBouquet from "@/components/products/LeBouquet";
 import LeCoeurRoyale from "@/components/products/LeCoeurRoyale";
 import PatriciaFilm from "@/components/ambassador/PatriciaFilm";
@@ -30,10 +30,10 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HeroExpand />
+      <Hero />
       <Manifesto />
       <LeBouquet />
-      <RedThread />
+      <LastTouch />
       <LeCoeurRoyale />
       <PatriciaFilm />
       <CreationRitual />

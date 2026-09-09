@@ -22,6 +22,8 @@ export type ManagedVideoProps = {
   objectPositionClassName?: string;
   /** Set false for small accent/detail insets where the debug caption would overflow. */
   showDebugLabel?: boolean;
+  /** Escape hatch for callers that need imperative control (e.g. a visible pause/play toggle). Called with the live <video> element, or null when none is rendered (image/gradient tier). */
+  onVideoElement?: (video: HTMLVideoElement | null) => void;
 };
 
 /**
@@ -47,6 +49,7 @@ export default function ManagedVideo({
   priority = false,
   objectPositionClassName = "",
   showDebugLabel = true,
+  onVideoElement,
 }: ManagedVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,6 +71,16 @@ export default function ManagedVideo({
     !showOfficialVideo && !showTemporaryVideo && Boolean(temp?.temporaryImage);
 
   const shouldObserve = showOfficialVideo || showTemporaryVideo;
+
+  const setVideoRef = (el: HTMLVideoElement | null) => {
+    videoRef.current = el;
+    onVideoElement?.(el);
+  };
+
+  useEffect(() => {
+    if (!shouldObserve) onVideoElement?.(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldObserve]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -115,7 +128,7 @@ export default function ManagedVideo({
     >
       {showOfficialVideo ? (
         <video
-          ref={videoRef}
+          ref={setVideoRef}
           className={`h-full w-full object-cover ${objectPositionClassName}`}
           muted
           playsInline
@@ -131,7 +144,7 @@ export default function ManagedVideo({
         </video>
       ) : showTemporaryVideo && temp?.temporaryVideo ? (
         <video
-          ref={videoRef}
+          ref={setVideoRef}
           className={`h-full w-full object-cover ${objectPositionClassName}`}
           muted
           playsInline

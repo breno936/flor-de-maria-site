@@ -20,7 +20,6 @@ export const hero = {
   eyebrow: brand.collabLine,
   title: brand.name,
   tagline: brand.tagline,
-  body: "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações.",
   ctaPrimary: "Reservar minha declaração",
   ctaSecondary: "Conhecer a coleção",
   signature: brand.signature,
@@ -28,7 +27,7 @@ export const hero = {
 
 export const manifesto = {
   title: brand.manifestoTitle,
-  body: "Há sentimentos que pedem presença. Gestos que precisam ocupar espaço. Rosas que não chegam apenas como presente, mas como a lembrança de um momento impossível de ignorar.",
+  body: "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações. Há sentimentos que pedem presença. Gestos que precisam ocupar espaço. Rosas que não chegam apenas como presente, mas como a lembrança de um momento impossível de ignorar.",
 };
 
 export const loveTakesShape = {
@@ -99,16 +98,22 @@ export const scaleSection = {
 };
 
 export const reservation = {
-  title: "Algumas pessoas merecem mais do que um presente.",
-  body: "Conte-nos para quem é a sua declaração. A Flor de Maria prepara o restante.",
-  ctaPrimary: "Solicitar atendimento privado",
+  title: "Sua declaração começa aqui.",
+  body: "Conte-nos para quem é o presente. Vamos ajudar você a escolher cada detalhe.",
+  ctaPrimary: "Solicitar atendimento",
   ctaSecondary: "Falar diretamente pelo WhatsApp",
   whatsappMessage:
     "Olá! Conheci a coleção Le Grand Amour e gostaria de receber atendimento para escolher minha declaração.",
-  successTitle: "Sua declaração começou a tomar forma.",
-  successBody: "Nossa equipe entrará em contato para cuidar dos próximos detalhes.",
+  successTitle: "Recebemos sua solicitação.",
+  successBody: "Vamos conversar sobre a sua declaração.",
   privacyConsentLabel:
     "Autorizo o contato da Flor de Maria Ateliê para tratar da minha solicitação, conforme a Política de Privacidade.",
+  detailsToggle: "Adicionar detalhes do presente",
+  creationOptions: [
+    { value: "le-bouquet", label: "Le Bouquet" },
+    { value: "le-coeur-royale", label: "Le Cœur Royale" },
+    { value: "ainda-nao-decidi", label: "Quero orientação" },
+  ] as const,
 };
 
 export const closing = {

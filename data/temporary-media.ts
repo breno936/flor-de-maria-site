@@ -24,6 +24,17 @@ export type TemporaryMedia = {
 const BASE = "/media/temporary";
 
 export const temporaryMedia: Partial<Record<MediaClipId, TemporaryMedia>> = {
+  "hero-bouquet": {
+    clipId: "hero-bouquet",
+    temporaryVideo: {
+      mp4: `${BASE}/hero-bouquet-loop.mp4`,
+      webm: `${BASE}/hero-bouquet-loop.webm`,
+      poster: `${BASE}/hero-bouquet-loop-poster.jpg`,
+    },
+    temporaryImage: `${BASE}/hero-bouquet.webp`,
+    alt: "Imagem conceitual provisória: buquê de três rosas vermelhas com luz lateral dramática sobre fundo preto, caules visíveis — referência de atmosfera e volume para a abertura da campanha. Não é a fotografia oficial do buquê autoral da coleção. O vídeo é um lento zoom sobre a própria fotografia (Ken Burns), não uma filmagem real do buquê.",
+    isTemporary: true,
+  },
   "rose-lateral-light": {
     clipId: "rose-lateral-light",
     temporaryVideo: {

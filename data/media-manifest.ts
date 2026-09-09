@@ -23,7 +23,8 @@ export type MediaClipId =
   | "coeur-assembly"
   | "patricia-film"
   | "ribbon-detail"
-  | "delivery-moment";
+  | "delivery-moment"
+  | "hero-bouquet";
 
 export type MediaClip = {
   id: MediaClipId;
@@ -36,14 +37,20 @@ export const mediaClips: Record<MediaClipId, MediaClip> = {
   "petal-macro": {
     id: "petal-macro",
     brief: "Macro de pétalas — textura, veios, luz percorrendo lentamente.",
-    usedIn: ["Petal Reveal (preloader)", "Manifesto", "Ritual — seleção/preparação"],
+    usedIn: ["Hero — abertura (camada 1: pétala)", "Manifesto", "Reserva — detalhe", "Ritual — seleção/preparação"],
     basePath: "/media/petal-macro",
   },
   "rose-lateral-light": {
     id: "rose-lateral-light",
     brief: "Rosas recebendo iluminação lateral, atmosfera editorial.",
-    usedIn: ["Hero — plano de fundo", "Ritual — estrutura"],
+    usedIn: ["Ritual — estrutura"],
     basePath: "/media/rose-lateral-light",
+  },
+  "hero-bouquet": {
+    id: "hero-bouquet",
+    brief: "Buquê de rosas vermelhas, composição central, luz lateral revelando pétalas e caules — filme principal do hero (camada 3, estado final).",
+    usedIn: ["Hero — abertura (camada 3) e estado final"],
+    basePath: "/media/hero-bouquet",
   },
   "hands-selecting": {
     id: "hands-selecting",
@@ -66,13 +73,13 @@ export const mediaClips: Record<MediaClipId, MediaClip> = {
   "patricia-film": {
     id: "patricia-film",
     brief: "Patrícia Marchi caminhando, observando a criação, tocando as rosas, olhando para fora de câmera.",
-    usedIn: ["Hero — plano intermediário", "Seção Patrícia Marchi"],
+    usedIn: ["Seção Patrícia Marchi"],
     basePath: "/media/patricia-film",
   },
   "ribbon-detail": {
     id: "ribbon-detail",
     brief: "Detalhe da fita vermelha e embalagem — acabamento, gesto, continuidade.",
-    usedIn: ["Hero — primeiro plano", "The Red Thread", "Ritual — fita/cartão/embalagem", "Detalhes de produto"],
+    usedIn: ["Hero — abertura (camada 2: acabamento)", "O último cuidado — mídia principal", "Ritual — fita/cartão/embalagem", "Detalhes de produto"],
     basePath: "/media/ribbon-detail",
   },
   "delivery-moment": {

@@ -69,7 +69,7 @@ export default function LeBouquet() {
             ))}
           </ul>
 
-          <AtelierButton href="#reserva" variant="primary" className="mt-8">
+          <AtelierButton href="?criacao=le-bouquet#reserva" variant="primary" className="mt-8">
             {product.cta}
           </AtelierButton>
         </div>

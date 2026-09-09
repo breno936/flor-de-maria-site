@@ -116,7 +116,7 @@ function BoxReveal() {
               </li>
             ))}
           </ul>
-          <AtelierButton href="#reserva" variant="secondary" className="mt-7">
+          <AtelierButton href="?criacao=le-coeur-royale#reserva" variant="secondary" className="mt-7">
             {product.cta}
           </AtelierButton>
         </div>
@@ -149,7 +149,7 @@ function BoxStatic() {
               </li>
             ))}
           </ul>
-          <AtelierButton href="#reserva" variant="secondary" className="mt-8">
+          <AtelierButton href="?criacao=le-coeur-royale#reserva" variant="secondary" className="mt-8">
             {product.cta}
           </AtelierButton>
         </div>

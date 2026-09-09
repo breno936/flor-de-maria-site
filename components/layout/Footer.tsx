@@ -1,5 +1,4 @@
 import { brand, contact, nav, reservation } from "@/data/content";
-import LogoMark from "./LogoMark";
 
 function buildWhatsAppUrl() {
   if (!contact.whatsappNumber) return null;
@@ -10,8 +9,10 @@ function buildWhatsAppUrl() {
 /**
  * Closing signature of the campaign, not a second reservation scene — no
  * repeated giant CTA, no restatement of the interlude's phrase. Continues
- * the same dark ground as the reservation section above it; separation
- * comes from spacing and a hairline rule, not a background or color change.
+ * the same dark ground as the page above it; separation comes from spacing
+ * and a hairline rule, not a background or color change. Two areas: the
+ * signature (brand + partnership, large and quiet) and the practical
+ * information a visitor actually needs (nav, contact, location, legal).
  */
 export default function Footer() {
   const whatsappUrl = buildWhatsAppUrl();
@@ -19,13 +20,14 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-gold/10 bg-noir">
-      <div className="container-lga py-14 md:py-16">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
-          <div className="sm:col-span-2 md:col-span-1">
-            <LogoMark />
-            <p className="mt-4 font-sans text-xs leading-relaxed text-muted">{brand.collabLine}</p>
-          </div>
+      <div className="container-lga py-16 text-center md:py-24">
+        <p className="font-display text-3xl tracking-[0.08em] text-ivory sm:text-4xl md:text-5xl">{brand.name}</p>
+        <div className="rule-gold mx-auto my-6" />
+        <p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">{brand.collabLine}</p>
+      </div>
 
+      <div className="border-t border-gold/10">
+        <div className="container-lga grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-3 md:py-14">
           <div>
             <p className="eyebrow mb-4">Navegação</p>
             <nav className="flex flex-col gap-2" aria-label="Navegação do rodapé">
@@ -43,7 +45,7 @@ export default function Footer() {
 
           {hasContacts && (
             <div>
-              <p className="eyebrow mb-4">Contato</p>
+              <p className="eyebrow mb-4">Atendimento</p>
               <ul className="flex flex-col gap-2">
                 {whatsappUrl && (
                   <li>

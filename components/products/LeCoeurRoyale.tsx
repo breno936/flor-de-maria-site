@@ -11,15 +11,24 @@ import AtelierButton from "@/components/ui/AtelierButton";
 const product = products.find((p) => p.id === "le-coeur-royale")!;
 const boxMedia = temporaryMedia["coeur-assembly"]!;
 
+function phase(progress: number, start: number, end: number) {
+  if (progress <= start) return 0;
+  if (progress >= end) return 1;
+  return (progress - start) / (end - start);
+}
+
+function smoothstep(t: number) {
+  return t * t * (3 - 2 * t);
+}
+
 /**
- * Scene 2 — "o presente se revela". Only one real photograph of the box
- * exists (see MEDIA-MANIFEST.md — no lid-open shot was found under a
- * license we can use, and nothing is fabricated to fake one). What IS real
- * here: the camera pulls back from a tight detail of the ribbon to the full
- * box as the visitor scrolls, and the name/description/CTA arrive once the
- * box is fully framed and then hold — not a fade between unrelated photos.
- * The physical lid-opening motion is intentionally not implemented; see the
- * delivery notes for what a future studio shoot needs to complete it.
+ * Scene 2 — "o presente se revela". At 0% progress the box is already
+ * recognizable (scale capped at 1.12, never the near-abstract 2.1 of the
+ * previous cut) and the eyebrow/title are always on screen — the visitor
+ * never lands on unreadable texture. The camera recedes gently as the
+ * visitor scrolls; the bottom-anchored gradient that carries the text holds
+ * a fixed strength throughout (not scroll-linked) so contrast never dips
+ * below what the scroll-revealed tagline/facts/CTA need once they arrive.
  */
 export default function LeCoeurRoyale() {
   const reducedMotion = useReducedMotion();
@@ -29,52 +38,39 @@ export default function LeCoeurRoyale() {
 function BoxReveal() {
   const outerRef = useRef<HTMLDivElement>(null);
   const imgWrapRef = useRef<HTMLDivElement>(null);
-  const scrimRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const eyebrowRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     registerGsap();
     const outer = outerRef.current;
     if (!outer) return;
 
-    gsap.set(imgWrapRef.current, { scale: 2.1 });
-    gsap.set(textRef.current, { opacity: 0, y: 24 });
-    gsap.set(eyebrowRef.current, { opacity: 0.001 });
+    gsap.set(imgWrapRef.current, { scale: 1.12 });
+    gsap.set(textRef.current, { opacity: 0, y: 20 });
 
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px)", () => build(() => window.innerHeight * 0.75));
-    mm.add("(max-width: 767px)", () => build(() => window.innerHeight * 0.45));
+    const trigger = ScrollTrigger.create({
+      trigger: outer,
+      start: "top top",
+      end: () => `+=${window.innerHeight * 0.7}`,
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress * 100;
+        const ease = smoothstep(phase(p, 0, 45));
 
-    function build(endPx: () => number) {
-      const trigger = ScrollTrigger.create({
-        trigger: outer,
-        start: "top top",
-        end: () => `+=${endPx()}`,
-        scrub: 0.5,
-        onUpdate: (self) => {
-          const p = self.progress * 100;
-          const reveal = phase(p, 4, 46);
-          const ease = reveal * reveal * (3 - 2 * reveal);
+        gsap.set(imgWrapRef.current, { scale: 1.12 - ease * 0.12 });
 
-          gsap.set(imgWrapRef.current, { scale: 2.1 - ease * 1.1 });
-          gsap.set(scrimRef.current, { opacity: 0.3 + phase(p, 42, 68) * 0.5 });
-          gsap.set(eyebrowRef.current, { opacity: 0.001 + phase(p, 2, 14) });
+        const textP = phase(p, 45, 70);
+        gsap.set(textRef.current, { opacity: textP, y: 20 - textP * 20 });
+      },
+    });
 
-          const textP = phase(p, 46, 64);
-          gsap.set(textRef.current, { opacity: textP, y: 24 - textP * 24 });
-        },
-      });
-      return () => trigger.kill();
-    }
-
-    return () => mm.revert();
+    return () => trigger.kill();
   }, []);
 
   return (
     <section
       ref={outerRef}
-      className="relative h-[120svh] md:h-[155svh]"
+      className="relative h-[135svh] md:h-[145svh]"
       aria-labelledby="le-coeur-title"
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-noir">
@@ -84,51 +80,45 @@ function BoxReveal() {
             alt={boxMedia.alt}
             fill
             sizes="100vw"
-            className="object-cover object-[41%_52%]"
+            className="object-cover object-[48%_50%]"
             data-temporary-media="true"
             priority
+            onLoad={() => ScrollTrigger.refresh()}
           />
         </div>
         <div
-          ref={scrimRef}
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(0deg, rgba(7,5,4,0.96) 0%, rgba(7,5,4,0.5) 42%, rgba(7,5,4,0.15) 68%, rgba(7,5,4,0.35) 100%)",
+              "linear-gradient(0deg, rgba(7,5,4,0.92) 0%, rgba(7,5,4,0.68) 34%, rgba(7,5,4,0.25) 62%, rgba(7,5,4,0.4) 100%)",
           }}
         />
 
-        <p ref={eyebrowRef} className="eyebrow absolute left-6 top-8 md:left-12 md:top-12">
-          {product.eyebrow}
-        </p>
+        <p className="eyebrow absolute left-6 top-8 md:left-12 md:top-12">{product.eyebrow}</p>
 
-        <div ref={textRef} className="container-lga absolute inset-x-0 bottom-14 md:bottom-20">
+        <div className="container-lga absolute inset-x-0 bottom-14 md:bottom-20">
           <h2 id="le-coeur-title" className="font-display text-4xl text-ivory sm:text-5xl">
             {product.name}
           </h2>
-          <p className="mt-3 max-w-md font-display text-xl italic text-champagne">{product.tagline}</p>
-          <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-2">
-            {product.facts.map((fact) => (
-              <li key={fact} className="flex items-center gap-3 font-sans text-sm text-muted">
-                <span className="h-px w-5 bg-gold/60" aria-hidden="true" />
-                {fact}
-              </li>
-            ))}
-          </ul>
-          <AtelierButton href="?criacao=le-coeur-royale#reserva" variant="secondary" className="mt-7">
-            {product.cta}
-          </AtelierButton>
+          <div ref={textRef}>
+            <p className="mt-3 max-w-md font-display text-xl italic text-champagne">{product.tagline}</p>
+            <ul className="mt-5 flex flex-wrap gap-x-8 gap-y-2">
+              {product.facts.map((fact) => (
+                <li key={fact} className="flex items-center gap-3 font-sans text-sm text-muted">
+                  <span className="h-px w-5 bg-gold/60" aria-hidden="true" />
+                  {fact}
+                </li>
+              ))}
+            </ul>
+            <AtelierButton href="?criacao=le-coeur-royale#reserva" variant="secondary" className="mt-7">
+              {product.cta}
+            </AtelierButton>
+          </div>
         </div>
       </div>
     </section>
   );
-}
-
-function phase(progress: number, start: number, end: number) {
-  if (progress <= start) return 0;
-  if (progress >= end) return 1;
-  return (progress - start) / (end - start);
 }
 
 function BoxStatic() {

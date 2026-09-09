@@ -97,6 +97,17 @@ export const scaleSection = {
   },
 };
 
+/**
+ * Closing rose scene ("Da emoção ao gesto") — the emotional hinge between
+ * the collection and the atendimento form. Kept separate from `reservation`
+ * below: this is the campaign's closing statement, the form section has its
+ * own, more practical heading.
+ */
+export const roseClosing = {
+  title: "Algumas pessoas merecem mais do que um presente.",
+  phrase: brand.signature,
+};
+
 export const reservation = {
   title: "Sua declaração começa aqui.",
   body: "Conte-nos para quem é o presente. Vamos ajudar você a escolher cada detalhe.",

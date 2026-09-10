@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope, Parisienne } from "next/font/google";
+import { Cormorant_Garamond, Manrope, Parisienne, Courier_Prime } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -22,6 +22,13 @@ const manrope = Manrope({
 
 const parisienne = Parisienne({
   variable: "--font-parisienne",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
+const courierPrime = Courier_Prime({
+  variable: "--font-courier-prime",
   subsets: ["latin"],
   weight: ["400"],
   display: "swap",
@@ -71,7 +78,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR" className={`${cormorant.variable} ${manrope.variable} ${parisienne.variable}`}>
+    <html
+      lang="pt-BR"
+      className={`${cormorant.variable} ${manrope.variable} ${parisienne.variable} ${courierPrime.variable}`}
+    >
       <body>
         <HashScrollFix />
         <a href="#conteudo-principal" className="skip-link">

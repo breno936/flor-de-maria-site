@@ -3,15 +3,15 @@
    70% black / 15% deep wine / 10% ivory / 5% gold. No cream sections. */
 
 :root {
-  --noir: #070504;
-  --noir-soft: #0d0807;
-  --rouge: #920914;
-  --bordeaux: #3c070c;
-  --wine-shadow: #230407;
+  --noir: #050403;
+  --noir-soft: #100907;
+  --rouge: #a3171f;
+  --bordeaux: #6e1015;
+  --wine-shadow: #260406;
   --gold: #b58a4a;
-  --champagne: #d8bd8b;
-  --ivory: #f2e9dc;
-  --muted: #a89d91;
+  --champagne: #d8c8a8;
+  --ivory: #f1ede5;
+  --muted: #968d82;
 
   --header-height: 88px;
   --header-height-mobile: 72px;
@@ -34,4 +34,5 @@
   --font-display: var(--font-cormorant);
   --font-sans: var(--font-manrope);
   --font-signature: var(--font-parisienne);
+  --font-mono: var(--font-courier-prime);
 }

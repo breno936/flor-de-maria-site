@@ -84,9 +84,7 @@ export default function LastTouch() {
       aria-label="O último cuidado antes da entrega"
     >
       <div className="container-lga">
-        <p className="eyebrow text-center md:text-left">O último cuidado</p>
-
-        <div className="mt-8 flex flex-col gap-6 md:relative md:mt-10 md:grid md:grid-cols-12 md:gap-0">
+        <div className="flex flex-col gap-6 md:relative md:grid md:grid-cols-12 md:gap-0">
           <div ref={frame1Ref} className="relative aspect-[4/5] w-full overflow-hidden md:col-start-1 md:col-span-4 md:row-start-1 md:self-start">
             <div ref={inner1Ref} className="absolute inset-[-4%]">
               <ManagedVideo
@@ -98,12 +96,12 @@ export default function LastTouch() {
             </div>
           </div>
 
-          <p
+          <h2
             ref={phraseRef}
-            className="order-first font-display text-2xl italic leading-snug text-champagne sm:text-3xl md:order-none md:col-start-1 md:col-span-4 md:row-start-2 md:mt-8 md:max-w-xs md:self-start"
+            className="order-first font-display text-2xl leading-snug text-ivory sm:text-3xl md:order-none md:col-start-1 md:col-span-4 md:row-start-2 md:mt-8 md:max-w-xs md:self-start"
           >
-            &ldquo;O luxo também está no último gesto antes da entrega.&rdquo;
-          </p>
+            Antes de chegar, alguém cuidou de cada detalhe.
+          </h2>
 
           <div
             ref={frame2Ref}

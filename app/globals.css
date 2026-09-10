@@ -62,6 +62,17 @@ select:focus-visible {
   color: var(--gold);
 }
 
+/* Small technical/directorial credits — "COLEÇÃO 01", "ATELIÊ / SP" — the
+   one place a monospace face earns its keep here: fashion-editorial
+   caption/slate typography, not a UI label. */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .rule-gold {
   height: 1px;
   width: 48px;

@@ -55,11 +55,11 @@ function BoxReveal() {
       scrub: 0.5,
       onUpdate: (self) => {
         const p = self.progress * 100;
-        const ease = smoothstep(phase(p, 0, 45));
+        const ease = smoothstep(phase(p, 0, 50));
 
         gsap.set(imgWrapRef.current, { scale: 1.12 - ease * 0.12 });
 
-        const textP = phase(p, 45, 70);
+        const textP = phase(p, 75, 95);
         gsap.set(textRef.current, { opacity: textP, y: 20 - textP * 20 });
       },
     });
@@ -95,7 +95,7 @@ function BoxReveal() {
           }}
         />
 
-        <p className="eyebrow absolute left-6 top-8 md:left-12 md:top-12">{product.eyebrow}</p>
+        <p className="mono-label absolute left-6 top-8 md:left-12 md:top-12">{product.eyebrow}</p>
 
         <div className="container-lga absolute inset-x-0 bottom-14 md:bottom-20">
           <h2 id="le-coeur-title" className="font-display text-4xl text-ivory sm:text-5xl">
@@ -126,7 +126,7 @@ function BoxStatic() {
     <section id="criacoes" className="relative py-20 md:py-28" aria-labelledby="le-coeur-title">
       <div className="container-lga grid gap-10 lg:grid-cols-12 lg:items-center">
         <div className="order-2 lg:order-1 lg:col-span-5">
-          <p className="eyebrow">{product.eyebrow}</p>
+          <p className="mono-label">{product.eyebrow}</p>
           <h2 id="le-coeur-title" className="mt-3 font-display text-4xl text-ivory sm:text-5xl">
             {product.name}
           </h2>

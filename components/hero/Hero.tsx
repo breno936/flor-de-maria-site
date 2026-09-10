@@ -245,6 +245,10 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
         </>
       )}
 
+      <p className="mono-label absolute bottom-5 left-5 z-20 hidden sm:block md:bottom-8 md:left-16 lg:left-24">
+        ATELIÊ · SP — EDIÇÃO AUTORAL
+      </p>
+
       {showVideoToggle && (
         <button
           type="button"

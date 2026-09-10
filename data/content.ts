@@ -26,6 +26,7 @@ export const hero = {
 };
 
 export const manifesto = {
+  pause: "Há presentes que não chegam apenas às mãos. Chegam à memória.",
   title: brand.manifestoTitle,
   body: "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações. Há sentimentos que pedem presença. Gestos que precisam ocupar espaço. Rosas que não chegam apenas como presente, mas como a lembrança de um momento impossível de ignorar.",
 };

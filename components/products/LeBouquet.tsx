@@ -54,7 +54,7 @@ export default function LeBouquet() {
         </div>
 
         <div className="lg:col-span-5">
-          <p className="eyebrow">{product.eyebrow}</p>
+          <p className="mono-label">{product.eyebrow}</p>
           <h2 id="le-bouquet-title" className="mt-3 font-display text-4xl text-ivory sm:text-5xl">
             {product.name}
           </h2>

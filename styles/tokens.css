@@ -1,16 +1,22 @@
-/* Le Grand Amour — design tokens
-   Single continuous dark background across the entire site.
-   70% black / 15% deep wine / 10% ivory / 5% gold. No cream sections. */
+/* Le Grand Amour — design tokens, "O Fio da Declaração"
+   Predominantly dark ground, with ONE deliberate ivory pause (Cena 4 —
+   "O que torna especial") as an editorial breath in the middle of the
+   experience — not a return to a light template. --oxblood is the large
+   panel/background color (Coleção, Ritual, Reserva); --rouge stays the
+   vivid "thread" accent (the silk thread, CTA inner line, small live
+   details); --gold remains only for hairline rules and focus outlines,
+   never as the dominant accent — --champagne carries that role now. */
 
 :root {
-  --noir: #050403;
-  --noir-soft: #100907;
+  --noir: #070606;
+  --noir-soft: #120d0b;
+  --oxblood: #4a0a10;
   --rouge: #a3171f;
   --bordeaux: #6e1015;
   --wine-shadow: #260406;
   --gold: #b58a4a;
-  --champagne: #d8c8a8;
-  --ivory: #f1ede5;
+  --champagne: #af9367;
+  --ivory: #e8dfd2;
   --muted: #968d82;
 
   --header-height: 88px;
@@ -23,6 +29,7 @@
 @theme inline {
   --color-noir: var(--noir);
   --color-noir-soft: var(--noir-soft);
+  --color-oxblood: var(--oxblood);
   --color-rouge: var(--rouge);
   --color-bordeaux: var(--bordeaux);
   --color-wine-shadow: var(--wine-shadow);

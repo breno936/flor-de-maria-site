@@ -3,22 +3,21 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
-import { manifesto } from "@/data/content";
+import { entendimento } from "@/data/content";
 import ManagedVideo from "@/components/media/ManagedVideo";
 
 /**
- * The pause after the hero's declaration — a single spacious phrase, not a
- * second hero. The background film is intentionally quiet (low opacity,
- * very slow) so it reads as atmosphere behind the words, not a competing
- * subject. `manifesto.title`/`body` (the client's original manifesto
- * copy) stay as smaller, secondary text beneath the phrase — kept, not
- * replaced, just no longer the loudest thing on screen.
+ * Cena 2 — "O Entendimento". A predominantly typographic scene, like a
+ * magazine spread: a narrow vertical media window on one side, the
+ * headline and short support lines on the other. Deliberately NOT a
+ * full-bleed background image behind the text — that pattern is reserved
+ * for the cinematic scenes (Hero, Ritual, Coleção).
  */
 export default function Manifesto() {
-  const line1Ref = useRef<HTMLSpanElement>(null);
-  const line2Ref = useRef<HTMLSpanElement>(null);
-  const secondaryRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const windowRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const linesRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -27,23 +26,23 @@ export default function Manifesto() {
     if (!section) return;
 
     if (reducedMotion) {
-      gsap.set([line1Ref.current, line2Ref.current], { yPercent: 0 });
-      gsap.set(secondaryRef.current, { opacity: 1, y: 0 });
+      gsap.set([windowRef.current, headlineRef.current, linesRef.current], { opacity: 1, y: 0, scaleY: 1 });
       return;
     }
 
-    gsap.set([line1Ref.current, line2Ref.current], { yPercent: 110 });
-    gsap.set(secondaryRef.current, { opacity: 0, y: 14 });
+    gsap.set(windowRef.current, { scaleY: 0.82, transformOrigin: "top center" });
+    gsap.set(headlineRef.current, { opacity: 0, y: 18 });
+    gsap.set(linesRef.current, { opacity: 0, y: 14 });
 
     const trigger = ScrollTrigger.create({
       trigger: section,
-      start: "top 72%",
+      start: "top 68%",
       once: true,
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        tl.to(line1Ref.current, { yPercent: 0, duration: 0.7 }, 0)
-          .to(line2Ref.current, { yPercent: 0, duration: 0.7 }, 0.12)
-          .to(secondaryRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.5);
+        tl.to(windowRef.current, { scaleY: 1, duration: 0.9, ease: "power2.out" }, 0)
+          .to(headlineRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.2)
+          .to(linesRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.35);
       },
     });
 
@@ -51,35 +50,56 @@ export default function Manifesto() {
   }, [reducedMotion]);
 
   return (
-    <section id="colecao" ref={sectionRef} className="relative overflow-hidden py-28 md:py-40" aria-labelledby="manifesto-title">
-      <div aria-hidden="true" className="absolute inset-0 opacity-25">
-        <ManagedVideo
-          clipId="petal-macro"
-          description=""
-          aspectClassName="h-full w-full"
-          showDebugLabel={false}
-        />
-        <div className="absolute inset-0 bg-noir/70" />
-      </div>
+    <section
+      id="entendimento"
+      ref={sectionRef}
+      className="relative overflow-hidden bg-noir py-24 md:py-36"
+      aria-labelledby="entendimento-title"
+    >
+      <div className="container-lga grid items-center gap-12 md:grid-cols-12 md:gap-10">
+        <div className="md:col-span-4">
+          <div ref={windowRef} className="aspect-[3/4] w-full max-w-[280px] overflow-hidden">
+            <ManagedVideo
+              clipId="hands-selecting"
+              description="Mão selecionando e preparando uma rosa vermelha — referência de gesto."
+              aspectClassName="h-full w-full"
+              showDebugLabel={false}
+            />
+          </div>
+          <p className="mono-label mt-4">{entendimento.windowLabel}</p>
+        </div>
 
-      <div className="container-lga relative">
-        <h2 id="manifesto-title" className="max-w-3xl font-display text-3xl italic leading-[1.25] text-ivory sm:text-4xl lg:text-[2.75rem]">
-          <span className="block overflow-hidden">
-            <span ref={line1Ref} className="block">
-              Há presentes que não chegam apenas às mãos.
-            </span>
-          </span>
-          <span className="block overflow-hidden">
-            <span ref={line2Ref} className="block">
-              Chegam à memória.
-            </span>
-          </span>
-        </h2>
+        <div className="md:col-span-8 md:pl-6">
+          <p className="mono-label">{entendimento.eyebrow}</p>
+          <h2
+            ref={headlineRef}
+            id="entendimento-title"
+            className="mt-4 max-w-lg font-display text-4xl leading-[1.08] text-ivory sm:text-5xl lg:text-6xl"
+          >
+            {entendimento.headline}
+          </h2>
 
-        <div ref={secondaryRef} className="mt-12 max-w-xl">
-          <div className="rule-gold mb-5" />
-          <p className="font-display text-xl text-champagne">{manifesto.title}</p>
-          <p className="mt-4 font-sans text-sm leading-relaxed text-muted">{manifesto.body}</p>
+          <div ref={linesRef} className="mt-10 flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+            <div className="max-w-xs">
+              {entendimento.support.map((line) => (
+                <p key={line} className="font-sans text-base leading-snug text-champagne">
+                  {line}
+                </p>
+              ))}
+            </div>
+            <div className="flex flex-col gap-4 sm:items-end sm:text-right">
+              <div className="rule-gold sm:ml-auto" />
+              <a
+                href={entendimento.secondaryHref}
+                className="group inline-flex items-center gap-2 font-sans text-xs uppercase tracking-[0.2em] text-champagne/90 transition-colors hover:text-ivory"
+              >
+                {entendimento.secondaryCta}
+                <span className="relative inline-block transition-transform duration-300 ease-out group-hover:translate-x-[4px]" aria-hidden="true">
+                  &rarr;
+                </span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -184,7 +184,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
         <div className="max-w-lg text-center md:text-left">
           <div className="overflow-hidden">
             <span ref={eyebrowInnerRef} className="eyebrow block">
-              {hero.eyebrow}
+              {hero.eyebrowTop}
             </span>
           </div>
           <h1 className="mt-3 font-display leading-[0.95] text-ivory text-[2.75rem] sm:text-6xl lg:text-[4.75rem]">
@@ -199,15 +199,13 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
               </span>
             </span>
           </h1>
+          <p className="mt-2 font-sans text-xs uppercase tracking-[0.2em] text-champagne/80">{hero.eyebrow}</p>
           <p ref={taglineRef} className="mt-5 max-w-md font-display text-lg italic text-champagne sm:text-2xl">
-            &ldquo;{hero.tagline}&rdquo;
+            {hero.tagline}
           </p>
-          <div ref={ctaRef} className="mt-7 flex flex-col items-center gap-4 sm:flex-row md:items-start">
+          <div ref={ctaRef} className="mt-7 flex justify-center md:justify-start">
             <AtelierButton href="#reserva" variant="primary">
               {hero.ctaPrimary}
-            </AtelierButton>
-            <AtelierButton href="#colecao" variant="secondary">
-              {hero.ctaSecondary}
             </AtelierButton>
           </div>
         </div>

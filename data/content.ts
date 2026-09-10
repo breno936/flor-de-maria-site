@@ -17,18 +17,38 @@ export const brand = {
 };
 
 export const hero = {
+  eyebrowTop: "Flores também contam grandes histórias",
   eyebrow: brand.collabLine,
   title: brand.name,
-  tagline: brand.tagline,
+  tagline: "Uma declaração floral criada para transformar uma entrega em acontecimento.",
   ctaPrimary: "Reservar minha declaração",
-  ctaSecondary: "Conhecer a coleção",
   signature: brand.signature,
 };
 
+/**
+ * Cena 2 — "O Entendimento". Typographic scene, not a second hero: a
+ * headline, one short support line, and a secondary link forward to the
+ * Ritual scene (where "a experiência" is actually shown).
+ */
+export const entendimento = {
+  eyebrow: "A EXPERIÊNCIA",
+  headline: "Não é apenas um buquê.",
+  support: ["É a escolha das flores.", "A composição.", "O acabamento.", "A forma como chega."],
+  secondaryCta: "Entender a experiência",
+  secondaryHref: "#ritual",
+  windowLabel: "BELEZA ESCOLHIDA COM PROPÓSITO",
+};
+
+/** Kept for the original client manifesto copy — no longer the loudest text on screen, folded into the Coleção scene as a quieter secondary line. */
 export const manifesto = {
-  pause: "Há presentes que não chegam apenas às mãos. Chegam à memória.",
   title: brand.manifestoTitle,
   body: "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações. Há sentimentos que pedem presença. Gestos que precisam ocupar espaço. Rosas que não chegam apenas como presente, mas como a lembrança de um momento impossível de ignorar.",
+};
+
+/** Cena 3 — "A Coleção". Staged presentation of both creations together, not two symmetric cards. */
+export const colecaoScene = {
+  eyebrow: "A COLEÇÃO",
+  cta: "Escolher minha declaração",
 };
 
 export const loveTakesShape = {
@@ -72,30 +92,43 @@ export const ambassadorSection = {
   testimonialQuote: "",
 };
 
-export const ritual = {
-  title: "Antes de chegar como declaração, cada rosa passa por um ritual.",
-  steps: [
-    "Seleção",
-    "Preparação",
-    "Estrutura",
-    "Montagem",
-    "Acabamento",
-    "Fita",
-    "Cartão",
-    "Embalagem",
-    "Entrega",
+/** Cena 4 — "O que torna especial". The one deliberately light (ivory) pause in the experience. */
+export const especial = {
+  eyebrow: "O que torna Le Grand Amour especial",
+  facts: [
+    { label: "Flores selecionadas", body: "Variedades nobres, escolhidas no auge da beleza." },
+    {
+      label: "Composição autoral",
+      body: "Arranjos exclusivos, criados por Flor de Maria Ateliê × Patrícia Marchi.",
+    },
+    { label: "Acabamento manual", body: "Cada detalhe é finalizado à mão, com tempo e cuidado." },
+    {
+      label: "Entrega preparada para o momento",
+      body: "Embalagem, apresentação e logística pensadas para uma chegada impecável.",
+    },
   ],
 };
 
-export const scaleSection = {
-  title: "Criado para ser lembrado antes mesmo de ser aberto.",
-  /** EDITABLE — confirmed dimensions/weight/lead time not yet provided by client. */
-  facts: {
-    prazo: "",
-    personalizacao: "",
-    disponibilidade: "",
-    entregaOuRetirada: "",
-  },
+/** Cena 5 — "O Ritual". One pinned full-bleed scene, four stages — not a 9-item list. */
+export const ritual = {
+  eyebrow: "O RITUAL",
+  title: "Cada detalhe prepara a presença.",
+  caption: "O amor também se reconhece nos detalhes.",
+  steps: ["Escolha", "Criação", "Acabamento", "Entrega"],
+};
+
+/** Cena 6 — "Para quem é". Occasion-identification, distinct from the Patrícia ambassador scene. */
+export const paraQuem = {
+  eyebrow: "PARA QUEM",
+  sideLabel: "Algumas histórias merecem flores.",
+  lines: [
+    "Para dizer eu te amo.",
+    "Para celebrar.",
+    "Para pedir perdão.",
+    "Ou para marcar um dia que merece ser lembrado.",
+  ],
+  support: "Cada declaração é preparada sob medida.",
+  cta: "Falar sobre a minha",
 };
 
 /**
@@ -110,8 +143,10 @@ export const roseClosing = {
 };
 
 export const reservation = {
-  title: "Sua declaração começa aqui.",
-  body: "Conte-nos para quem é o presente. Vamos ajudar você a escolher cada detalhe.",
+  eyebrow: "VAMOS CRIAR",
+  title: "Vamos criar a sua declaração.",
+  body: "Conte-nos a ocasião e cuidaremos do restante.",
+  note: "Atendimento personalizado com todo o sigilo.",
   ctaPrimary: "Solicitar atendimento",
   ctaSecondary: "Falar diretamente pelo WhatsApp",
   whatsappMessage:
@@ -120,6 +155,8 @@ export const reservation = {
   successBody: "Vamos conversar sobre a sua declaração.",
   privacyConsentLabel:
     "Autorizo o contato da Flor de Maria Ateliê para tratar da minha solicitação, conforme a Política de Privacidade.",
+  privacyNote: "Suas informações são tratadas com segurança e utilizadas apenas para atendimento.",
+  messageLabel: "O que você deseja dizer?",
   detailsToggle: "Adicionar detalhes do presente",
   creationOptions: [
     { value: "le-bouquet", label: "Le Bouquet" },
@@ -136,9 +173,8 @@ export const closing = {
 
 export const nav = [
   { label: "A coleção", href: "#colecao" },
-  { label: "Criações", href: "#criacoes" },
-  { label: "Patrícia", href: "#patricia" },
-  { label: "Ritual", href: "#ritual" },
+  { label: "A experiência", href: "#ritual" },
+  { label: "Para quem", href: "#para-quem" },
   { label: "Reserva", href: "#reserva" },
 ];
 

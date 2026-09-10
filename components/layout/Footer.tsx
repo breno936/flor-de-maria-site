@@ -29,7 +29,7 @@ export default function Footer() {
       <div className="border-t border-gold/10">
         <div className="container-lga grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-3 md:py-14">
           <div>
-            <p className="eyebrow mb-4">Navegação</p>
+            <p className="mono-label mb-4">Navegação</p>
             <nav className="flex flex-col gap-2" aria-label="Navegação do rodapé">
               {nav.map((item) => (
                 <a
@@ -45,7 +45,7 @@ export default function Footer() {
 
           {hasContacts && (
             <div>
-              <p className="eyebrow mb-4">Atendimento</p>
+              <p className="mono-label mb-4">Atendimento</p>
               <ul className="flex flex-col gap-2">
                 {whatsappUrl && (
                   <li>
@@ -76,7 +76,7 @@ export default function Footer() {
           )}
 
           <div>
-            <p className="eyebrow mb-4">Localização</p>
+            <p className="mono-label mb-4">Localização</p>
             <p className="font-sans text-sm text-muted">{contact.atelierLocation}</p>
             <p className="mt-1 font-sans text-sm text-muted">{contact.serviceArea}</p>
           </div>

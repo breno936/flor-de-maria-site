@@ -1,134 +1,66 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { ritual } from "@/data/content";
-import ManagedVideo from "@/components/media/ManagedVideo";
-import type { MediaClipId } from "@/data/media-manifest";
+import { temporaryMedia } from "@/data/temporary-media";
 
-const stepClip: Record<string, MediaClipId> = {
-  Seleção: "hands-selecting",
-  Preparação: "petal-macro",
-  Estrutura: "rose-lateral-light",
-  Montagem: "bouquet-assembly",
-  Acabamento: "coeur-assembly",
-  Fita: "ribbon-detail",
-  Cartão: "ribbon-detail",
-  Embalagem: "ribbon-detail",
-  Entrega: "delivery-moment",
-};
+const media = temporaryMedia["ribbon-detail"]!;
 
+/**
+ * Cena 5 — "O Ritual". One full-bleed macro scene (hands, ribbon,
+ * medallion), a single headline, and a four-stage line at the bottom —
+ * not a list of nine clickable steps. Static for Fase 1; the pin +
+ * scroll-linked video progression is a Fase 3 effect once real footage
+ * or the thread system is in place.
+ */
 export default function CreationRitual() {
   return (
-    <section id="ritual" className="py-20 md:py-28" aria-labelledby="ritual-title">
-      <div className="container-lga">
-        <div className="rule-gold mb-6" />
-        <h2 id="ritual-title" className="max-w-2xl font-display text-3xl text-ivory sm:text-4xl">
+    <section
+      id="ritual"
+      className="relative flex min-h-[100svh] items-end overflow-hidden bg-noir"
+      aria-labelledby="ritual-title"
+    >
+      <Image
+        src={media.temporaryImage}
+        alt={media.alt}
+        fill
+        sizes="100vw"
+        className="object-cover"
+        data-temporary-media="true"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(0deg, rgba(7,6,6,0.92) 0%, rgba(7,6,6,0.55) 42%, rgba(7,6,6,0.35) 70%, rgba(7,6,6,0.6) 100%)",
+        }}
+      />
+
+      <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{ritual.eyebrow}</p>
+      <p className="mono-label absolute right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
+        {ritual.caption}
+      </p>
+
+      <div className="container-lga relative w-full pb-16 pt-24 md:pb-24">
+        <h2 id="ritual-title" className="max-w-2xl font-display text-4xl leading-tight text-ivory sm:text-5xl">
           {ritual.title}
         </h2>
-      </div>
 
-      <div className="mt-12 hidden lg:block">
-        <RitualDesktop />
-      </div>
-      <div className="mt-10 lg:hidden">
-        <RitualMobile />
+        <ol className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-4 sm:gap-x-5">
+          {ritual.steps.map((step, i) => (
+            <li key={step} className="flex items-center gap-3 sm:gap-5">
+              <span className="flex items-baseline gap-2 font-sans text-xs uppercase tracking-[0.18em] text-champagne">
+                <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
+                {step}
+              </span>
+              {i < ritual.steps.length - 1 && (
+                <span className="text-champagne/40" aria-hidden="true">
+                  &rarr;
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
-  );
-}
-
-const CROSSFADE_MS = 450;
-
-function RitualDesktop() {
-  const [active, setActive] = useState(0);
-  const [previous, setPrevious] = useState<number | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const select = (index: number) => {
-    if (index === active) return;
-    setPrevious(active);
-    setActive(index);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setPrevious(null), CROSSFADE_MS);
-  };
-
-  useEffect(() => () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-  }, []);
-
-  const activeStep = ritual.steps[active];
-
-  return (
-    <div className="container-lga grid grid-cols-12 gap-8">
-      <div className="relative col-span-8 aspect-[16/9] overflow-hidden">
-        {previous !== null && (
-          <div className="absolute inset-0" aria-hidden="true">
-            <ManagedVideo
-              clipId={stepClip[ritual.steps[previous]]}
-              description=""
-              aspectClassName="h-full w-full"
-              showDebugLabel={false}
-            />
-          </div>
-        )}
-        <div
-          key={active}
-          className="absolute inset-0 animate-[ritual-in_450ms_ease-out_forwards]"
-        >
-          <ManagedVideo
-            clipId={stepClip[activeStep]}
-            description={`Etapa do ritual de criação: ${activeStep}.`}
-            aspectClassName="h-full w-full"
-          />
-        </div>
-      </div>
-      <ol className="col-span-4 flex flex-col justify-center gap-1">
-        {ritual.steps.map((step, i) => (
-          <li key={step}>
-            <button
-              type="button"
-              onClick={() => select(i)}
-              aria-current={i === active}
-              className={`group flex w-full items-center gap-4 border-b border-gold/10 py-3 text-left font-display text-xl transition-colors ${
-                i === active ? "text-gold" : "text-ivory/60 hover:text-ivory"
-              }`}
-            >
-              <span className="mono-label">{String(i + 1).padStart(2, "0")}</span>
-              {step}
-              <span
-                className={`ml-auto h-px bg-gold transition-all ${
-                  i === active ? "w-8 opacity-100" : "w-0 opacity-0"
-                }`}
-                aria-hidden="true"
-              />
-            </button>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-function RitualMobile() {
-  return (
-    <div className="flex flex-col gap-10">
-      {ritual.steps.map((step, i) => (
-        <div key={step} className="container-lga">
-          <div className="aspect-video w-full overflow-hidden">
-            <ManagedVideo
-              clipId={stepClip[step]}
-              description={`Etapa do ritual de criação: ${step}.`}
-              aspectClassName="h-full w-full"
-            />
-          </div>
-          <p className="mt-3 font-display text-lg text-ivory">
-            <span className="mono-label mr-2">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            {step}
-          </p>
-        </div>
-      ))}
-    </div>
   );
 }

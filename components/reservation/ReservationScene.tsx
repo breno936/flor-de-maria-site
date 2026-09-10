@@ -7,25 +7,25 @@ import RoseClosing from "./RoseClosing";
 const detailMedia = temporaryMedia["petal-macro"];
 
 /**
- * "Da emoção ao gesto" (RoseClosing) closes the collection, then "Sua
- * declaração começa aqui." opens the atendimento step: editorial
- * introduction on the left, the form on the right, both on the same dark
- * ground as the rest of the page — no scroll-driven transition, no docking
- * image, no pin. The section is stable while filling the form: nothing
- * nearby animates continuously. `#reserva` targets this section, never the
- * pinned scene above it, so a direct link always lands on a ready form.
+ * Cena 7 — "Reserva". "Da emoção ao gesto" (RoseClosing) closes the
+ * collection first, then this panel opens the atendimento step: an oxblood
+ * ground carrying the editorial introduction and a petal detail, with the
+ * form itself set apart on its own well-finished ivory card — the clear
+ * contrast the brief asks for, not another dark-on-dark block. `#reserva`
+ * targets this section, never the pinned scene above it, so a direct link
+ * always lands on a ready form.
  */
 export default function ReservationScene() {
   return (
     <>
       <RoseClosing />
 
-      <section id="reserva" className="relative py-20 md:py-28">
+      <section id="reserva" className="relative overflow-hidden bg-oxblood py-20 md:py-28">
         <div className="container-lga grid gap-12 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-5">
-            <div className="rule-gold mb-6" />
-            <h2 className="font-display text-3xl leading-tight text-ivory sm:text-4xl">{reservation.title}</h2>
-            <p className="mt-5 max-w-md font-sans text-base leading-relaxed text-muted">{reservation.body}</p>
+            <p className="mono-label text-champagne/80">{reservation.eyebrow}</p>
+            <h2 className="mt-4 font-display text-3xl leading-tight text-ivory sm:text-4xl">{reservation.title}</h2>
+            <p className="mt-5 max-w-md font-sans text-base leading-relaxed text-ivory/70">{reservation.body}</p>
 
             {detailMedia && (
               <div className="relative mt-10 hidden aspect-[3/4] w-full max-w-[220px] overflow-hidden lg:block">
@@ -39,6 +39,8 @@ export default function ReservationScene() {
                 />
               </div>
             )}
+
+            <p className="mono-label mt-10 text-champagne/60">{reservation.note}</p>
           </div>
 
           <div className="lg:col-span-7">

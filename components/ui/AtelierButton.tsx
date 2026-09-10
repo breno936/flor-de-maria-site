@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type MouseEventHandler, type ReactNode } from "react";
+import { useEffect, useRef, useState, type MouseEventHandler, type ReactNode } from "react";
 
 type Variant = "primary" | "secondary" | "text" | "header" | "submit";
 
@@ -10,6 +10,8 @@ type SharedProps = {
   className?: string;
   /** Hide the trailing arrow (shown by default on every variant except `text`). */
   hideArrow?: boolean;
+  /** Delay (ms) the inner thread frame's first reveal — for a CTA arriving as the payoff of a scripted entrance (e.g. the Hero opening), instead of it just sitting there idle from first paint. */
+  threadRevealDelayMs?: number;
   "aria-label"?: string;
 };
 
@@ -57,7 +59,7 @@ const shapes: Record<Variant, string> = {
  * never moves, so the hit target stays put under the cursor.
  */
 export default function AtelierButton(props: AtelierButtonProps) {
-  const { variant = "primary", children, className = "", hideArrow = false } = props;
+  const { variant = "primary", children, className = "", hideArrow = false, threadRevealDelayMs } = props;
   const showArrow = !hideArrow && variant !== "text";
   const loading = !isAnchor(props) && Boolean(props.loading);
   const rootRef = useRef<HTMLElement | null>(null);
@@ -123,7 +125,7 @@ export default function AtelierButton(props: AtelierButtonProps) {
         aria-label={props["aria-label"]}
         className={classes}
       >
-        {showThreadFrame && <ThreadFrame />}
+        {showThreadFrame && <ThreadFrame revealDelayMs={threadRevealDelayMs} />}
         {content}
       </a>
     );
@@ -141,7 +143,7 @@ export default function AtelierButton(props: AtelierButtonProps) {
       aria-label={props["aria-label"]}
       className={classes}
     >
-      {showThreadFrame && <ThreadFrame />}
+      {showThreadFrame && <ThreadFrame revealDelayMs={threadRevealDelayMs} />}
       {content}
     </button>
   );
@@ -156,12 +158,26 @@ function clamp(value: number, min: number, max: number) {
  * inside the champagne outer border. Idle, it's a short dash centered on
  * the left edge; on hover it grows into the full inner rectangle. This is
  * the line-displacement interaction the brief asks for instead of scale.
+ *
+ * With `revealDelayMs`, the dash itself doesn't exist until that delay has
+ * passed — for the Hero's primary CTA, so the frame reads as being "formed
+ * by the thread" the instant the button appears, not present from t=0.
  */
-function ThreadFrame() {
+function ThreadFrame({ revealDelayMs }: { revealDelayMs?: number }) {
+  const [revealed, setRevealed] = useState(revealDelayMs === undefined);
+
+  useEffect(() => {
+    if (revealDelayMs === undefined) return;
+    const timer = setTimeout(() => setRevealed(true), revealDelayMs);
+    return () => clearTimeout(timer);
+  }, [revealDelayMs]);
+
   return (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute inset-[5px] origin-left scale-x-[0.08] border border-rouge/70 opacity-70 transition-[transform,opacity] duration-500 ease-out group-hover:scale-x-100 group-hover:opacity-100"
+      className={`pointer-events-none absolute inset-[5px] origin-left border border-rouge/70 transition-[transform,opacity] duration-500 ease-out group-hover:scale-x-100 group-hover:opacity-100 ${
+        revealed ? "scale-x-[0.08] opacity-70" : "scale-x-0 opacity-0"
+      }`}
     />
   );
 }

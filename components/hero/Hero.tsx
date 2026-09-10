@@ -1,9 +1,10 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { gsap } from "@/lib/gsap/registerGsap";
+import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
+import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { hero } from "@/data/content";
 import { temporaryMedia } from "@/data/temporary-media";
 import AtelierButton from "@/components/ui/AtelierButton";
@@ -60,12 +61,14 @@ export default function Hero() {
 }
 
 function HeroShell({ playOpening }: { playOpening: boolean }) {
+  const sectionRef = useRef<HTMLElement>(null);
   const curtainMaskRef = useRef<HTMLDivElement>(null);
   const curtainInnerRef = useRef<HTMLDivElement>(null);
   const petalMaskRef = useRef<HTMLDivElement>(null);
   const petalInnerRef = useRef<HTMLDivElement>(null);
   const ribbonMaskRef = useRef<HTMLDivElement>(null);
   const ribbonInnerRef = useRef<HTMLDivElement>(null);
+  const threadTieRef = useRef<HTMLDivElement>(null);
   const eyebrowInnerRef = useRef<HTMLSpanElement>(null);
   const line1InnerRef = useRef<HTMLSpanElement>(null);
   const line2InnerRef = useRef<HTMLSpanElement>(null);
@@ -78,7 +81,13 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
   const [openingComplete, setOpeningComplete] = useState(false);
   const [videoPaused, setVideoPaused] = useState(false);
   const [hasVideo, setHasVideo] = useState(false);
+  const [threadDone, setThreadDone] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const showOverlayLayers = playOpening && !overlaysDone;
+  // The "tying the curtain" flourish is a desktop-only grace note — on
+  // mobile the brief asks to simplify the thread, not reproduce every beat.
+  const showThreadTie = playOpening && !threadDone && isDesktop;
 
   // useLayoutEffect (not useEffect): the hidden starting values below must
   // land before the browser paints, and — critically — this whole block
@@ -96,19 +105,22 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     if (!playOpening) return;
 
     gsap.set(curtainMaskRef.current, { clipPath: HIDDEN_CENTER });
-    gsap.set(curtainInnerRef.current, { scale: 1.04 });
+    // The rose "surges" into view — starts visibly smaller (0.88) than its
+    // resting size, not just a subtle settle-down, per the brief's own values.
+    gsap.set(curtainInnerRef.current, { scale: 0.88 });
     gsap.set([eyebrowInnerRef.current, line1InnerRef.current, line2InnerRef.current], { yPercent: 110 });
     gsap.set([taglineRef.current, ctaRef.current], { opacity: 0, y: 16 });
     gsap.set(petalInnerRef.current, { yPercent: -3, scale: 1.04 });
     gsap.set(ribbonMaskRef.current, { clipPath: HIDDEN_BOTTOM });
     gsap.set(ribbonInnerRef.current, { yPercent: 3 });
+    if (isDesktop) gsap.set(threadTieRef.current, { scaleY: 0, opacity: 1 });
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
     tl.to(petalInnerRef.current, { yPercent: 0, scale: 1, duration: 0.4 }, 0)
       .to(ribbonMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.6, ease: "power2.out" }, 0.22)
       .to(ribbonInnerRef.current, { yPercent: 0, duration: 0.6 }, 0.22)
       .to(curtainMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.7, ease: "power2.inOut" }, 0.65)
-      .to(curtainInnerRef.current, { scale: 1, duration: 0.75 }, 0.65)
+      .to(curtainInnerRef.current, { scale: 1, duration: 0.85, ease: "power2.out" }, 0.65)
       .set([petalMaskRef.current, ribbonMaskRef.current], { autoAlpha: 0 }, 1.35)
       .call(() => setOverlaysDone(true), [], 1.35)
       .to(eyebrowInnerRef.current, { yPercent: 0, duration: 0.4 }, 1.0)
@@ -122,14 +134,30 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
           sessionStorage.setItem(SESSION_KEY, "1");
         },
         [],
-        1.95
+        2.05
       );
+
+    // The thread — it "prende a cortina": a single red line appears to hold
+    // the curtain seam as it starts to part, drawn in as the curtain opens,
+    // then released (fades) the instant the curtain is fully open. It never
+    // touches the CTA directly; the CTA's own double frame (AtelierButton's
+    // ThreadFrame, with `threadRevealDelayMs` below) picks the motif back up
+    // as its payoff, so the thread reads as one continuous idea in two beats.
+    if (isDesktop) {
+      tl.to(threadTieRef.current, { scaleY: 1, duration: 0.55, ease: "power2.out" }, 0.55).to(
+        threadTieRef.current,
+        { opacity: 0, duration: 0.35, ease: "power1.in" },
+        1.3
+      );
+    }
+    tl.call(() => setThreadDone(true), [], 1.65);
 
     timelineRef.current = tl;
     return () => {
       tl.kill();
       timelineRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playOpening]);
 
   function toggleVideo() {
@@ -144,11 +172,33 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     }
   }
 
+  // Controlled parallax: the main film drifts a few px slower than the
+  // scroll, only across the hero's own height, only on desktop, never under
+  // reduced motion. Independent of the opening timeline (different property
+  // — y, not scale — so nothing fights over the same value).
+  useEffect(() => {
+    if (reducedMotion || !isDesktop) return;
+    registerGsap();
+    const section = sectionRef.current;
+    const media = curtainInnerRef.current;
+    if (!section || !media) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+      onUpdate: (self) => gsap.set(media, { y: self.progress * 48 }),
+    });
+    return () => trigger.kill();
+  }, [reducedMotion, isDesktop]);
+
   const showVideoToggle = hasVideo && (!playOpening || openingComplete);
 
   return (
     <section
       id="topo"
+      ref={sectionRef}
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-noir"
       aria-label="Le Grand Amour — dos detalhes à grande declaração"
     >
@@ -179,6 +229,16 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
         />
       </div>
 
+      {/* The thread tying the curtain shut — desktop-only grace note, gone
+          the instant it has released (see showThreadTie above). */}
+      {showThreadTie && (
+        <div
+          ref={threadTieRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-0 z-[4] h-32 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-rouge via-rouge/80 to-rouge/0"
+        />
+      )}
+
       {/* Text content — same elements whether the opening plays or is skipped */}
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-end px-6 pb-16 pt-28 sm:px-10 sm:pb-20 md:justify-center md:pb-0 md:pl-16 lg:pl-24">
         <div className="max-w-lg text-center md:text-left">
@@ -204,7 +264,11 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             {hero.tagline}
           </p>
           <div ref={ctaRef} className="mt-7 flex justify-center md:justify-start">
-            <AtelierButton href="#reserva" variant="primary">
+            <AtelierButton
+              href="#reserva"
+              variant="primary"
+              threadRevealDelayMs={playOpening ? 1700 : undefined}
+            >
               {hero.ctaPrimary}
             </AtelierButton>
           </div>

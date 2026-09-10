@@ -70,6 +70,7 @@ export default function PatriciaFilm() {
       </div>
 
       <div className="container-lga relative z-10 max-w-xl py-24">
+        <p className="mono-label mb-4">MUSA DA COLEÇÃO</p>
         <div className="rule-gold mb-6" />
         <h2 id="patricia-title" className="font-display text-3xl leading-tight text-ivory sm:text-4xl">
           {ambassadorSection.title}

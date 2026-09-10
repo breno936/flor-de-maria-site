@@ -37,25 +37,25 @@ export const mediaClips: Record<MediaClipId, MediaClip> = {
   "petal-macro": {
     id: "petal-macro",
     brief: "Macro de pétalas — textura, veios, luz percorrendo lentamente.",
-    usedIn: ["Hero — abertura (camada 1: pétala)", "Manifesto", "Reserva — detalhe", "Ritual — seleção/preparação"],
+    usedIn: ["Hero — abertura (matéria)", "Manifesto", "Reserva — detalhe", "Ritual — seleção/preparação"],
     basePath: "/media/petal-macro",
   },
   "rose-lateral-light": {
     id: "rose-lateral-light",
-    brief: "Rosas recebendo iluminação lateral, atmosfera editorial.",
-    usedIn: ["Ritual — estrutura"],
+    brief: "Mão erguendo uma rosa vermelha contra fundo escuro, iluminação lateral, atmosfera editorial — filme principal do hero (camada de presença, cortina central) e do quadro dominante de \"O último cuidado\".",
+    usedIn: ["Hero — abertura (presença) e estado final", "O último cuidado — quadro 2 (dominante)", "Ritual — estrutura"],
     basePath: "/media/rose-lateral-light",
   },
   "hero-bouquet": {
     id: "hero-bouquet",
-    brief: "Buquê de rosas vermelhas, composição central, luz lateral revelando pétalas e caules — filme principal do hero (camada 3, estado final).",
-    usedIn: ["Hero — abertura (camada 3) e estado final"],
+    brief: "Buquê de três rosas vermelhas com caules expostos — substituído como mídia principal do hero por não comunicar buquê monumental/alta floricultura. Sem uso atual; mantido no inventário até reavaliação ou remoção.",
+    usedIn: [],
     basePath: "/media/hero-bouquet",
   },
   "hands-selecting": {
     id: "hands-selecting",
     brief: "Mãos selecionando e preparando rosas, uma a uma.",
-    usedIn: ["O Amor Toma Forma — origem/gesto", "Ritual — seleção"],
+    usedIn: ["O último cuidado — quadro 1 (seleção)", "Ritual — seleção", "Escala e Detalhes"],
     basePath: "/media/hands-selecting",
   },
   "bouquet-assembly": {
@@ -79,7 +79,7 @@ export const mediaClips: Record<MediaClipId, MediaClip> = {
   "ribbon-detail": {
     id: "ribbon-detail",
     brief: "Detalhe da fita vermelha e embalagem — acabamento, gesto, continuidade.",
-    usedIn: ["Hero — abertura (camada 2: acabamento)", "O último cuidado — mídia principal", "Ritual — fita/cartão/embalagem", "Detalhes de produto"],
+    usedIn: ["Hero — abertura (acabamento)", "O último cuidado — quadro 3 (acabamento)", "Ritual — fita/cartão/embalagem", "Le Bouquet — detalhe"],
     basePath: "/media/ribbon-detail",
   },
   "delivery-moment": {

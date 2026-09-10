@@ -93,7 +93,7 @@ function RitualDesktop() {
                 i === active ? "text-gold" : "text-ivory/60 hover:text-ivory"
               }`}
             >
-              <span className="font-sans text-xs text-muted">{String(i + 1).padStart(2, "0")}</span>
+              <span className="mono-label">{String(i + 1).padStart(2, "0")}</span>
               {step}
               <span
                 className={`ml-auto h-px bg-gold transition-all ${
@@ -122,7 +122,7 @@ function RitualMobile() {
             />
           </div>
           <p className="mt-3 font-display text-lg text-ivory">
-            <span className="mr-2 font-sans text-xs text-muted">
+            <span className="mono-label mr-2">
               {String(i + 1).padStart(2, "0")}
             </span>
             {step}

@@ -100,7 +100,7 @@ export default function ReservationForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      className="grid gap-5 border border-gold/20 bg-noir-soft/60 p-6 sm:grid-cols-2 sm:p-8"
+      className="relative grid gap-8 border-t border-gold/15 pt-8 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-9"
     >
       {/* Honeypot — hidden from sighted and screen-reader users, bots still fill it */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
@@ -109,10 +109,8 @@ export default function ReservationForm() {
       </div>
 
       <div className="sm:col-span-2">
-        <span className="mb-2 block font-sans text-[11px] uppercase tracking-[0.16em] text-muted">
-          Criação desejada
-        </span>
-        <div role="radiogroup" aria-label="Criação desejada" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StepLabel step="01" label="Criação desejada" />
+        <div role="radiogroup" aria-label="Criação desejada" className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           {reservation.creationOptions.map((option) => (
             <CreationOption key={option.value} option={option} register={register} />
           ))}
@@ -122,6 +120,10 @@ export default function ReservationForm() {
             {errors.creation.message}
           </p>
         )}
+      </div>
+
+      <div className="sm:col-span-2">
+        <StepLabel step="02" label="Seus dados" />
       </div>
 
       <Field label="Nome" htmlFor="name" error={errors.name?.message}>
@@ -171,16 +173,16 @@ export default function ReservationForm() {
           onClick={() => setDetailsOpen((v) => !v)}
           aria-expanded={detailsOpen}
           aria-controls="detalhes-presente"
-          className="flex w-full items-center justify-between border-t border-gold/15 py-3 text-left font-sans text-[11px] uppercase tracking-[0.16em] text-champagne transition-colors hover:text-gold"
+          className="flex w-full items-center justify-between border-t border-gold/15 pt-6 text-left transition-colors hover:text-gold"
         >
-          {reservation.detailsToggle}
-          <span aria-hidden="true" className={`transition-transform duration-300 ${detailsOpen ? "rotate-45" : ""}`}>
+          <StepLabel step="03" label={reservation.detailsToggle} as="span" />
+          <span aria-hidden="true" className={`text-gold transition-transform duration-300 ${detailsOpen ? "rotate-45" : ""}`}>
             +
           </span>
         </button>
 
         {detailsOpen && (
-          <div id="detalhes-presente" className="mt-4 grid gap-5 sm:grid-cols-2">
+          <div id="detalhes-presente" className="mt-6 grid gap-6 sm:grid-cols-2">
             <Field label="Ocasião" htmlFor="occasion" error={errors.occasion?.message} optional>
               <input
                 id="occasion"
@@ -208,7 +210,7 @@ export default function ReservationForm() {
         )}
       </div>
 
-      <div className="sm:col-span-2">
+      <div className="sm:col-span-2 border-t border-gold/15 pt-6">
         <label className="flex items-start gap-3 font-sans text-xs leading-relaxed text-muted">
           <input
             type="checkbox"
@@ -239,6 +241,18 @@ export default function ReservationForm() {
   );
 }
 
+function StepLabel({ step, label, as = "span" }: { step: string; label: string; as?: "span" }) {
+  const Tag = as;
+  return (
+    <Tag className="flex items-baseline gap-3 font-sans text-[11px] uppercase tracking-[0.16em] text-champagne">
+      <span className="text-gold/60" aria-hidden="true">
+        {step}
+      </span>
+      {label}
+    </Tag>
+  );
+}
+
 function CreationOption({
   option,
   register,
@@ -254,7 +268,7 @@ function CreationOption({
         className="peer sr-only"
         {...register("creation")}
       />
-      <span className="flex h-full items-center justify-center border border-gold/25 px-4 py-3 text-center font-sans text-[11px] uppercase tracking-[0.14em] text-muted transition-colors peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-ivory peer-focus-visible:outline peer-focus-visible:outline-1 peer-focus-visible:outline-gold peer-focus-visible:outline-offset-2 group-hover:border-gold/50 group-hover:text-champagne">
+      <span className="flex h-full min-h-[50px] items-center justify-center border border-gold/25 px-4 py-3 text-center font-sans text-[11px] uppercase tracking-[0.14em] text-champagne/80 transition-colors peer-checked:border-gold peer-checked:bg-gold/10 peer-checked:text-ivory peer-focus-visible:outline peer-focus-visible:outline-1 peer-focus-visible:outline-gold peer-focus-visible:outline-offset-2 group-hover:border-gold/50 group-hover:text-champagne">
         {option.label}
       </span>
     </label>
@@ -262,7 +276,7 @@ function CreationOption({
 }
 
 function inputClass(hasError: boolean) {
-  return `w-full rounded-[3px] border bg-noir-soft px-4 py-3 font-sans text-sm text-ivory outline-none ring-1 ring-inset ring-transparent transition-colors placeholder:text-muted/50 focus:border-gold focus:ring-gold/30 ${
+  return `w-full border-0 border-b bg-transparent px-0 py-2.5 font-sans text-sm text-ivory outline-none transition-colors placeholder:text-muted/40 focus:border-gold ${
     hasError ? "border-rouge" : "border-ivory/20 hover:border-ivory/35"
   }`;
 }
@@ -282,7 +296,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-2 block font-sans text-[11px] uppercase tracking-[0.16em] text-muted">
+      <label htmlFor={htmlFor} className="mb-2 block font-sans text-[11px] uppercase tracking-[0.16em] text-gold/70">
         {label} {optional && <span className="normal-case text-muted/60">(opcional)</span>}
       </label>
       {children}

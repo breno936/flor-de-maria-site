@@ -39,13 +39,13 @@ const base =
 
 const shapes: Record<Variant, string> = {
   primary:
-    "h-[48px] px-7 min-w-[44px] bg-gradient-to-b from-rouge to-bordeaux text-ivory border border-gold/35 shadow-[inset_0_1px_0_rgba(216,189,139,0.12)] hover:border-gold/70 hover:from-[#a10c17] hover:to-bordeaux",
-  secondary: "h-[48px] px-1 min-w-[44px] bg-transparent text-champagne hover:text-ivory",
+    "h-[50px] px-7 min-w-[44px] bg-gradient-to-b from-rouge to-bordeaux text-ivory border border-gold/35 shadow-[inset_0_1px_0_rgba(216,189,139,0.12)] hover:border-gold/70 hover:from-[#a10c17] hover:to-bordeaux",
+  secondary: "h-[50px] px-1 min-w-[44px] bg-transparent text-champagne hover:text-ivory",
   text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne/90 underline decoration-gold/40 underline-offset-4 hover:text-ivory hover:decoration-gold",
   header:
     "h-10 px-5 min-w-[44px] bg-transparent text-gold border border-gold/50 hover:border-gold hover:bg-gold/10",
   submit:
-    "h-[48px] w-full px-7 sm:w-auto min-w-[44px] bg-gradient-to-b from-rouge to-bordeaux text-ivory border border-gold/35 shadow-[inset_0_1px_0_rgba(216,189,139,0.12)] hover:border-gold/70 hover:from-[#a10c17] hover:to-bordeaux",
+    "h-[50px] w-full px-7 sm:w-auto min-w-[44px] bg-gradient-to-b from-rouge to-bordeaux text-ivory border border-gold/35 shadow-[inset_0_1px_0_rgba(216,189,139,0.12)] hover:border-gold/70 hover:from-[#a10c17] hover:to-bordeaux",
 };
 
 /**

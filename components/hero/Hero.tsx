@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { gsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
@@ -10,8 +10,9 @@ import AtelierButton from "@/components/ui/AtelierButton";
 import ManagedVideo from "@/components/media/ManagedVideo";
 
 const SESSION_KEY = "lga-hero-opened";
-const HIDDEN_CLIP = "inset(0% 0% 100% 0%)";
 const OPEN_CLIP = "inset(0% 0% 0% 0%)";
+const HIDDEN_BOTTOM = "inset(100% 0% 0% 0%)";
+const HIDDEN_CENTER = "inset(0% 50% 0% 50%)";
 
 const words = hero.title.split(" ");
 const line1 = words.slice(0, -1).join(" ");
@@ -19,32 +20,23 @@ const line2 = words.slice(-1).join(" ");
 
 const petalMedia = temporaryMedia["petal-macro"];
 const ribbonMedia = temporaryMedia["ribbon-detail"];
-const heroMedia = temporaryMedia["hero-bouquet"];
+const heroMedia = temporaryMedia["rose-lateral-light"];
 
 /**
- * "Dos detalhes à grande declaração" — a single ~2s GSAP timeline, not tied
- * to scroll, that reveals three scales in sequence (petal → ribbon/finish
- * detail → the main bouquet film) using the Codrops "Rapid Layers Animation"
- * reveal trick: each layer is a clip-path mask that wipes open while its own
- * image counter-drifts a few percent, so mask and image read as one
- * coordinated movement rather than a hard cut. Layers overlap in time
- * (layer N+1 starts revealing before layer N is fully covered) so nothing
- * reads as a blank flash between them. See MEDIA-MANIFEST.md for what of the
- * Codrops reference could/couldn't be inspected — this reimplements the
- * described behaviour in GSAP (already the project's animation system), not
- * a port of their source.
+ * "Dos detalhes à grande declaração" — a single ≤2s GSAP timeline, not tied
+ * to scroll, reinterpreting the Codrops "Rapid Layers Animation" idea for
+ * this collection: matéria (petal) → acabamento (fita) → presença (mão e
+ * rosa, cortina central) → assinatura (texto). See MEDIA-MANIFEST.md for
+ * what of the reference could/couldn't be inspected.
  *
- * Plays once per browser session (sessionStorage), never on a direct anchor
- * load (`location.hash` set), and never with `prefers-reduced-motion` — all
- * three land straight on the final, fully-formed hero with no timeline at
- * all. There is no scroll-trigger, no pin, no scroll-linked property here;
- * scrolling is never intercepted.
+ * The base composition — main film, title, tagline, CTAs — is always in the
+ * DOM with its final, fully visible values; only when `playOpening` is true
+ * (resolved client-side, after hydration) do the opening layers mount and
+ * the base layer's own curtain mask starts closed. No JS, reduced motion,
+ * or a direct anchor load all land on that same base state with nothing
+ * missing — the opening is a rendered-on-top enhancement, never a
+ * prerequisite for seeing a complete hero.
  */
-// Evaluated once when this module is instantiated: on the server that's a
-// no-op (no window), on the client it's once per full page load — exactly
-// the granularity "once per session, resolved before first interactive
-// render" needs, without re-reading sessionStorage on every render (which
-// would make useSyncExternalStore's snapshot unstable — see below).
 function resolveShouldPlayOpening(): boolean {
   if (typeof window === "undefined") return false;
   const hasHash = Boolean(window.location.hash) && window.location.hash !== "#topo";
@@ -59,82 +51,79 @@ function subscribeNever() {
 
 export default function Hero() {
   const reducedMotion = useReducedMotion();
-  // useSyncExternalStore (not a state+effect pair) so the browser-only
-  // decision — sessionStorage / location.hash — never needs a setState call
-  // inside an effect: the server snapshot is always "don't play," and React
-  // reconciles the real client value itself right after hydration.
   const playOpening = useSyncExternalStore(
     subscribeNever,
     () => shouldPlayOpeningOnLoad && !reducedMotion,
     () => false
   );
-
-  useEffect(() => {
-    if (playOpening) sessionStorage.setItem(SESSION_KEY, "1");
-  }, [playOpening]);
-
   return <HeroShell playOpening={playOpening} />;
 }
 
-function HeroShell({ playOpening = false }: { playOpening?: boolean }) {
+function HeroShell({ playOpening }: { playOpening: boolean }) {
+  const curtainMaskRef = useRef<HTMLDivElement>(null);
+  const curtainInnerRef = useRef<HTMLDivElement>(null);
   const petalMaskRef = useRef<HTMLDivElement>(null);
   const petalInnerRef = useRef<HTMLDivElement>(null);
   const ribbonMaskRef = useRef<HTMLDivElement>(null);
   const ribbonInnerRef = useRef<HTMLDivElement>(null);
-  const mainMaskRef = useRef<HTMLDivElement>(null);
-  const mainInnerRef = useRef<HTMLDivElement>(null);
-  const eyebrowRef = useRef<HTMLParagraphElement>(null);
-  const line1Ref = useRef<HTMLSpanElement>(null);
-  const line2Ref = useRef<HTMLSpanElement>(null);
+  const eyebrowInnerRef = useRef<HTMLSpanElement>(null);
+  const line1InnerRef = useRef<HTMLSpanElement>(null);
+  const line2InnerRef = useRef<HTMLSpanElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
 
-  // Derived, not its own seeded state: `playOpening` starts false on every
-  // render (server snapshot) and flips true right after hydration when it
-  // should actually play, so a `useState(playOpening)` initial value would
-  // permanently miss that later flip and the button would never appear.
+  const [overlaysDone, setOverlaysDone] = useState(false);
   const [openingComplete, setOpeningComplete] = useState(false);
-  const showSkip = playOpening && !openingComplete;
   const [videoPaused, setVideoPaused] = useState(false);
   const [hasVideo, setHasVideo] = useState(false);
+  const showOverlayLayers = playOpening && !overlaysDone;
 
-  useEffect(() => {
-    const textEls = [eyebrowRef.current, line1Ref.current, line2Ref.current, taglineRef.current, ctaRef.current];
+  // useLayoutEffect (not useEffect): the hidden starting values below must
+  // land before the browser paints, and — critically — this whole block
+  // must run exactly once when `playOpening` flips true and never again.
+  // These elements carry no `style` prop of their own in the JSX (see
+  // render below), so once GSAP has written a value here, no later
+  // re-render (e.g. the `setOverlaysDone`/`setOpeningComplete` calls below,
+  // which do trigger re-renders of this component) can reset it — a
+  // JSX-declared `style={{ ... playOpening ... }}` would be reapplied on
+  // every one of those re-renders and silently undo whatever GSAP had
+  // already animated, which is exactly the bug this replaced: the title
+  // and eyebrow lines were snapping back to their hidden position the
+  // instant the timeline's own completion callback fired a state update.
+  useLayoutEffect(() => {
+    if (!playOpening) return;
 
-    if (!playOpening) {
-      gsap.set([petalMaskRef.current, ribbonMaskRef.current], { autoAlpha: 0 });
-      gsap.set(mainMaskRef.current, { clipPath: OPEN_CLIP });
-      gsap.set(mainInnerRef.current, { yPercent: 0 });
-      gsap.set(textEls, { opacity: 1, y: 0 });
-      return;
-    }
-
-    gsap.set(petalMaskRef.current, { clipPath: HIDDEN_CLIP, autoAlpha: 1 });
-    gsap.set(petalInnerRef.current, { yPercent: -8 });
-    gsap.set(ribbonMaskRef.current, { clipPath: HIDDEN_CLIP, autoAlpha: 1 });
-    gsap.set(ribbonInnerRef.current, { yPercent: -8 });
-    gsap.set(mainMaskRef.current, { clipPath: HIDDEN_CLIP });
-    gsap.set(mainInnerRef.current, { yPercent: -8 });
-    gsap.set(textEls, { opacity: 0, y: 14 });
+    gsap.set(curtainMaskRef.current, { clipPath: HIDDEN_CENTER });
+    gsap.set(curtainInnerRef.current, { scale: 1.04 });
+    gsap.set([eyebrowInnerRef.current, line1InnerRef.current, line2InnerRef.current], { yPercent: 110 });
+    gsap.set([taglineRef.current, ctaRef.current], { opacity: 0, y: 16 });
+    gsap.set(petalInnerRef.current, { yPercent: -3, scale: 1.04 });
+    gsap.set(ribbonMaskRef.current, { clipPath: HIDDEN_BOTTOM });
+    gsap.set(ribbonInnerRef.current, { yPercent: 3 });
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    tl.to(petalMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.35, ease: "power2.out" }, 0)
-      .to(petalInnerRef.current, { yPercent: 0, duration: 0.4 }, 0)
-      .to(ribbonMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.6, ease: "power2.out" }, 0.25)
-      .to(ribbonInnerRef.current, { yPercent: 0, duration: 0.6 }, 0.25)
-      .to(petalInnerRef.current, { yPercent: 5, duration: 0.5 }, 0.32)
-      .to(mainMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.75, ease: "power2.out" }, 0.75)
-      .to(mainInnerRef.current, { yPercent: 0, duration: 0.85 }, 0.75)
-      .to(ribbonInnerRef.current, { yPercent: 5, duration: 0.5 }, 0.85)
-      .set([petalMaskRef.current, ribbonMaskRef.current], { autoAlpha: 0 }, 1.55)
-      .to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.5 }, 1.3)
-      .to(line1Ref.current, { opacity: 1, y: 0, duration: 0.55 }, 1.4)
-      .to(line2Ref.current, { opacity: 1, y: 0, duration: 0.55 }, 1.5)
-      .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.5 }, 1.65)
-      .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5 }, 1.8)
-      .call(() => setOpeningComplete(true));
+    tl.to(petalInnerRef.current, { yPercent: 0, scale: 1, duration: 0.4 }, 0)
+      .to(ribbonMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.6, ease: "power2.out" }, 0.22)
+      .to(ribbonInnerRef.current, { yPercent: 0, duration: 0.6 }, 0.22)
+      .to(curtainMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.7, ease: "power2.inOut" }, 0.65)
+      .to(curtainInnerRef.current, { scale: 1, duration: 0.75 }, 0.65)
+      .set([petalMaskRef.current, ribbonMaskRef.current], { autoAlpha: 0 }, 1.35)
+      .call(() => setOverlaysDone(true), [], 1.35)
+      .to(eyebrowInnerRef.current, { yPercent: 0, duration: 0.4 }, 1.0)
+      .to(line1InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.12)
+      .to(line2InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.24)
+      .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.4)
+      .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.55)
+      .call(
+        () => {
+          setOpeningComplete(true);
+          sessionStorage.setItem(SESSION_KEY, "1");
+        },
+        [],
+        1.95
+      );
 
     timelineRef.current = tl;
     return () => {
@@ -142,11 +131,6 @@ function HeroShell({ playOpening = false }: { playOpening?: boolean }) {
       timelineRef.current = null;
     };
   }, [playOpening]);
-
-  function handleSkip() {
-    timelineRef.current?.progress(1);
-    setOpeningComplete(true);
-  }
 
   function toggleVideo() {
     const video = videoElRef.current;
@@ -160,20 +144,23 @@ function HeroShell({ playOpening = false }: { playOpening?: boolean }) {
     }
   }
 
+  const showVideoToggle = hasVideo && (!playOpening || openingComplete);
+
   return (
     <section
       id="topo"
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-noir"
       aria-label="Le Grand Amour — dos detalhes à grande declaração"
     >
-      {/* Layer 3 — the settled hero: main film, always present */}
-      <div ref={mainMaskRef} className="absolute inset-0 z-[3] overflow-hidden">
-        <div ref={mainInnerRef} className="absolute inset-[-8%_0_-8%_0]">
+      {/* Base composition — always rendered with its final values; this is
+          exactly what a no-JS or reduced-motion visitor sees immediately. */}
+      <div ref={curtainMaskRef} className="absolute inset-0 z-[3] overflow-hidden">
+        <div ref={curtainInnerRef} className="absolute inset-0">
           <ManagedVideo
-            clipId="hero-bouquet"
-            description={heroMedia?.alt ?? "Filme da coleção Le Grand Amour: buquê de rosas vermelhas."}
+            clipId="rose-lateral-light"
+            description={heroMedia?.alt ?? "Filme da coleção Le Grand Amour: mão erguendo uma rosa vermelha contra fundo escuro."}
             aspectClassName="h-full w-full"
-            objectPositionClassName="object-[62%_38%]"
+            objectPositionClassName="object-[64%_34%]"
             priority
             showDebugLabel={false}
             onVideoElement={(el) => {
@@ -187,56 +174,29 @@ function HeroShell({ playOpening = false }: { playOpening?: boolean }) {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(7,5,4,0.68) 0%, rgba(7,5,4,0.32) 38%, transparent 62%), linear-gradient(0deg, rgba(7,5,4,0.55) 0%, transparent 30%, transparent 78%, rgba(7,5,4,0.4) 100%)",
+              "linear-gradient(90deg, rgba(7,5,4,0.7) 0%, rgba(7,5,4,0.35) 40%, transparent 64%), linear-gradient(0deg, rgba(7,5,4,0.55) 0%, transparent 30%, transparent 78%, rgba(7,5,4,0.4) 100%)",
           }}
         />
-      </div>
-
-      {/* Layer 2 — packaging/ribbon finish detail, covers layer 3 during the opening */}
-      <div ref={ribbonMaskRef} className="absolute inset-0 z-[2] overflow-hidden">
-        <div ref={ribbonInnerRef} className="absolute inset-[-8%_0_-8%_0]">
-          {ribbonMedia && (
-            <Image
-              src={ribbonMedia.temporaryImage}
-              alt=""
-              fill
-              sizes="100vw"
-              className="object-cover"
-              data-temporary-media="true"
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Layer 1 — petal detail, first thing visible */}
-      <div ref={petalMaskRef} className="absolute inset-0 z-[1] overflow-hidden">
-        <div ref={petalInnerRef} className="absolute inset-[-8%_0_-8%_0]">
-          {petalMedia && (
-            <Image
-              src={petalMedia.temporaryImage}
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-              data-temporary-media="true"
-            />
-          )}
-        </div>
       </div>
 
       {/* Text content — same elements whether the opening plays or is skipped */}
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-end px-6 pb-16 pt-28 sm:px-10 sm:pb-20 md:justify-center md:pb-0 md:pl-16 lg:pl-24">
         <div className="max-w-lg text-center md:text-left">
-          <p ref={eyebrowRef} className="eyebrow">
-            {hero.eyebrow}
-          </p>
-          <h1 className="mt-3 font-display leading-[0.95] text-ivory text-[2.75rem] sm:text-6xl lg:text-[4.75rem]">
-            <span ref={line1Ref} className="block">
-              {line1}
+          <div className="overflow-hidden">
+            <span ref={eyebrowInnerRef} className="eyebrow block">
+              {hero.eyebrow}
             </span>
-            <span ref={line2Ref} className="block">
-              {line2}
+          </div>
+          <h1 className="mt-3 font-display leading-[0.95] text-ivory text-[2.75rem] sm:text-6xl lg:text-[4.75rem]">
+            <span className="block overflow-hidden">
+              <span ref={line1InnerRef} className="block">
+                {line1}
+              </span>
+            </span>
+            <span className="block overflow-hidden">
+              <span ref={line2InnerRef} className="block">
+                {line2}
+              </span>
             </span>
           </h1>
           <p ref={taglineRef} className="mt-5 max-w-md font-display text-lg italic text-champagne sm:text-2xl">
@@ -253,17 +213,43 @@ function HeroShell({ playOpening = false }: { playOpening?: boolean }) {
         </div>
       </div>
 
-      {showSkip && (
-        <button
-          type="button"
-          onClick={handleSkip}
-          className="absolute right-5 top-24 z-20 rounded-[2px] border border-ivory/25 bg-noir/50 px-4 py-2 font-sans text-[11px] uppercase tracking-[0.16em] text-ivory/80 backdrop-blur-sm transition-colors hover:border-gold/60 hover:text-ivory sm:top-28"
-        >
-          Pular abertura
-        </button>
+      {/* Opening overlays — mounted only while the opening plays, fully
+          removed from the render tree afterwards (never left invisible). */}
+      {showOverlayLayers && (
+        <>
+          <div ref={ribbonMaskRef} className="absolute inset-0 z-[2] overflow-hidden">
+            <div ref={ribbonInnerRef} className="absolute inset-[-8%_0_-8%_0]">
+              {ribbonMedia && (
+                <Image src={ribbonMedia.temporaryImage} alt="" fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+              )}
+            </div>
+          </div>
+          {/* Petal (matéria) — the very first thing the visitor sees, so it
+              is already fully open on mount (no wipe-from-nothing at t=0);
+              only scale/drift animate. Everything above covers it in turn. */}
+          <div ref={petalMaskRef} className="absolute inset-0 z-[1] overflow-hidden">
+            <div ref={petalInnerRef} className="absolute inset-[-8%_0_-8%_0]">
+              {petalMedia && (
+                <Image
+                  src={petalMedia.temporaryImage}
+                  alt=""
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover"
+                  data-temporary-media="true"
+                />
+              )}
+            </div>
+          </div>
+        </>
       )}
 
-      {hasVideo && (
+      <p className="mono-label absolute bottom-5 left-5 z-20 hidden sm:block md:bottom-8 md:left-16 lg:left-24">
+        ATELIÊ · SP — EDIÇÃO AUTORAL
+      </p>
+
+      {showVideoToggle && (
         <button
           type="button"
           onClick={toggleVideo}

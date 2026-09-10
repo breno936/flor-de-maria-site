@@ -4,30 +4,38 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
-import { brand } from "@/data/content";
-import { temporaryMedia } from "@/data/temporary-media";
+import ManagedVideo from "@/components/media/ManagedVideo";
 
-const media = temporaryMedia["ribbon-detail"];
+const ribbonMedia = "/media/temporary/ribbon-detail.webp";
+
+const HIDDEN_LEFT = "inset(0% 100% 0% 0%)";
+const HIDDEN_BOTTOM = "inset(100% 0% 0% 0%)";
+const HIDDEN_RIGHT = "inset(0% 0% 0% 100%)";
+const OPEN = "inset(0% 0% 0% 0%)";
 
 /**
- * "O último cuidado" — replaces the drawn red-thread SVG path. A compact,
- * non-scroll-linked interlude: the finishing gesture on the gift's ribbon,
- * given one short discreet reveal when the section enters view (not a
- * timeline scrubbed by scroll position) and then left alone.
+ * "O último cuidado" — replaces both the drawn red-thread SVG path and the
+ * single oversized ribbon photo. Three asymmetric editorial frames, entering
+ * once when the section reaches ~70% of the viewport (not scroll-scrubbed):
+ * seleção da rosa (video), o gesto de cuidado (video, dominant frame), and o
+ * acabamento da fita (photo).
  *
- * No footage of hands finishing a bow was found under a usable license with
- * this collection's dark background and red roses (the one direct reference
- * the client pointed to — Pexels 5399933 — uses pink/white roses on a bright
- * white table with an identifiable model's face, which would misrepresent
- * both the product and risk being mistaken for Patrícia Marchi). Per the
- * brief's own fallback clause, this uses the same on-brand ribbon photograph
- * already in the library instead of forcing a mismatched clip — a real
- * photograph of the actual finishing material, not an abstract illustration.
- * The hands-tying gesture itself remains a pending shoot; see MEDIA-MANIFEST.md.
+ * No footage exists of hands actively tying a bow — the one direct reference
+ * the client pointed to (Pexels 5399933) uses pink/white roses on a bright
+ * table with an identifiable model's face, which would misrepresent both the
+ * product and risk being mistaken for Patrícia Marchi. Per the brief's own
+ * fallback clause, this reuses on-brand library assets honestly captioned
+ * for what they actually show, not what a future shoot will show. See
+ * MEDIA-MANIFEST.md.
  */
 export default function LastTouch() {
   const sectionRef = useRef<HTMLElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
+  const frame1Ref = useRef<HTMLDivElement>(null);
+  const frame2Ref = useRef<HTMLDivElement>(null);
+  const frame3Ref = useRef<HTMLDivElement>(null);
+  const inner1Ref = useRef<HTMLDivElement>(null);
+  const inner2Ref = useRef<HTMLDivElement>(null);
+  const inner3Ref = useRef<HTMLDivElement>(null);
   const phraseRef = useRef<HTMLParagraphElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -37,24 +45,32 @@ export default function LastTouch() {
     if (!section) return;
 
     if (reducedMotion) {
-      gsap.set([frameRef.current, phraseRef.current], { opacity: 1, y: 0, clipPath: "inset(0% 0% 0% 0%)" });
+      gsap.set([frame1Ref.current, frame2Ref.current, frame3Ref.current], { clipPath: OPEN });
+      gsap.set(phraseRef.current, { opacity: 1, y: 0 });
       return;
     }
 
-    gsap.set(frameRef.current, { clipPath: "inset(0% 0% 100% 0%)" });
-    gsap.set(phraseRef.current, { opacity: 0, y: 12 });
+    gsap.set(frame1Ref.current, { clipPath: HIDDEN_LEFT });
+    gsap.set(frame2Ref.current, { clipPath: HIDDEN_BOTTOM });
+    gsap.set(frame3Ref.current, { clipPath: HIDDEN_RIGHT });
+    gsap.set(inner1Ref.current, { xPercent: -3 });
+    gsap.set(inner2Ref.current, { yPercent: 4 });
+    gsap.set(inner3Ref.current, { xPercent: 3 });
+    gsap.set(phraseRef.current, { opacity: 0, y: 14 });
 
     const trigger = ScrollTrigger.create({
       trigger: section,
-      start: "top 78%",
+      start: "top 70%",
       once: true,
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        tl.to(frameRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.9 }, 0).to(
-          phraseRef.current,
-          { opacity: 1, y: 0, duration: 0.7 },
-          0.35
-        );
+        tl.to(frame1Ref.current, { clipPath: OPEN, duration: 0.6 }, 0)
+          .to(inner1Ref.current, { xPercent: 0, duration: 0.7 }, 0)
+          .fromTo(frame2Ref.current, { clipPath: HIDDEN_BOTTOM }, { clipPath: OPEN, duration: 0.65 }, 0.13)
+          .to(inner2Ref.current, { yPercent: 0, duration: 0.75 }, 0.13)
+          .to(frame3Ref.current, { clipPath: OPEN, duration: 0.6 }, 0.26)
+          .to(inner3Ref.current, { xPercent: 0, duration: 0.7 }, 0.26)
+          .to(phraseRef.current, { opacity: 1, y: 0, duration: 0.55 }, 0.45);
       },
     });
 
@@ -64,29 +80,60 @@ export default function LastTouch() {
   return (
     <section
       ref={sectionRef}
-      className="relative py-16 md:py-24"
+      className="relative overflow-hidden py-16 md:flex md:min-h-[86svh] md:items-center md:py-24"
       aria-label="O último cuidado antes da entrega"
     >
-      <div className="container-lga grid items-center gap-8 md:grid-cols-3 md:gap-10">
-        <div ref={frameRef} className="relative aspect-[16/10] w-full overflow-hidden md:col-span-2">
-          {media && (
-            <Image
-              src={media.temporaryImage}
-              alt="Fotografia conceitual provisória: detalhe da fita de cetim vermelha sobre fundo escuro — representa o cuidado do acabamento final; ainda não é uma filmagem das mãos amarrando o laço."
-              fill
-              sizes="(max-width: 767px) 100vw, 66vw"
-              className="object-cover"
-              data-temporary-media="true"
-            />
-          )}
-        </div>
+      <div className="container-lga">
+        <div className="flex flex-col gap-6 md:relative md:grid md:grid-cols-12 md:gap-0">
+          <div ref={frame1Ref} className="relative aspect-[4/5] w-full overflow-hidden md:col-start-1 md:col-span-4 md:row-start-1 md:self-start">
+            <div ref={inner1Ref} className="absolute inset-[-4%]">
+              <ManagedVideo
+                clipId="hands-selecting"
+                description="Mão selecionando e preparando uma rosa vermelha — referência de gesto, não a filmagem oficial do ritual de seleção."
+                aspectClassName="h-full w-full"
+                showDebugLabel={false}
+              />
+            </div>
+          </div>
 
-        <p
-          ref={phraseRef}
-          className="font-display text-2xl italic leading-snug text-champagne sm:text-3xl md:col-span-1"
-        >
-          &ldquo;{brand.signature}&rdquo;
-        </p>
+          <h2
+            ref={phraseRef}
+            className="order-first font-display text-2xl leading-snug text-ivory sm:text-3xl md:order-none md:col-start-1 md:col-span-4 md:row-start-2 md:mt-8 md:max-w-xs md:self-start"
+          >
+            Antes de chegar, alguém cuidou de cada detalhe.
+          </h2>
+
+          <div
+            ref={frame2Ref}
+            className="relative aspect-[4/3] w-full overflow-hidden md:col-start-5 md:col-span-6 md:row-start-1 md:row-span-2 md:mt-14 md:aspect-auto md:h-[58svh]"
+          >
+            <div ref={inner2Ref} className="absolute inset-[-4%]">
+              <ManagedVideo
+                clipId="rose-lateral-light"
+                description="Mão erguendo uma rosa vermelha contra fundo escuro — direção de atmosfera para o gesto de cuidado final; não é a filmagem oficial do ritual."
+                aspectClassName="h-full w-full"
+                objectPositionClassName="object-[58%_30%]"
+                showDebugLabel={false}
+              />
+            </div>
+          </div>
+
+          <div
+            ref={frame3Ref}
+            className="relative aspect-[3/4] w-full overflow-hidden md:col-start-10 md:col-span-3 md:row-start-1 md:-ml-8 md:mt-4 md:self-start"
+          >
+            <div ref={inner3Ref} className="absolute inset-[-4%]">
+              <Image
+                src={ribbonMedia}
+                alt="Detalhe da fita de cetim vermelha com borda metálica sobre fundo escuro — referência do acabamento; ainda não é uma filmagem das mãos amarrando o laço."
+                fill
+                sizes="(max-width: 767px) 100vw, 22vw"
+                className="object-cover"
+                data-temporary-media="true"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

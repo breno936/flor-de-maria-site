@@ -22,7 +22,12 @@ export default function Footer() {
     <footer className="border-t border-gold/10 bg-noir">
       <div className="container-lga py-16 text-center md:py-24">
         <p className="font-display text-3xl tracking-[0.08em] text-ivory sm:text-4xl md:text-5xl">{brand.name}</p>
-        <div className="rule-gold mx-auto my-6" />
+        {/* The thread's last beat — it ends here, tied off, not drawn across the page. */}
+        <div className="mx-auto my-6 flex items-center justify-center gap-0" aria-hidden="true">
+          <div className="h-px w-10 bg-gold/70" />
+          <div className="h-[3px] w-[3px] rounded-full bg-rouge" />
+          <div className="h-px w-10 bg-gold/70" />
+        </div>
         <p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">{brand.collabLine}</p>
       </div>
 

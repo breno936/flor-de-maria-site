@@ -16,6 +16,7 @@ import ManagedVideo from "@/components/media/ManagedVideo";
 export default function Manifesto() {
   const sectionRef = useRef<HTMLElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
+  const threadRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const linesRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
@@ -27,10 +28,12 @@ export default function Manifesto() {
 
     if (reducedMotion) {
       gsap.set([windowRef.current, headlineRef.current, linesRef.current], { opacity: 1, y: 0, scaleY: 1 });
+      gsap.set(threadRef.current, { scaleX: 1 });
       return;
     }
 
     gsap.set(windowRef.current, { scaleY: 0.82, transformOrigin: "top center" });
+    gsap.set(threadRef.current, { scaleX: 0 });
     gsap.set(headlineRef.current, { opacity: 0, y: 18 });
     gsap.set(linesRef.current, { opacity: 0, y: 14 });
 
@@ -41,6 +44,7 @@ export default function Manifesto() {
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
         tl.to(windowRef.current, { scaleY: 1, duration: 0.9, ease: "power2.out" }, 0)
+          .to(threadRef.current, { scaleX: 1, duration: 0.55, ease: "power2.inOut" }, 0.5)
           .to(headlineRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.2)
           .to(linesRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0.35);
       },
@@ -56,7 +60,12 @@ export default function Manifesto() {
       className="relative overflow-hidden bg-noir py-24 md:py-36"
       aria-labelledby="entendimento-title"
     >
-      <div className="container-lga grid items-center gap-12 md:grid-cols-12 md:gap-10">
+      <div className="container-lga relative grid items-center gap-12 md:grid-cols-12 md:gap-10">
+        <div
+          ref={threadRef}
+          aria-hidden="true"
+          className="absolute left-[30%] top-1/3 hidden h-px w-[16%] origin-left bg-gradient-to-r from-rouge to-rouge/0 md:block"
+        />
         <div className="md:col-span-4">
           <div ref={windowRef} className="aspect-[3/4] w-full max-w-[280px] overflow-hidden">
             <ManagedVideo

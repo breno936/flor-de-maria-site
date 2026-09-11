@@ -105,7 +105,7 @@ function RoseReveal({ whatsappUrl }: { whatsappUrl: string | null }) {
     <div ref={outerRef} className="relative h-[150svh]" aria-label="Da emoção ao gesto">
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-noir">
         <div ref={imageRef} className="absolute inset-0 will-change-transform">
-          <Image src={IMAGE} alt={IMAGE_ALT} fill sizes="100vw" className="object-cover" data-temporary-media="true" priority />
+          <Image src={IMAGE} alt={IMAGE_ALT} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
           <div
             ref={scrimRef}
             aria-hidden="true"

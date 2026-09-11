@@ -97,7 +97,7 @@ function RitualPinned() {
             }}
             className="absolute inset-0"
           >
-            <Image src={m.temporaryImage} alt={m.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" priority={i === 0} />
+            <Image src={m.temporaryImage} alt={m.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
           </div>
         ))}
         <div

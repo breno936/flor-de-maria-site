@@ -57,7 +57,6 @@ export default function PatriciaFilm() {
           clipId="patricia-film"
           description="Patrícia Marchi caminhando e observando a criação Le Grand Amour, tocando as rosas, olhando para fora de câmera."
           aspectClassName="h-full w-full"
-          priority
         />
         <div
           aria-hidden="true"

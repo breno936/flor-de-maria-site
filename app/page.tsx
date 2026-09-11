@@ -1,11 +1,10 @@
 import Hero from "@/components/hero/Hero";
 import Manifesto from "@/components/manifesto/Manifesto";
-import LastTouch from "@/components/interlude/LastTouch";
-import LeBouquet from "@/components/products/LeBouquet";
-import LeCoeurRoyale from "@/components/products/LeCoeurRoyale";
-import PatriciaFilm from "@/components/ambassador/PatriciaFilm";
+import Colecao from "@/components/products/Colecao";
+import WhatMakesItSpecial from "@/components/special/WhatMakesItSpecial";
 import CreationRitual from "@/components/ritual/CreationRitual";
-import ScaleDetails from "@/components/scale/ScaleDetails";
+import ForWhom from "@/components/occasion/ForWhom";
+import PatriciaFilm from "@/components/ambassador/PatriciaFilm";
 import ReservationScene from "@/components/reservation/ReservationScene";
 import { contact } from "@/data/content";
 
@@ -32,12 +31,11 @@ export default function Home() {
       />
       <Hero />
       <Manifesto />
-      <LeBouquet />
-      <LastTouch />
-      <LeCoeurRoyale />
-      <PatriciaFilm />
+      <Colecao />
+      <WhatMakesItSpecial />
       <CreationRitual />
-      <ScaleDetails />
+      <ForWhom />
+      <PatriciaFilm />
       <ReservationScene />
     </>
   );

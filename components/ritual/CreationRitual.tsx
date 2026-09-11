@@ -1,134 +1,201 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
+import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
+import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { ritual } from "@/data/content";
-import ManagedVideo from "@/components/media/ManagedVideo";
+import { temporaryMedia } from "@/data/temporary-media";
 import type { MediaClipId } from "@/data/media-manifest";
 
-const stepClip: Record<string, MediaClipId> = {
-  Seleção: "hands-selecting",
-  Preparação: "petal-macro",
-  Estrutura: "rose-lateral-light",
-  Montagem: "bouquet-assembly",
-  Acabamento: "coeur-assembly",
-  Fita: "ribbon-detail",
-  Cartão: "ribbon-detail",
-  Embalagem: "ribbon-detail",
-  Entrega: "delivery-moment",
-};
+const stepMedia: MediaClipId[] = ["hands-selecting", "bouquet-assembly", "ribbon-detail", "delivery-moment"];
+const media = stepMedia.map((id) => temporaryMedia[id]!);
 
+function phase(progress: number, start: number, end: number) {
+  if (progress <= start) return 0;
+  if (progress >= end) return 1;
+  return (progress - start) / (end - start);
+}
+
+/**
+ * Cena 5 — "O Ritual". A single pinned scene: the image crossfades through
+ * the four stages (Escolha → Criação → Acabamento → Entrega) as the visitor
+ * scrolls, the active step lighting up in step with it — the thread's
+ * "acabamento" beat, made literal in the ribbon-stage photo rather than a
+ * drawn line. Reduced-motion / mobile gets the Fase 1 static full-bleed cut,
+ * all four steps listed at once, no scroll dependency.
+ */
 export default function CreationRitual() {
-  return (
-    <section id="ritual" className="py-20 md:py-28" aria-labelledby="ritual-title">
-      <div className="container-lga">
-        <div className="rule-gold mb-6" />
-        <h2 id="ritual-title" className="max-w-2xl font-display text-3xl text-ivory sm:text-4xl">
-          {ritual.title}
-        </h2>
-      </div>
+  const reducedMotion = useReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  return reducedMotion || !isDesktop ? <RitualStatic /> : <RitualPinned />;
+}
 
-      <div className="mt-12 hidden lg:block">
-        <RitualDesktop />
-      </div>
-      <div className="mt-10 lg:hidden">
-        <RitualMobile />
+function RitualPinned() {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const frameRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const stepRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const numberRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    registerGsap();
+    const outer = outerRef.current;
+    if (!outer) return;
+
+    gsap.set(frameRefs.current[0], { opacity: 1 });
+    gsap.set(frameRefs.current.slice(1), { opacity: 0 });
+
+    const trigger = ScrollTrigger.create({
+      trigger: outer,
+      start: "top top",
+      end: () => `+=${window.innerHeight * 2.2}`,
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress * 100;
+        const stepCount = stepMedia.length;
+        const activeIndex = Math.min(stepCount - 1, Math.floor((p / 100) * stepCount));
+
+        // Crossfade windows are centered ON each boundary and shared by the
+        // two neighboring frames (not one window ending exactly where the
+        // next begins) — otherwise both frames hit opacity 0 at once and
+        // the boundary flashes to black instead of handing off cleanly.
+        const half = 6;
+        frameRefs.current.forEach((frame, i) => {
+          const start = (i / stepCount) * 100;
+          const end = ((i + 1) / stepCount) * 100;
+          const fadeIn = i === 0 ? 1 : phase(p, start - half, start + half);
+          const fadeOut = i === stepCount - 1 ? 1 : 1 - phase(p, end - half, end + half);
+          gsap.set(frame, { opacity: Math.min(fadeIn, fadeOut) });
+        });
+
+        stepRefs.current.forEach((step, i) => {
+          gsap.set(step, { color: i === activeIndex ? "var(--ivory)" : "rgba(216,200,168,0.5)" });
+        });
+        numberRefs.current.forEach((num, i) => {
+          gsap.set(num, { color: i === activeIndex ? "var(--rouge)" : "rgba(163,23,31,0.45)" });
+        });
+      },
+    });
+
+    return () => trigger.kill();
+  }, []);
+
+  return (
+    <section
+      ref={outerRef}
+      id="ritual"
+      className="relative h-[320svh]"
+      aria-labelledby="ritual-title"
+    >
+      <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
+        {media.map((m, i) => (
+          <div
+            key={m.clipId}
+            ref={(el) => {
+              frameRefs.current[i] = el;
+            }}
+            className="absolute inset-0"
+          >
+            <Image src={m.temporaryImage} alt={m.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+          </div>
+        ))}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(7,6,6,0.92) 0%, rgba(7,6,6,0.55) 42%, rgba(7,6,6,0.35) 70%, rgba(7,6,6,0.6) 100%)",
+          }}
+        />
+
+        <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{ritual.eyebrow}</p>
+        <p className="mono-label absolute right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
+          {ritual.caption}
+        </p>
+
+        <div className="container-lga relative w-full pb-16 pt-24 md:pb-24">
+          <h2 id="ritual-title" className="max-w-2xl font-display text-4xl leading-tight text-ivory sm:text-5xl">
+            {ritual.title}
+          </h2>
+
+          <ol className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-4 sm:gap-x-5">
+            {ritual.steps.map((step, i) => (
+              <li key={step} className="flex items-center gap-3 sm:gap-5">
+                <span
+                  ref={(el) => {
+                    stepRefs.current[i] = el;
+                  }}
+                  className="flex items-baseline gap-2 font-sans text-xs uppercase tracking-[0.18em] text-champagne/50"
+                >
+                  <span
+                    ref={(el) => {
+                      numberRefs.current[i] = el;
+                    }}
+                    className="mono-label text-rouge/50"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {step}
+                </span>
+                {i < ritual.steps.length - 1 && (
+                  <span className="text-champagne/30" aria-hidden="true">
+                    &rarr;
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );
 }
 
-const CROSSFADE_MS = 450;
-
-function RitualDesktop() {
-  const [active, setActive] = useState(0);
-  const [previous, setPrevious] = useState<number | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const select = (index: number) => {
-    if (index === active) return;
-    setPrevious(active);
-    setActive(index);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setPrevious(null), CROSSFADE_MS);
-  };
-
-  useEffect(() => () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-  }, []);
-
-  const activeStep = ritual.steps[active];
-
+function RitualStatic() {
+  const base = temporaryMedia["ribbon-detail"]!;
   return (
-    <div className="container-lga grid grid-cols-12 gap-8">
-      <div className="relative col-span-8 aspect-[16/9] overflow-hidden">
-        {previous !== null && (
-          <div className="absolute inset-0" aria-hidden="true">
-            <ManagedVideo
-              clipId={stepClip[ritual.steps[previous]]}
-              description=""
-              aspectClassName="h-full w-full"
-              showDebugLabel={false}
-            />
-          </div>
-        )}
-        <div
-          key={active}
-          className="absolute inset-0 animate-[ritual-in_450ms_ease-out_forwards]"
-        >
-          <ManagedVideo
-            clipId={stepClip[activeStep]}
-            description={`Etapa do ritual de criação: ${activeStep}.`}
-            aspectClassName="h-full w-full"
-          />
-        </div>
+    <section
+      id="ritual"
+      className="relative flex min-h-[100svh] items-end overflow-hidden bg-noir"
+      aria-labelledby="ritual-title"
+    >
+      <Image src={base.temporaryImage} alt={base.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(0deg, rgba(7,6,6,0.92) 0%, rgba(7,6,6,0.55) 42%, rgba(7,6,6,0.35) 70%, rgba(7,6,6,0.6) 100%)",
+        }}
+      />
+
+      <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{ritual.eyebrow}</p>
+      <p className="mono-label absolute right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
+        {ritual.caption}
+      </p>
+
+      <div className="container-lga relative w-full pb-16 pt-24 md:pb-24">
+        <h2 id="ritual-title" className="max-w-2xl font-display text-4xl leading-tight text-ivory sm:text-5xl">
+          {ritual.title}
+        </h2>
+
+        <ol className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-4 sm:gap-x-5">
+          {ritual.steps.map((step, i) => (
+            <li key={step} className="flex items-center gap-3 sm:gap-5">
+              <span className="flex items-baseline gap-2 font-sans text-xs uppercase tracking-[0.18em] text-champagne">
+                <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
+                {step}
+              </span>
+              {i < ritual.steps.length - 1 && (
+                <span className="text-champagne/40" aria-hidden="true">
+                  &rarr;
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
       </div>
-      <ol className="col-span-4 flex flex-col justify-center gap-1">
-        {ritual.steps.map((step, i) => (
-          <li key={step}>
-            <button
-              type="button"
-              onClick={() => select(i)}
-              aria-current={i === active}
-              className={`group flex w-full items-center gap-4 border-b border-gold/10 py-3 text-left font-display text-xl transition-colors ${
-                i === active ? "text-gold" : "text-ivory/60 hover:text-ivory"
-              }`}
-            >
-              <span className="mono-label">{String(i + 1).padStart(2, "0")}</span>
-              {step}
-              <span
-                className={`ml-auto h-px bg-gold transition-all ${
-                  i === active ? "w-8 opacity-100" : "w-0 opacity-0"
-                }`}
-                aria-hidden="true"
-              />
-            </button>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
-}
-
-function RitualMobile() {
-  return (
-    <div className="flex flex-col gap-10">
-      {ritual.steps.map((step, i) => (
-        <div key={step} className="container-lga">
-          <div className="aspect-video w-full overflow-hidden">
-            <ManagedVideo
-              clipId={stepClip[step]}
-              description={`Etapa do ritual de criação: ${step}.`}
-              aspectClassName="h-full w-full"
-            />
-          </div>
-          <p className="mt-3 font-display text-lg text-ivory">
-            <span className="mono-label mr-2">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            {step}
-          </p>
-        </div>
-      ))}
-    </div>
+    </section>
   );
 }

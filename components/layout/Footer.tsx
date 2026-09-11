@@ -22,14 +22,19 @@ export default function Footer() {
     <footer className="border-t border-gold/10 bg-noir">
       <div className="container-lga py-16 text-center md:py-24">
         <p className="font-display text-3xl tracking-[0.08em] text-ivory sm:text-4xl md:text-5xl">{brand.name}</p>
-        <div className="rule-gold mx-auto my-6" />
+        {/* The thread's last beat — it ends here, tied off, not drawn across the page. */}
+        <div className="mx-auto my-6 flex items-center justify-center gap-0" aria-hidden="true">
+          <div className="h-px w-10 bg-gold/70" />
+          <div className="h-[3px] w-[3px] rounded-full bg-rouge" />
+          <div className="h-px w-10 bg-gold/70" />
+        </div>
         <p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">{brand.collabLine}</p>
       </div>
 
       <div className="border-t border-gold/10">
         <div className="container-lga grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-3 md:py-14">
           <div>
-            <p className="eyebrow mb-4">Navegação</p>
+            <p className="mono-label mb-4">Navegação</p>
             <nav className="flex flex-col gap-2" aria-label="Navegação do rodapé">
               {nav.map((item) => (
                 <a
@@ -45,7 +50,7 @@ export default function Footer() {
 
           {hasContacts && (
             <div>
-              <p className="eyebrow mb-4">Atendimento</p>
+              <p className="mono-label mb-4">Atendimento</p>
               <ul className="flex flex-col gap-2">
                 {whatsappUrl && (
                   <li>
@@ -76,7 +81,7 @@ export default function Footer() {
           )}
 
           <div>
-            <p className="eyebrow mb-4">Localização</p>
+            <p className="mono-label mb-4">Localização</p>
             <p className="font-sans text-sm text-muted">{contact.atelierLocation}</p>
             <p className="mt-1 font-sans text-sm text-muted">{contact.serviceArea}</p>
           </div>

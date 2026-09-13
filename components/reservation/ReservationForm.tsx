@@ -169,45 +169,56 @@ export default function ReservationForm() {
           </span>
         </button>
 
-        {detailsOpen && (
-          <div id="detalhes-presente" className="mt-6 grid gap-6 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <p className="mb-2 font-sans text-[11px] uppercase tracking-[0.16em] text-gold/70">Criação desejada</p>
-              <div role="radiogroup" aria-label="Criação desejada" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {reservation.creationOptions.map((option) => (
-                  <CreationOption key={option.value} option={option} register={register} />
-                ))}
+        <div
+          id="detalhes-presente"
+          inert={detailsOpen ? undefined : true}
+          className="grid transition-[grid-template-rows] duration-400 ease-out"
+          style={{ gridTemplateRows: detailsOpen ? "1fr" : "0fr" }}
+        >
+          <div className="overflow-hidden">
+            <div
+              className={`grid gap-6 pt-6 transition-opacity duration-300 ease-out sm:grid-cols-2 ${
+                detailsOpen ? "opacity-100 delay-100" : "opacity-0"
+              }`}
+            >
+              <div className="sm:col-span-2">
+                <p className="mb-2 font-sans text-[11px] uppercase tracking-[0.16em] text-gold/70">Criação desejada</p>
+                <div role="radiogroup" aria-label="Criação desejada" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {reservation.creationOptions.map((option) => (
+                    <CreationOption key={option.value} option={option} register={register} />
+                  ))}
+                </div>
+                {errors.creation && (
+                  <p className="mt-2 text-xs text-rouge" role="alert">
+                    {errors.creation.message}
+                  </p>
+                )}
               </div>
-              {errors.creation && (
-                <p className="mt-2 text-xs text-rouge" role="alert">
-                  {errors.creation.message}
-                </p>
-              )}
+
+              <Field label="Ocasião" htmlFor="occasion" error={errors.occasion?.message} optional>
+                <input
+                  id="occasion"
+                  type="text"
+                  className={inputClass(Boolean(errors.occasion))}
+                  {...register("occasion")}
+                  ref={(el) => {
+                    register("occasion").ref(el);
+                    occasionRef.current = el;
+                  }}
+                />
+              </Field>
+
+              <Field label="Data desejada" htmlFor="desiredDate" error={errors.desiredDate?.message} optional>
+                <input
+                  id="desiredDate"
+                  type="date"
+                  className={inputClass(Boolean(errors.desiredDate))}
+                  {...register("desiredDate")}
+                />
+              </Field>
             </div>
-
-            <Field label="Ocasião" htmlFor="occasion" error={errors.occasion?.message} optional>
-              <input
-                id="occasion"
-                type="text"
-                className={inputClass(Boolean(errors.occasion))}
-                {...register("occasion")}
-                ref={(el) => {
-                  register("occasion").ref(el);
-                  occasionRef.current = el;
-                }}
-              />
-            </Field>
-
-            <Field label="Data desejada" htmlFor="desiredDate" error={errors.desiredDate?.message} optional>
-              <input
-                id="desiredDate"
-                type="date"
-                className={inputClass(Boolean(errors.desiredDate))}
-                {...register("desiredDate")}
-              />
-            </Field>
           </div>
-        )}
+        </div>
       </div>
 
       <div className="sm:col-span-2 border-t border-oxblood/15 pt-6">

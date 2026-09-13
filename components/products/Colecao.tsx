@@ -31,7 +31,7 @@ function phase(progress: number, start: number, end: number) {
 export default function Colecao() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  return reducedMotion || !isDesktop ? <ColecaoStatic /> : <ColecaoFocus />;
+  return reducedMotion || !isDesktop ? <ColecaoStatic reducedMotion={reducedMotion} /> : <ColecaoFocus />;
 }
 
 function ColecaoFocus() {
@@ -215,12 +215,54 @@ function ColecaoFocus() {
   );
 }
 
-function ColecaoStatic() {
+function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
   const [active, setActive] = useState<0 | 1>(0);
   const activeProduct = active === 0 ? bouquet : coeur;
+  const sectionRef = useRef<HTMLElement>(null);
+  const eyebrowRef = useRef<HTMLParagraphElement>(null);
+  const introRef = useRef<HTMLParagraphElement>(null);
+  const framesRef = useRef<HTMLDivElement>(null);
+  const asideRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    registerGsap();
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // `reducedMotion` starts false (server snapshot) and can flip true a
+    // moment after mount — always reset to the visible end state here, not
+    // just skip, or a stale first pass that set opacity:0 is never undone.
+    if (reducedMotion) {
+      gsap.set([eyebrowRef.current, introRef.current, framesRef.current, asideRef.current], {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      });
+      return;
+    }
+
+    gsap.set([eyebrowRef.current, introRef.current], { opacity: 0, y: 14 });
+    gsap.set(framesRef.current, { opacity: 0, y: 20, scale: 0.97 });
+    gsap.set(asideRef.current, { opacity: 0, y: 16 });
+
+    const trigger = ScrollTrigger.create({
+      trigger: section,
+      start: "top 75%",
+      once: true,
+      onEnter: () => {
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.5 }, 0)
+          .to(introRef.current, { opacity: 1, y: 0, duration: 0.5 }, 0.08)
+          .to(framesRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.15)
+          .to(asideRef.current, { opacity: 1, y: 0, duration: 0.5 }, 0.4);
+      },
+    });
+
+    return () => trigger.kill();
+  }, [reducedMotion]);
 
   return (
-    <section id="colecao" className="relative overflow-hidden bg-oxblood py-24 md:py-32" aria-labelledby="colecao-title">
+    <section ref={sectionRef} id="colecao" className="relative overflow-hidden bg-oxblood py-24 md:py-32" aria-labelledby="colecao-title">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-60"
@@ -231,14 +273,14 @@ function ColecaoStatic() {
       />
 
       <div className="container-lga relative">
-        <p className="mono-label">{colecaoScene.eyebrow}</p>
+        <p ref={eyebrowRef} className="mono-label">{colecaoScene.eyebrow}</p>
         <h2 id="colecao-title" className="sr-only">
           A Coleção Le Grand Amour
         </h2>
-        <p className="mt-4 max-w-md font-display text-xl italic text-champagne/90">{manifesto.title}</p>
+        <p ref={introRef} className="mt-4 max-w-md font-display text-xl italic text-champagne/90">{manifesto.title}</p>
 
         <div className="relative mt-16 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-6">
-          <div className="relative aspect-[4/5] w-full sm:aspect-[16/10] lg:col-span-8 lg:aspect-[16/11]">
+          <div ref={framesRef} className="relative aspect-[4/5] w-full sm:aspect-[16/10] lg:col-span-8 lg:aspect-[16/11]">
             <div
               aria-hidden="true"
               className="absolute inset-x-[6%] bottom-[6%] h-[10%] rounded-[100%] bg-noir/70 blur-2xl"
@@ -287,10 +329,10 @@ function ColecaoStatic() {
             </button>
           </div>
 
-          <div className="lg:col-span-4">
+          <div ref={asideRef} className="lg:col-span-4">
             <ol className="flex gap-8 border-b border-champagne/15 pb-4 sm:gap-10">
               {[bouquet, coeur].map((product, i) => (
-                <li key={product.id}>
+                <li key={product.id} className="relative">
                   <button
                     type="button"
                     onClick={() => setActive(i as 0 | 1)}
@@ -302,6 +344,12 @@ function ColecaoStatic() {
                     <span className="mono-label">{String(i + 1).padStart(2, "0")}</span>
                     {product.name}
                   </button>
+                  <span
+                    aria-hidden="true"
+                    className={`absolute inset-x-0 -bottom-[17px] h-px origin-left bg-rouge transition-transform duration-400 ease-out ${
+                      active === i ? "scale-x-100" : "scale-x-0"
+                    }`}
+                  />
                 </li>
               ))}
             </ol>

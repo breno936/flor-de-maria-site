@@ -45,7 +45,7 @@ export default function RoseClosing() {
   const whatsappUrl = buildWhatsAppUrl();
 
   return reducedMotion || !isDesktop ? (
-    <RoseStatic whatsappUrl={whatsappUrl} />
+    <RoseStatic whatsappUrl={whatsappUrl} reducedMotion={reducedMotion} />
   ) : (
     <RoseReveal whatsappUrl={whatsappUrl} />
   );
@@ -147,11 +147,43 @@ function RoseReveal({ whatsappUrl }: { whatsappUrl: string | null }) {
   );
 }
 
-function RoseStatic({ whatsappUrl }: { whatsappUrl: string | null }) {
+function RoseStatic({ whatsappUrl, reducedMotion }: { whatsappUrl: string | null; reducedMotion: boolean }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    registerGsap();
+    const content = contentRef.current;
+    if (!content) return;
+
+    // `reducedMotion` starts false (server snapshot) and can flip true a
+    // moment after mount — always reset to the visible end state here, not
+    // just skip, or a stale first pass that set opacity:0 is never undone.
+    if (reducedMotion) {
+      gsap.set(content, { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.set(content, { opacity: 0, y: 20 });
+    const trigger = ScrollTrigger.create({
+      trigger: content,
+      start: "top 82%",
+      once: true,
+      onEnter: () => gsap.to(content, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }),
+    });
+    return () => trigger.kill();
+  }, [reducedMotion]);
+
   return (
     <div className="relative">
       <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/9] lg:hidden">
-        <Image src={IMAGE_MOBILE} alt={IMAGE_ALT} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+        <Image
+          src={IMAGE_MOBILE}
+          alt={IMAGE_ALT}
+          fill
+          sizes="100vw"
+          className={`object-cover ${reducedMotion ? "" : "animate-kenburns"}`}
+          data-temporary-media="true"
+        />
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -175,7 +207,7 @@ function RoseStatic({ whatsappUrl }: { whatsappUrl: string | null }) {
       </div>
 
       <div className="container-lga py-14 md:py-20">
-        <div className="max-w-xl">
+        <div ref={contentRef} className="max-w-xl">
           <p className="eyebrow">{brand.collabLine}</p>
           <div className="rule-gold my-6" />
           <h2 className="font-display text-3xl leading-tight text-ivory sm:text-4xl">{roseClosing.title}</h2>

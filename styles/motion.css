@@ -68,3 +68,19 @@
     transform: scale(1.02);
   }
 }
+
+/* Ambient, very slow breathing zoom for full-bleed editorial photos on
+   mobile, where there's no scroll-driven scale to stand in for it. Neutralised
+   automatically by the prefers-reduced-motion block above. */
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+.animate-kenburns {
+  animation: kenburns 16s var(--ease-soft) infinite alternate;
+}

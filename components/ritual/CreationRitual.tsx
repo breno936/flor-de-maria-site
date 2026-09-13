@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
@@ -19,17 +19,20 @@ function phase(progress: number, start: number, end: number) {
 }
 
 /**
- * Cena 5 — "O Ritual". A single pinned scene: the image crossfades through
- * the four stages (Escolha → Criação → Acabamento → Entrega) as the visitor
- * scrolls, the active step lighting up in step with it — the thread's
- * "acabamento" beat, made literal in the ribbon-stage photo rather than a
- * drawn line. Reduced-motion / mobile gets the Fase 1 static full-bleed cut,
- * all four steps listed at once, no scroll dependency.
+ * Cena 5 — "O Ritual". Desktop: a single pinned scene where the image
+ * crossfades through the four stages (Escolha → Criação → Acabamento →
+ * Entrega) as the visitor scrolls. Mobile / reduced motion: pinning a
+ * scene for 3+ screen heights is poor mobile UX (janky, easy to get stuck
+ * mid-scroll), so instead of losing the four-stage story down to one
+ * static photo, `RitualGallery` gives it a mobile-native equivalent — a
+ * swipeable, snap-scrolling filmstrip through the same four stages, fully
+ * user-driven (no scroll-jacking), which also works cleanly for desktop
+ * visitors with reduced motion since nothing auto-plays.
  */
 export default function CreationRitual() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  return reducedMotion || !isDesktop ? <RitualStatic /> : <RitualPinned />;
+  return reducedMotion || !isDesktop ? <RitualGallery reducedMotion={reducedMotion} /> : <RitualPinned />;
 }
 
 function RitualPinned() {
@@ -152,49 +155,109 @@ function RitualPinned() {
   );
 }
 
-function RitualStatic() {
-  const base = temporaryMedia["ribbon-detail"]!;
+/**
+ * Swipeable filmstrip: one full-bleed frame per stage, native CSS scroll-snap
+ * (not GSAP-driven — this is deliberately just the browser's own smooth,
+ * momentum-correct touch scrolling, the thing mobile visitors already know
+ * how to use). A tap on a dot jumps straight there; the active dot tracks
+ * scroll position via a plain scroll listener so the "acabamento" step still
+ * lights up in step, same idea as the desktop pin, without pinning anything.
+ */
+function RitualGallery({ reducedMotion }: { reducedMotion: boolean }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    registerGsap();
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // `reducedMotion` starts false (server snapshot) and can flip true a
+    // moment after mount — always reset to the visible end state here, not
+    // just skip, or a stale first pass that set opacity:0 is never undone.
+    if (reducedMotion) {
+      gsap.set(section, { opacity: 1, y: 0 });
+      return;
+    }
+
+    gsap.set(section, { opacity: 0, y: 24 });
+    const trigger = ScrollTrigger.create({
+      trigger: section,
+      start: "top 82%",
+      once: true,
+      onEnter: () => gsap.to(section, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }),
+    });
+    return () => trigger.kill();
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const onScroll = () => {
+      const index = Math.round(scroller.scrollLeft / Math.max(1, scroller.clientWidth));
+      setActiveIndex(Math.min(stepMedia.length - 1, Math.max(0, index)));
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    return () => scroller.removeEventListener("scroll", onScroll);
+  }, []);
+
+  function goTo(index: number) {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    scroller.scrollTo({ left: index * scroller.clientWidth, behavior: reducedMotion ? "auto" : "smooth" });
+  }
+
   return (
-    <section
-      id="ritual"
-      className="relative flex min-h-[100svh] items-end overflow-hidden bg-noir"
-      aria-labelledby="ritual-title"
-    >
-      <Image src={base.temporaryImage} alt={base.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(0deg, rgba(7,6,6,0.92) 0%, rgba(7,6,6,0.55) 42%, rgba(7,6,6,0.35) 70%, rgba(7,6,6,0.6) 100%)",
-        }}
-      />
-
-      <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{ritual.eyebrow}</p>
-      <p className="mono-label absolute right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
-        {ritual.caption}
-      </p>
-
-      <div className="container-lga relative w-full pb-16 pt-24 md:pb-24">
-        <h2 id="ritual-title" className="max-w-2xl font-display text-4xl leading-tight text-ivory sm:text-5xl">
+    <section ref={sectionRef} id="ritual" className="relative overflow-hidden bg-noir py-20 md:py-28" aria-labelledby="ritual-title">
+      <div className="container-lga">
+        <p className="mono-label">{ritual.eyebrow}</p>
+        <h2 id="ritual-title" className="mt-4 max-w-md font-display text-3xl leading-[1.1] text-ivory sm:text-4xl">
           {ritual.title}
         </h2>
+        <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-champagne/70">{ritual.caption}</p>
+      </div>
 
-        <ol className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-4 sm:gap-x-5">
-          {ritual.steps.map((step, i) => (
-            <li key={step} className="flex items-center gap-3 sm:gap-5">
-              <span className="flex items-baseline gap-2 font-sans text-xs uppercase tracking-[0.18em] text-champagne">
-                <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
-                {step}
-              </span>
-              {i < ritual.steps.length - 1 && (
-                <span className="text-champagne/40" aria-hidden="true">
-                  &rarr;
-                </span>
-              )}
-            </li>
-          ))}
-        </ol>
+      <div
+        ref={scrollerRef}
+        className="mt-10 flex w-full snap-x snap-mandatory overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {media.map((m, i) => (
+          <div key={m.clipId} className="relative aspect-[4/5] w-full shrink-0 snap-center sm:aspect-[3/4]">
+            <Image
+              src={m.temporaryImage}
+              alt={m.alt}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              data-temporary-media="true"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(0deg, rgba(7,6,6,0.85) 0%, rgba(7,6,6,0.05) 45%, transparent 70%)" }}
+            />
+            <div className="absolute bottom-5 left-6 flex items-baseline gap-3">
+              <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-sans text-xs uppercase tracking-[0.2em] text-ivory">{ritual.steps[i]}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="container-lga mt-7 flex items-center justify-center gap-3">
+        {ritual.steps.map((step, i) => (
+          <button
+            key={step}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-label={`Ver etapa: ${step}`}
+            aria-current={activeIndex === i}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              activeIndex === i ? "w-7 bg-rouge" : "w-1.5 bg-champagne/30 hover:bg-champagne/55"
+            }`}
+          />
+        ))}
       </div>
     </section>
   );

@@ -70,22 +70,52 @@ export default function AtelierButton(props: AtelierButtonProps) {
     const magnet = magnetRef.current;
     if (!root || !magnet) return;
 
+    // Nudge (dx/dy) is mouse-only — no hover on touch. Press (scale) is
+    // every pointer type — the tactile "give" a touch tap needs, since
+    // there's no hover state to signal the button registered the tap.
+    // Both live on the same transform string so they never fight over it.
+    let dx = 0;
+    let dy = 0;
+    let pressed = false;
+
+    const apply = () => {
+      magnet.style.transform = `translate(${dx}px, ${dy}px) scale(${pressed ? 0.96 : 1})`;
+    };
     const onMove = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") return;
       const rect = root.getBoundingClientRect();
-      const dx = event.clientX - (rect.left + rect.width / 2);
-      const dy = event.clientY - (rect.top + rect.height / 2);
-      magnet.style.transform = `translate(${clamp(dx * 0.1, -5, 5)}px, ${clamp(dy * 0.25, -4, 4)}px)`;
+      const rawDx = event.clientX - (rect.left + rect.width / 2);
+      const rawDy = event.clientY - (rect.top + rect.height / 2);
+      dx = clamp(rawDx * 0.1, -5, 5);
+      dy = clamp(rawDy * 0.25, -4, 4);
+      apply();
     };
     const onLeave = () => {
-      magnet.style.transform = "translate(0, 0)";
+      dx = 0;
+      dy = 0;
+      pressed = false;
+      apply();
+    };
+    const onDown = () => {
+      pressed = true;
+      apply();
+    };
+    const onUp = () => {
+      pressed = false;
+      apply();
     };
 
     root.addEventListener("pointermove", onMove);
     root.addEventListener("pointerleave", onLeave);
+    root.addEventListener("pointerdown", onDown);
+    root.addEventListener("pointerup", onUp);
+    root.addEventListener("pointercancel", onUp);
     return () => {
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerleave", onLeave);
+      root.removeEventListener("pointerdown", onDown);
+      root.removeEventListener("pointerup", onUp);
+      root.removeEventListener("pointercancel", onUp);
     };
   }, []);
 

@@ -8,6 +8,7 @@ import AtelierButton from "@/components/ui/AtelierButton";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuMounted, setMenuMounted] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -21,6 +22,18 @@ export default function Header() {
     return () => {
       document.documentElement.style.overflow = "";
     };
+  }, [menuOpen]);
+
+  // Keep the panel mounted through its own exit transition instead of
+  // unmounting the instant `menuOpen` flips false — otherwise it just
+  // vanishes rather than closing.
+  useEffect(() => {
+    if (menuOpen) {
+      setMenuMounted(true);
+      return;
+    }
+    const timer = setTimeout(() => setMenuMounted(false), 320);
+    return () => clearTimeout(timer);
   }, [menuOpen]);
 
   return (
@@ -78,31 +91,38 @@ export default function Header() {
         </div>
       </div>
 
-      {menuOpen && (
+      {menuMounted && (
         <div
           id="mobile-menu"
-          className="fixed inset-0 top-[72px] z-40 flex flex-col bg-noir px-6 py-10 lg:hidden"
+          className={`fixed inset-0 top-[72px] z-40 flex flex-col bg-noir px-6 py-10 transition-[opacity,transform] duration-300 ease-out lg:hidden ${
+            menuOpen ? "opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+          }`}
         >
           <nav className="flex flex-col gap-6" aria-label="Navegação mobile">
-            {nav.map((item) => (
+            {nav.map((item, i) => (
               <a
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="font-display text-3xl text-ivory transition-colors hover:text-gold"
+                style={{ transitionDelay: menuOpen ? `${90 + i * 60}ms` : "0ms" }}
+                className={`font-display text-3xl text-ivory transition-[opacity,transform] duration-400 ease-out hover:text-gold ${
+                  menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+                }`}
               >
                 {item.label}
               </a>
             ))}
           </nav>
-          <AtelierButton
-            href="#reserva"
-            variant="primary"
-            onClick={() => setMenuOpen(false)}
-            className="mt-10 w-full"
+          <div
+            style={{ transitionDelay: menuOpen ? `${90 + nav.length * 60}ms` : "0ms" }}
+            className={`mt-10 transition-[opacity,transform] duration-400 ease-out ${
+              menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+            }`}
           >
-            {hero.ctaPrimary}
-          </AtelierButton>
+            <AtelierButton href="#reserva" variant="primary" onClick={() => setMenuOpen(false)} className="w-full">
+              {hero.ctaPrimary}
+            </AtelierButton>
+          </div>
         </div>
       )}
     </header>

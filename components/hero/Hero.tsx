@@ -10,7 +10,6 @@ import { temporaryMedia } from "@/data/temporary-media";
 import AtelierButton from "@/components/ui/AtelierButton";
 import ManagedVideo from "@/components/media/ManagedVideo";
 
-const SESSION_KEY = "lga-hero-opened";
 const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 const HIDDEN_BOTTOM = "inset(100% 0% 0% 0%)";
 const HIDDEN_CENTER = "inset(0% 50% 0% 50%)";
@@ -37,12 +36,16 @@ const heroMedia = temporaryMedia["rose-lateral-light"];
  * or a direct anchor load all land on that same base state with nothing
  * missing — the opening is a rendered-on-top enhancement, never a
  * prerequisite for seeing a complete hero.
+ *
+ * Plays on every full page load (including refresh) — deliberately not
+ * gated behind a "seen once this session" flag. A direct anchor load
+ * (e.g. `/#reserva`) still skips it, since the visitor is arriving to see
+ * that section, not the top of the page.
  */
 function resolveShouldPlayOpening(): boolean {
   if (typeof window === "undefined") return false;
   const hasHash = Boolean(window.location.hash) && window.location.hash !== "#topo";
-  const alreadySeen = sessionStorage.getItem(SESSION_KEY) === "1";
-  return !hasHash && !alreadySeen;
+  return !hasHash;
 }
 const shouldPlayOpeningOnLoad = resolveShouldPlayOpening();
 
@@ -128,14 +131,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
       .to(line2InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.24)
       .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.4)
       .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.55)
-      .call(
-        () => {
-          setOpeningComplete(true);
-          sessionStorage.setItem(SESSION_KEY, "1");
-        },
-        [],
-        2.05
-      );
+      .call(() => setOpeningComplete(true), [], 2.05);
 
     // The thread — it "prende a cortina": a single red line appears to hold
     // the curtain seam as it starts to part, drawn in as the curtain opens,

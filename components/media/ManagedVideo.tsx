@@ -53,7 +53,13 @@ export default function ManagedVideo({
 }: ManagedVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
+  // Priority clips (the Hero's own film) are guaranteed to be in view at
+  // mount — starting `isInView` true lets the play effect below fire on the
+  // very first render instead of waiting on the IntersectionObserver's
+  // first (async) callback, which otherwise races a scripted opening
+  // timeline that runs on its own fixed ~2s schedule regardless of whether
+  // the video has actually started playing yet.
+  const [isInView, setIsInView] = useState(priority);
   const [hasError, setHasError] = useState(false);
   const [tempVideoError, setTempVideoError] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -133,7 +139,7 @@ export default function ManagedVideo({
           muted
           playsInline
           loop={loop}
-          preload={priority ? "metadata" : "none"}
+          preload={priority ? "auto" : "none"}
           poster={`${clip.basePath}/poster.jpg`}
           onError={() => setHasError(true)}
           aria-hidden="true"
@@ -149,7 +155,7 @@ export default function ManagedVideo({
           muted
           playsInline
           loop={loop}
-          preload={priority ? "metadata" : "none"}
+          preload={priority ? "auto" : "none"}
           poster={temp.temporaryVideo.poster}
           onError={() => setTempVideoError(true)}
           aria-hidden="true"

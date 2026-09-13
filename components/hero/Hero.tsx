@@ -118,11 +118,28 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     gsap.set(ribbonInnerRef.current, { yPercent: 3 });
     if (isDesktop) gsap.set(threadTieRef.current, { scaleY: 0, opacity: 1 });
 
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
     tl.to(petalInnerRef.current, { yPercent: 0, scale: 1, duration: 0.4 }, 0)
-      .to(ribbonMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.6, ease: "power2.out" }, 0.22)
-      .to(ribbonInnerRef.current, { yPercent: 0, duration: 0.6 }, 0.22)
-      .to(curtainMaskRef.current, { clipPath: OPEN_CLIP, duration: 0.7, ease: "power2.inOut" }, 0.65)
+      // Mask (clip-path wipe) and inner content (counter-drift) read as one
+      // motion — a mismatched ease between the two made the photo look like
+      // it "slipped" relative to its own reveal window, most visible right
+      // at the tail where the two curves diverge most. Same explicit ease
+      // on both keeps the wipe edge and the image locked together.
+      //
+      // Both clip-path tweens use `.fromTo()` with an explicit starting
+      // string rather than `.to()`. The reason: HIDDEN_BOTTOM/HIDDEN_CENTER
+      // are symmetric (e.g. left inset === right inset), and the browser
+      // serializes symmetric inset() values into a shorter canonical form
+      // (`inset(0% 50% 0% 50%)` reads back as `inset(0% 50%)`). `.to()`
+      // infers its start value from that serialized computed style, so it
+      // was tweening from a 2-token value toward a 4-token target — GSAP's
+      // interpolator can't align mismatched token counts, so one axis
+      // snapped straight to its end value instead of animating, producing
+      // a visible jump partway through the reveal. Passing the from-value
+      // as our own literal sidesteps the round-trip through the DOM entirely.
+      .fromTo(ribbonMaskRef.current, { clipPath: HIDDEN_BOTTOM }, { clipPath: OPEN_CLIP, duration: 0.6, ease: "power2.out" }, 0.22)
+      .to(ribbonInnerRef.current, { yPercent: 0, duration: 0.6, ease: "power2.out" }, 0.22)
+      .fromTo(curtainMaskRef.current, { clipPath: HIDDEN_CENTER }, { clipPath: OPEN_CLIP, duration: 0.7, ease: "power2.inOut" }, 0.65)
       .to(curtainInnerRef.current, { scale: 1, duration: 0.85, ease: "power2.out" }, 0.65)
       .set([petalMaskRef.current, ribbonMaskRef.current], { autoAlpha: 0 }, 1.35)
       .call(() => setOverlaysDone(true), [], 1.35)
@@ -149,7 +166,33 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     tl.call(() => setThreadDone(true), [], 1.65);
 
     timelineRef.current = tl;
+
+    // The whole choreography runs on a fixed clock, but the curtain (0.65s
+    // in) uncovers the hero film underneath — starting on schedule
+    // regardless of the video's own state means a still-buffering
+    // connection can open the curtain onto a frozen poster frame, then
+    // visibly "pop" into motion once the video catches up. Gate playback
+    // start on the film actually being ready (`canplay`), capped by a short
+    // fallback so a very slow connection still gets the opening rather than
+    // an indefinite stall. On a typical connection the video is already
+    // ready by the time this runs, so `start()` fires immediately below.
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      tl.play();
+    };
+    const video = videoElRef.current;
+    const fallback = window.setTimeout(start, 550);
+    if (video && video.readyState < 3) {
+      video.addEventListener("canplay", start, { once: true });
+    } else {
+      start();
+    }
+
     return () => {
+      window.clearTimeout(fallback);
+      video?.removeEventListener("canplay", start);
       tl.kill();
       timelineRef.current = null;
     };
@@ -278,7 +321,15 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
           <div ref={ribbonMaskRef} className="absolute inset-0 z-[2] overflow-hidden">
             <div ref={ribbonInnerRef} className="absolute inset-[-8%_0_-8%_0]">
               {ribbonMedia && (
-                <Image src={ribbonMedia.temporaryImage} alt="" fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+                <Image
+                  src={ribbonMedia.temporaryImage}
+                  alt=""
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover"
+                  data-temporary-media="true"
+                />
               )}
             </div>
           </div>

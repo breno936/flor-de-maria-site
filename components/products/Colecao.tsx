@@ -31,7 +31,8 @@ function phase(progress: number, start: number, end: number) {
 export default function Colecao() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  return reducedMotion || !isDesktop ? <ColecaoStatic reducedMotion={reducedMotion} /> : <ColecaoFocus />;
+  if (reducedMotion) return <ColecaoStatic reducedMotion={reducedMotion} />;
+  return isDesktop ? <ColecaoFocus /> : <ColecaoMobile />;
 }
 
 function ColecaoFocus() {
@@ -207,6 +208,194 @@ function ColecaoFocus() {
                   {colecaoScene.cta}
                 </AtelierButton>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const OPEN_CLIP = "inset(0% 0% 0% 0%)";
+const HIDDEN_RIGHT = "inset(0% 0% 0% 100%)";
+
+/**
+ * Mobile/tablet signature for Cena 3 — an editorial scene change, not a
+ * crossfade: Le Bouquet sits on top of Le Cœur Royale in the stack, and as
+ * the visitor scrolls it wipes away via clip-path (the same mask language
+ * as Hero/Ritual) while shrinking and dimming, uncovering Le Cœur Royale
+ * underneath, which settles from a slight over-scale into place. Copy,
+ * the 01/02 indicator and the CTA all track the same progress the desktop
+ * version uses — same story beats, staged for a single vertical frame
+ * instead of two offset picture frames. `h-[205svh]` keeps the pinned
+ * scroll distance inside the 190–220svh range the brief asks for.
+ */
+function ColecaoMobile() {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const bouquetFrameRef = useRef<HTMLDivElement>(null);
+  const coeurFrameRef = useRef<HTMLDivElement>(null);
+  const bouquetCopyRef = useRef<HTMLDivElement>(null);
+  const coeurCopyRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const numberRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    registerGsap();
+    const outer = outerRef.current;
+    if (!outer) return;
+
+    gsap.set(bouquetFrameRef.current, { clipPath: OPEN_CLIP, scale: 1, filter: "brightness(1)" });
+    gsap.set(coeurFrameRef.current, { scale: 1.08, filter: "brightness(0.7)" });
+    gsap.set(coeurCopyRef.current, { opacity: 0, y: 10 });
+    gsap.set(ctaRef.current, { opacity: 0, y: 14 });
+
+    const trigger = ScrollTrigger.create({
+      trigger: outer,
+      start: "top top",
+      end: () => `+=${window.innerHeight * 1.05}`,
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress * 100;
+        const wipe = phase(p, 18, 62);
+
+        gsap.set(bouquetFrameRef.current, {
+          clipPath: `inset(0% 0% 0% ${wipe * 100}%)`,
+          scale: 1 + wipe * 0.05,
+          filter: `brightness(${1 - wipe * 0.4})`,
+        });
+        gsap.set(coeurFrameRef.current, {
+          scale: 1.08 - wipe * 0.08,
+          filter: `brightness(${0.7 + wipe * 0.3})`,
+        });
+
+        const bouquetOut = phase(p, 24, 42);
+        const coeurIn = phase(p, 38, 58);
+        gsap.set(bouquetCopyRef.current, { opacity: 1 - bouquetOut, y: bouquetOut * -8 });
+        gsap.set(coeurCopyRef.current, { opacity: coeurIn, y: 10 - coeurIn * 10 });
+
+        const ctaIn = phase(p, 80, 96);
+        gsap.set(ctaRef.current, { opacity: ctaIn, y: 14 - ctaIn * 14 });
+
+        const activeIndex = wipe >= 0.5 ? 1 : 0;
+        stepRefs.current.forEach((step, i) => {
+          gsap.set(step, { color: i === activeIndex ? "var(--ivory)" : "rgba(241,237,229,0.45)" });
+        });
+        numberRefs.current.forEach((num, i) => {
+          gsap.set(num, { color: i === activeIndex ? "var(--champagne)" : "rgba(175,147,103,0.4)" });
+        });
+      },
+    });
+
+    return () => trigger.kill();
+  }, []);
+
+  return (
+    <section ref={outerRef} id="colecao" className="relative h-[205svh] lg:hidden" aria-labelledby="colecao-title-mobile">
+      <div className="sticky top-0 flex h-svh w-full flex-col overflow-hidden bg-oxblood">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-60"
+          style={{
+            background:
+              "radial-gradient(60% 50% at 30% 20%, rgba(216,200,168,0.08) 0%, transparent 60%), radial-gradient(70% 60% at 80% 90%, rgba(7,6,6,0.6) 0%, transparent 70%)",
+          }}
+        />
+
+        <p className="mono-label absolute left-6 top-8">{colecaoScene.eyebrow}</p>
+        <h2 id="colecao-title-mobile" className="sr-only">
+          A Coleção Le Grand Amour
+        </h2>
+
+        <div className="container-lga relative flex h-full flex-col items-center justify-center pt-16 pb-6">
+          <div className="relative w-full max-w-[320px]">
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-[6%] -bottom-3 h-[10%] rounded-[100%] bg-noir/70 blur-2xl"
+            />
+            <div className="relative aspect-[4/5] w-full">
+              <div
+                ref={coeurFrameRef}
+                className="absolute inset-0 z-10 overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+              >
+                <Image
+                  src={coeurMedia.temporaryImage}
+                  alt={coeurMedia.alt}
+                  fill
+                  sizes="90vw"
+                  className="object-cover object-center"
+                  data-temporary-media="true"
+                />
+              </div>
+              <div
+                ref={bouquetFrameRef}
+                className="absolute inset-0 z-20 overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+              >
+                <Image
+                  src={bouquetMedia.temporaryImage}
+                  alt={bouquetMedia.alt}
+                  fill
+                  sizes="90vw"
+                  className="object-cover object-center"
+                  data-temporary-media="true"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="relative mt-7 w-full max-w-[320px]">
+            <ol className="flex justify-center gap-8 border-b border-champagne/15 pb-3">
+              {[bouquet, coeur].map((product, i) => (
+                <li key={product.id}>
+                  <span
+                    ref={(el) => {
+                      stepRefs.current[i] = el;
+                    }}
+                    className="flex items-baseline gap-2 font-display text-base"
+                  >
+                    <span
+                      ref={(el) => {
+                        numberRefs.current[i] = el;
+                      }}
+                      className="mono-label"
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {product.name}
+                  </span>
+                </li>
+              ))}
+            </ol>
+
+            <div className="relative mt-5 min-h-[150px] text-center">
+              <div ref={bouquetCopyRef} className="absolute inset-x-0">
+                <p className="mono-label">{bouquet.eyebrow}</p>
+                <p className="mt-2 font-display text-xl italic text-champagne">{bouquet.tagline}</p>
+                <ul className="mt-4 flex flex-col items-center gap-1.5">
+                  {bouquet.facts.map((fact) => (
+                    <li key={fact} className="font-sans text-xs text-ivory/75">
+                      {fact}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div ref={coeurCopyRef} className="absolute inset-x-0">
+                <p className="mono-label">{coeur.eyebrow}</p>
+                <p className="mt-2 font-display text-xl italic text-champagne">{coeur.tagline}</p>
+                <ul className="mt-4 flex flex-col items-center gap-1.5">
+                  {coeur.facts.map((fact) => (
+                    <li key={fact} className="font-sans text-xs text-ivory/75">
+                      {fact}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div ref={ctaRef} className="mt-5 flex justify-center">
+              <AtelierButton href="#reserva" variant="primary">
+                {colecaoScene.cta}
+              </AtelierButton>
             </div>
           </div>
         </div>

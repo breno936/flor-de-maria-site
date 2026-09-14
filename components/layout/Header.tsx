@@ -62,9 +62,13 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
+          {/* Tablet/small-desktop range (sm–lg) gets the short label — full
+              logo + nav + long CTA + hamburger never need to coexist here;
+              lg+ nav takes over and the CTA reverts to its full text. */}
           <span className="hidden sm:inline-block">
             <AtelierButton href="#reserva" variant="header">
-              {hero.ctaPrimary}
+              <span className="lg:hidden">Reservar</span>
+              <span className="hidden lg:inline">{hero.ctaPrimary}</span>
             </AtelierButton>
           </span>
           <button

@@ -212,22 +212,27 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
   }
 
   // Controlled parallax: the main film drifts a few px slower than the
-  // scroll, only across the hero's own height, only on desktop, never under
-  // reduced motion. Independent of the opening timeline (different property
-  // — y, not scale — so nothing fights over the same value).
+  // scroll, only across the hero's own height, never under reduced motion.
+  // Independent of the opening timeline (different property — y, not scale
+  // — so nothing fights over the same value). Mobile gets a noticeably
+  // smaller amplitude ("muito sutil") than desktop, not zero — enough to
+  // read as alive when the visitor's thumb starts the scroll, not enough to
+  // fight the curtain's own settle or shift the crop distractingly on a
+  // narrow viewport.
   useEffect(() => {
-    if (reducedMotion || !isDesktop) return;
+    if (reducedMotion) return;
     registerGsap();
     const section = sectionRef.current;
     const media = curtainInnerRef.current;
     if (!section || !media) return;
 
+    const amplitude = isDesktop ? 48 : 16;
     const trigger = ScrollTrigger.create({
       trigger: section,
       start: "top top",
       end: "bottom top",
       scrub: true,
-      onUpdate: (self) => gsap.set(media, { y: self.progress * 48 }),
+      onUpdate: (self) => gsap.set(media, { y: self.progress * amplitude }),
     });
     return () => trigger.kill();
   }, [reducedMotion, isDesktop]);
@@ -249,7 +254,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             clipId="rose-lateral-light"
             description={heroMedia?.alt ?? "Filme da coleção Le Grand Amour: mão erguendo uma rosa vermelha contra fundo escuro."}
             aspectClassName="h-full w-full"
-            objectPositionClassName="object-[64%_34%]"
+            objectPositionClassName="object-[55%_30%] md:object-[64%_34%]"
             priority
             showDebugLabel={false}
             onVideoElement={(el) => {

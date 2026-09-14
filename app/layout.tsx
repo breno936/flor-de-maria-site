@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HashScrollFix from "@/components/layout/HashScrollFix";
+import MobileStickyCta from "@/components/layout/MobileStickyCta";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -90,6 +91,7 @@ export default function RootLayout({
         <Header />
         <main id="conteudo-principal">{children}</main>
         <Footer />
+        <MobileStickyCta />
       </body>
     </html>
   );

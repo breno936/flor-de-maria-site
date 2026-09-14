@@ -41,6 +41,20 @@ select:focus-visible {
   outline-offset: 4px;
 }
 
+/* Every scene is a `<section id="...">` used as an anchor/scroll target
+   (nav links, the hash-jump fix, footer/CTA links). Without this, jumping
+   to one lands its top edge flush with the viewport top — directly behind
+   the fixed header — hiding the section's own eyebrow/title underneath it. */
+section[id] {
+  scroll-margin-top: var(--header-height-mobile);
+}
+
+@media (min-width: 768px) {
+  section[id] {
+    scroll-margin-top: var(--header-height);
+  }
+}
+
 .container-lga {
   width: 100%;
   max-width: 1360px;

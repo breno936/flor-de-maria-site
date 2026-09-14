@@ -161,7 +161,7 @@ export default function ReservationForm() {
           onClick={() => setDetailsOpen((v) => !v)}
           aria-expanded={detailsOpen}
           aria-controls="detalhes-presente"
-          className="flex w-full items-center justify-between border-t border-gold/15 pt-6 text-left transition-colors hover:text-gold"
+          className="flex min-h-[44px] w-full items-center justify-between border-t border-gold/15 pt-6 text-left transition-colors active:scale-[0.99] hover:text-gold"
         >
           <StepLabel step="02" label={reservation.detailsToggle} as="span" />
           <span aria-hidden="true" className={`text-gold transition-transform duration-300 ${detailsOpen ? "rotate-45" : ""}`}>
@@ -288,7 +288,9 @@ function CreationOption({
 }
 
 function inputClass(hasError: boolean) {
-  return `w-full border-0 border-b bg-transparent px-0 py-2.5 font-sans text-sm text-noir outline-none transition-colors placeholder:text-noir/30 focus:border-rouge ${
+  // py-3 keeps every field at a real ≥44px tap target on phones; lg:py-2.5
+  // reverts to the original, slightly tighter desktop metrics.
+  return `w-full border-0 border-b bg-transparent px-0 py-3 lg:py-2.5 font-sans text-sm text-noir outline-none transition-colors placeholder:text-noir/30 focus:border-rouge ${
     hasError ? "border-rouge" : "border-oxblood/25 hover:border-oxblood/45"
   }`;
 }

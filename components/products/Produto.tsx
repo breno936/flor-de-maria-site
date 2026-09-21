@@ -5,10 +5,10 @@ import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { products } from "@/data/products";
-import { manifesto, colecaoScene } from "@/data/content";
+import { products, type Product } from "@/data/products";
+import { produtoScene } from "@/data/content";
 import { temporaryMedia } from "@/data/temporary-media";
-import AtelierButton from "@/components/ui/AtelierButton";
+import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
 const bouquet = products.find((p) => p.id === "le-bouquet")!;
 const coeur = products.find((p) => p.id === "le-coeur-royale")!;
@@ -22,20 +22,24 @@ function phase(progress: number, start: number, end: number) {
 }
 
 /**
- * Cena 3 — "A Coleção". Desktop: Effect 3 from the brief almost literally —
- * a pinned camera move where Le Bouquet starts dominant and Le Cœur Royale
- * gradually takes the focus as the visitor scrolls, ending on the shared
- * CTA. Mobile / reduced motion: the Fase 1 click-driven staged layout,
- * which already communicates both creations without depending on scroll.
+ * Etapa 03 — PRODUTO. Reveals what's actually being sold: the two real
+ * creations, always shown at full shape before any detail, never hidden
+ * behind an effect. Desktop keeps the pinned camera-move between the two
+ * (Le Bouquet dominant → Le Cœur Royale takes focus), shortened to 200svh
+ * (inside the brief's 160–220svh range, down from the previous 260svh).
+ * Mobile/tablet drops the pin entirely — the brief is explicit that mobile
+ * should present "cada produto em um bloco. Imagem completa primeiro.
+ * Informações abaixo." — so it becomes two plain stacked reveal blocks
+ * instead of a scroll-jacked scene.
  */
-export default function Colecao() {
+export default function Produto() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  if (reducedMotion) return <ColecaoStatic reducedMotion={reducedMotion} />;
-  return isDesktop ? <ColecaoFocus /> : <ColecaoMobile />;
+  if (reducedMotion) return <ProdutoStatic reducedMotion={reducedMotion} />;
+  return isDesktop ? <ProdutoFocus /> : <ProdutoMobile />;
 }
 
-function ColecaoFocus() {
+function ProdutoFocus() {
   const outerRef = useRef<HTMLDivElement>(null);
   const bouquetFrameRef = useRef<HTMLDivElement>(null);
   const coeurFrameRef = useRef<HTMLDivElement>(null);
@@ -58,7 +62,7 @@ function ColecaoFocus() {
     const trigger = ScrollTrigger.create({
       trigger: outer,
       start: "top top",
-      end: () => `+=${window.innerHeight * 1.6}`,
+      end: () => `+=${window.innerHeight * 1.0}`,
       scrub: 0.5,
       onUpdate: (self) => {
         const p = self.progress * 100;
@@ -75,12 +79,12 @@ function ColecaoFocus() {
           filter: `brightness(${0.55 + focusCoeur * 0.45})`,
         });
 
-        const bouquetOut = phase(p, 30, 48);
-        const coeurIn = phase(p, 42, 60);
+        const bouquetOut = phase(p, 28, 46);
+        const coeurIn = phase(p, 40, 58);
         gsap.set(bouquetCopyRef.current, { opacity: 1 - bouquetOut, y: bouquetOut * -10 });
         gsap.set(coeurCopyRef.current, { opacity: coeurIn, y: 12 - coeurIn * 12 });
 
-        const ctaIn = phase(p, 78, 96);
+        const ctaIn = phase(p, 74, 94);
         gsap.set(ctaRef.current, { opacity: ctaIn, y: 14 - ctaIn * 14 });
 
         const activeIndex = focusCoeur >= 0.5 ? 1 : 0;
@@ -97,7 +101,7 @@ function ColecaoFocus() {
   }, []);
 
   return (
-    <section ref={outerRef} id="colecao" className="relative h-[260svh]" aria-labelledby="colecao-title">
+    <section ref={outerRef} id="produto" className="relative h-[200svh]" aria-labelledby="produto-title">
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-oxblood">
         <div
           aria-hidden="true"
@@ -109,9 +113,9 @@ function ColecaoFocus() {
         />
 
         <div className="container-lga relative flex h-full flex-col justify-center">
-          <p className="mono-label absolute left-6 top-8 md:left-12 md:top-12">{colecaoScene.eyebrow}</p>
-          <h2 id="colecao-title" className="sr-only">
-            A Coleção Le Grand Amour
+          <p className="mono-label absolute left-6 top-8 md:left-12 md:top-12">{produtoScene.eyebrow}</p>
+          <h2 id="produto-title" className="sr-only">
+            Le Bouquet e Le Cœur Royale — as criações da coleção Le Grand Amour
           </h2>
 
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-6">
@@ -151,8 +155,6 @@ function ColecaoFocus() {
             </div>
 
             <div className="relative lg:col-span-4">
-              <p className="mb-6 max-w-md font-display text-lg italic text-champagne/90">{manifesto.title}</p>
-
               <ol className="flex gap-8 border-b border-champagne/15 pb-4 sm:gap-10">
                 {[bouquet, coeur].map((product, i) => (
                   <li key={product.id}>
@@ -204,9 +206,7 @@ function ColecaoFocus() {
               </div>
 
               <div ref={ctaRef} className="mt-8">
-                <AtelierButton href="#reserva" variant="primary">
-                  {colecaoScene.cta}
-                </AtelierButton>
+                <StartServiceCTA />
               </div>
             </div>
           </div>
@@ -217,73 +217,76 @@ function ColecaoFocus() {
 }
 
 const OPEN_CLIP = "inset(0% 0% 0% 0%)";
-const HIDDEN_RIGHT = "inset(0% 0% 0% 100%)";
+const HIDDEN_LEFT = "inset(0% 0% 0% 100%)";
 
 /**
- * Mobile/tablet signature for Cena 3 — an editorial scene change, not a
- * crossfade: Le Bouquet sits on top of Le Cœur Royale in the stack, and as
- * the visitor scrolls it wipes away via clip-path (the same mask language
- * as Hero/Ritual) while shrinking and dimming, uncovering Le Cœur Royale
- * underneath, which settles from a slight over-scale into place. Copy,
- * the 01/02 indicator and the CTA all track the same progress the desktop
- * version uses — same story beats, staged for a single vertical frame
- * instead of two offset picture frames. `h-[205svh]` keeps the pinned
- * scroll distance inside the 190–220svh range the brief asks for.
+ * Mobile/tablet: no pin. Each creation is its own block — full photo first
+ * (the complete bouquet/box, never a macro crop), facts below, a short
+ * scroll-triggered reveal (image wipe + fact stagger) instead of a
+ * scroll-scrubbed camera move. Two blocks, then one shared CTA.
  */
-function ColecaoMobile() {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const bouquetFrameRef = useRef<HTMLDivElement>(null);
-  const coeurFrameRef = useRef<HTMLDivElement>(null);
-  const bouquetCopyRef = useRef<HTMLDivElement>(null);
-  const coeurCopyRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const stepRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const numberRefs = useRef<(HTMLSpanElement | null)[]>([]);
+function ProdutoMobile() {
+  return (
+    <section id="produto" className="relative bg-oxblood py-20" aria-labelledby="produto-title-mobile">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 30% 10%, rgba(216,200,168,0.08) 0%, transparent 60%), radial-gradient(70% 60% at 80% 90%, rgba(7,6,6,0.6) 0%, transparent 70%)",
+        }}
+      />
+      <div className="container-lga relative">
+        <p className="mono-label">{produtoScene.eyebrow}</p>
+        <h2 id="produto-title-mobile" className="sr-only">
+          Le Bouquet e Le Cœur Royale — as criações da coleção Le Grand Amour
+        </h2>
+
+        <div className="mt-10 flex flex-col gap-16">
+          <ProdutoBlock index={0} product={bouquet} media={bouquetMedia} />
+          <ProdutoBlock index={1} product={coeur} media={coeurMedia} />
+        </div>
+
+        <div className="mt-14 flex justify-center">
+          <StartServiceCTA />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProdutoBlock({
+  index,
+  product,
+  media,
+}: {
+  index: number;
+  product: Product;
+  media: { temporaryImage: string; alt: string };
+}) {
+  const blockRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     registerGsap();
-    const outer = outerRef.current;
-    if (!outer) return;
+    const block = blockRef.current;
+    if (!block) return;
 
-    gsap.set(bouquetFrameRef.current, { clipPath: OPEN_CLIP, scale: 1, filter: "brightness(1)" });
-    gsap.set(coeurFrameRef.current, { scale: 1.08, filter: "brightness(0.7)" });
-    gsap.set(coeurCopyRef.current, { opacity: 0, y: 10 });
-    gsap.set(ctaRef.current, { opacity: 0, y: 14 });
+    gsap.set(imageRef.current, { clipPath: HIDDEN_LEFT });
+    gsap.set(copyRef.current, { opacity: 0, y: 12 });
 
     const trigger = ScrollTrigger.create({
-      trigger: outer,
-      start: "top top",
-      end: () => `+=${window.innerHeight * 1.05}`,
-      scrub: 0.5,
-      onUpdate: (self) => {
-        const p = self.progress * 100;
-        const wipe = phase(p, 18, 62);
-
-        gsap.set(bouquetFrameRef.current, {
-          clipPath: `inset(0% 0% 0% ${wipe * 100}%)`,
-          scale: 1 + wipe * 0.05,
-          filter: `brightness(${1 - wipe * 0.4})`,
-        });
-        gsap.set(coeurFrameRef.current, {
-          scale: 1.08 - wipe * 0.08,
-          filter: `brightness(${0.7 + wipe * 0.3})`,
-        });
-
-        const bouquetOut = phase(p, 24, 42);
-        const coeurIn = phase(p, 38, 58);
-        gsap.set(bouquetCopyRef.current, { opacity: 1 - bouquetOut, y: bouquetOut * -8 });
-        gsap.set(coeurCopyRef.current, { opacity: coeurIn, y: 10 - coeurIn * 10 });
-
-        const ctaIn = phase(p, 80, 96);
-        gsap.set(ctaRef.current, { opacity: ctaIn, y: 14 - ctaIn * 14 });
-
-        const activeIndex = wipe >= 0.5 ? 1 : 0;
-        stepRefs.current.forEach((step, i) => {
-          gsap.set(step, { color: i === activeIndex ? "var(--ivory)" : "rgba(241,237,229,0.45)" });
-        });
-        numberRefs.current.forEach((num, i) => {
-          gsap.set(num, { color: i === activeIndex ? "var(--champagne)" : "rgba(175,147,103,0.4)" });
-        });
+      trigger: block,
+      start: "top 78%",
+      once: true,
+      onEnter: () => {
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        tl.fromTo(imageRef.current, { clipPath: HIDDEN_LEFT }, { clipPath: OPEN_CLIP, duration: 0.8, ease: "power2.out" }, 0).to(
+          copyRef.current,
+          { opacity: 1, y: 0, duration: 0.45 },
+          0.35
+        );
       },
     });
 
@@ -291,125 +294,32 @@ function ColecaoMobile() {
   }, []);
 
   return (
-    <section ref={outerRef} id="colecao" className="relative h-[205svh] lg:hidden" aria-labelledby="colecao-title-mobile">
-      <div className="sticky top-0 flex h-svh w-full flex-col overflow-hidden bg-oxblood">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{
-            background:
-              "radial-gradient(60% 50% at 30% 20%, rgba(216,200,168,0.08) 0%, transparent 60%), radial-gradient(70% 60% at 80% 90%, rgba(7,6,6,0.6) 0%, transparent 70%)",
-          }}
-        />
-
-        <p className="mono-label absolute left-6 top-8">{colecaoScene.eyebrow}</p>
-        <h2 id="colecao-title-mobile" className="sr-only">
-          A Coleção Le Grand Amour
-        </h2>
-
-        <div className="container-lga relative flex h-full flex-col items-center justify-center pt-16 pb-6">
-          <div className="relative w-full max-w-[320px]">
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-[6%] -bottom-3 h-[10%] rounded-[100%] bg-noir/70 blur-2xl"
-            />
-            <div className="relative aspect-[4/5] w-full">
-              <div
-                ref={coeurFrameRef}
-                className="absolute inset-0 z-10 overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
-              >
-                <Image
-                  src={coeurMedia.temporaryImage}
-                  alt={coeurMedia.alt}
-                  fill
-                  sizes="90vw"
-                  className="object-cover object-center"
-                  data-temporary-media="true"
-                />
-              </div>
-              <div
-                ref={bouquetFrameRef}
-                className="absolute inset-0 z-20 overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
-              >
-                <Image
-                  src={bouquetMedia.temporaryImage}
-                  alt={bouquetMedia.alt}
-                  fill
-                  sizes="90vw"
-                  className="object-cover object-center"
-                  data-temporary-media="true"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="relative mt-7 w-full max-w-[320px]">
-            <ol className="flex justify-center gap-8 border-b border-champagne/15 pb-3">
-              {[bouquet, coeur].map((product, i) => (
-                <li key={product.id}>
-                  <span
-                    ref={(el) => {
-                      stepRefs.current[i] = el;
-                    }}
-                    className="flex items-baseline gap-2 font-display text-base"
-                  >
-                    <span
-                      ref={(el) => {
-                        numberRefs.current[i] = el;
-                      }}
-                      className="mono-label"
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {product.name}
-                  </span>
-                </li>
-              ))}
-            </ol>
-
-            <div className="relative mt-5 min-h-[150px] text-center">
-              <div ref={bouquetCopyRef} className="absolute inset-x-0">
-                <p className="mono-label">{bouquet.eyebrow}</p>
-                <p className="mt-2 font-display text-xl italic text-champagne">{bouquet.tagline}</p>
-                <ul className="mt-4 flex flex-col items-center gap-1.5">
-                  {bouquet.facts.map((fact) => (
-                    <li key={fact} className="font-sans text-xs text-ivory/75">
-                      {fact}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div ref={coeurCopyRef} className="absolute inset-x-0">
-                <p className="mono-label">{coeur.eyebrow}</p>
-                <p className="mt-2 font-display text-xl italic text-champagne">{coeur.tagline}</p>
-                <ul className="mt-4 flex flex-col items-center gap-1.5">
-                  {coeur.facts.map((fact) => (
-                    <li key={fact} className="font-sans text-xs text-ivory/75">
-                      {fact}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div ref={ctaRef} className="mt-5 flex justify-center">
-              <AtelierButton href="#reserva" variant="primary">
-                {colecaoScene.cta}
-              </AtelierButton>
-            </div>
-          </div>
-        </div>
+    <div ref={blockRef} className="flex flex-col">
+      <div ref={imageRef} className="relative aspect-[4/5] w-full overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+        <Image src={media.temporaryImage} alt={media.alt} fill sizes="100vw" className="object-cover object-center" data-temporary-media="true" />
       </div>
-    </section>
+      <div ref={copyRef} className="mt-6">
+        <p className="mono-label">{String(index + 1).padStart(2, "0")} — {product.eyebrow}</p>
+        <p className="mt-3 font-display text-2xl italic text-champagne">{product.name}</p>
+        <p className="mt-1 font-display text-xl italic text-champagne/85">{product.tagline}</p>
+        <ul className="mt-5 flex flex-col gap-2">
+          {product.facts.map((fact) => (
+            <li key={fact} className="flex items-center gap-3 font-sans text-sm text-ivory/75">
+              <span className="h-px w-5 bg-rouge/70" aria-hidden="true" />
+              {fact}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 
-function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
+function ProdutoStatic({ reducedMotion }: { reducedMotion: boolean }) {
   const [active, setActive] = useState<0 | 1>(0);
   const activeProduct = active === 0 ? bouquet : coeur;
   const sectionRef = useRef<HTMLElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
-  const introRef = useRef<HTMLParagraphElement>(null);
   const framesRef = useRef<HTMLDivElement>(null);
   const asideRef = useRef<HTMLDivElement>(null);
 
@@ -422,15 +332,11 @@ function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
     // moment after mount — always reset to the visible end state here, not
     // just skip, or a stale first pass that set opacity:0 is never undone.
     if (reducedMotion) {
-      gsap.set([eyebrowRef.current, introRef.current, framesRef.current, asideRef.current], {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-      });
+      gsap.set([eyebrowRef.current, framesRef.current, asideRef.current], { opacity: 1, y: 0, scale: 1 });
       return;
     }
 
-    gsap.set([eyebrowRef.current, introRef.current], { opacity: 0, y: 14 });
+    gsap.set(eyebrowRef.current, { opacity: 0, y: 14 });
     gsap.set(framesRef.current, { opacity: 0, y: 20, scale: 0.97 });
     gsap.set(asideRef.current, { opacity: 0, y: 16 });
 
@@ -441,7 +347,6 @@ function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
         tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.5 }, 0)
-          .to(introRef.current, { opacity: 1, y: 0, duration: 0.5 }, 0.08)
           .to(framesRef.current, { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.15)
           .to(asideRef.current, { opacity: 1, y: 0, duration: 0.5 }, 0.4);
       },
@@ -451,7 +356,7 @@ function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
   }, [reducedMotion]);
 
   return (
-    <section ref={sectionRef} id="colecao" className="relative overflow-hidden bg-oxblood py-24 md:py-32" aria-labelledby="colecao-title">
+    <section ref={sectionRef} id="produto" className="relative overflow-hidden bg-oxblood py-24 md:py-32" aria-labelledby="produto-title">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-60"
@@ -462,13 +367,12 @@ function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
       />
 
       <div className="container-lga relative">
-        <p ref={eyebrowRef} className="mono-label">{colecaoScene.eyebrow}</p>
-        <h2 id="colecao-title" className="sr-only">
-          A Coleção Le Grand Amour
+        <p ref={eyebrowRef} className="mono-label">{produtoScene.eyebrow}</p>
+        <h2 id="produto-title" className="sr-only">
+          Le Bouquet e Le Cœur Royale — as criações da coleção Le Grand Amour
         </h2>
-        <p ref={introRef} className="mt-4 max-w-md font-display text-xl italic text-champagne/90">{manifesto.title}</p>
 
-        <div className="relative mt-16 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-6">
+        <div className="relative mt-10 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-6">
           <div ref={framesRef} className="relative aspect-[4/5] w-full sm:aspect-[16/10] lg:col-span-8 lg:aspect-[16/11]">
             <div
               aria-hidden="true"
@@ -554,14 +458,11 @@ function ColecaoStatic({ reducedMotion }: { reducedMotion: boolean }) {
                   </li>
                 ))}
               </ul>
-              <AtelierButton href={`?criacao=${activeProduct.id}#reserva`} variant="secondary" className="mt-8">
-                {activeProduct.cta}
-              </AtelierButton>
             </div>
 
-            <AtelierButton href="#reserva" variant="primary" className="mt-10">
-              {colecaoScene.cta}
-            </AtelierButton>
+            <div className="mt-10">
+              <StartServiceCTA />
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,16 @@
 import { z } from "zod";
 
+function digitsOnly(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+/**
+ * Simplified to the two fields the client's approved direction asks for:
+ * Nome and WhatsApp. WhatsApp accepts any formatting (spaces, parens,
+ * dashes, optional +55 country code) — validated by digit count (10–13),
+ * not by a rigid pattern, since the form applies a Brazilian phone mask
+ * client-side but must still accept a pasted or unmasked value.
+ */
 export const reservationSchema = z.object({
   name: z
     .string()
@@ -10,18 +21,11 @@ export const reservationSchema = z.object({
     .string()
     .trim()
     .min(8, "Informe um WhatsApp válido.")
-    .regex(/^[0-9()+\-.\s]{8,20}$/, "Use apenas números, espaços e +()-."),
-  city: z.string().trim().min(2, "Informe sua cidade.").max(80, "Cidade muito longa."),
-  creation: z.enum(["le-bouquet", "le-coeur-royale", "ainda-nao-decidi"], {
-    message: "Selecione a criação desejada.",
-  }),
-  occasion: z.string().trim().max(120, "Texto muito longo.").optional().or(z.literal("")),
-  desiredDate: z.string().trim().optional().or(z.literal("")),
-  message: z.string().trim().max(600, "Mensagem muito longa.").optional().or(z.literal("")),
-  consent: z.literal(true, {
-    message: "É necessário autorizar o contato para prosseguir.",
-  }),
-  /** Honeypot — must stay empty. Bots fill hidden fields. */
+    .refine((value) => {
+      const digits = digitsOnly(value);
+      return digits.length >= 10 && digits.length <= 13;
+    }, "Informe um WhatsApp válido, com DDD."),
+  /** Honeypot — must stay empty. Bots fill hidden fields. Never rendered visibly. */
   company: z.string().max(0).optional().or(z.literal("")),
 });
 

@@ -1,22 +1,17 @@
-import { brand, contact, nav, reservation } from "@/data/content";
-
-function buildWhatsAppUrl() {
-  if (!contact.whatsappNumber) return null;
-  const message = encodeURIComponent(reservation.whatsappMessage);
-  return `https://wa.me/${contact.whatsappNumber}?text=${message}`;
-}
+import { brand, contact, nav } from "@/data/content";
 
 /**
  * Closing signature of the campaign, not a second reservation scene — no
- * repeated giant CTA, no restatement of the interlude's phrase. Continues
- * the same dark ground as the page above it; separation comes from spacing
- * and a hairline rule, not a background or color change. Two areas: the
- * signature (brand + partnership, large and quiet) and the practical
- * information a visitor actually needs (nav, contact, location, legal).
+ * repeated giant CTA. Continues the same dark ground as the page above it;
+ * separation comes from spacing and a hairline rule, not a background or
+ * color change. Two areas: the signature (brand + partnership, large and
+ * quiet) and the practical information a visitor actually needs (nav,
+ * social, location, legal). No WhatsApp deep-link here — every commercial
+ * path funnels through the single "Iniciar atendimento" CTA/form instead
+ * of a second, competing conversion route.
  */
 export default function Footer() {
-  const whatsappUrl = buildWhatsAppUrl();
-  const hasContacts = Boolean(whatsappUrl || contact.instagramHandle);
+  const hasInstagram = Boolean(contact.instagramHandle);
 
   return (
     <footer className="border-t border-gold/10 bg-noir">
@@ -48,35 +43,17 @@ export default function Footer() {
             </nav>
           </div>
 
-          {hasContacts && (
+          {hasInstagram && (
             <div>
-              <p className="mono-label mb-4">Atendimento</p>
-              <ul className="flex flex-col gap-2">
-                {whatsappUrl && (
-                  <li>
-                    <a
-                      href={whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-sans text-sm text-muted transition-colors hover:text-gold"
-                    >
-                      WhatsApp
-                    </a>
-                  </li>
-                )}
-                {contact.instagramHandle && (
-                  <li>
-                    <a
-                      href={`https://instagram.com/${contact.instagramHandle}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-sans text-sm text-muted transition-colors hover:text-gold"
-                    >
-                      @{contact.instagramHandle}
-                    </a>
-                  </li>
-                )}
-              </ul>
+              <p className="mono-label mb-4">Redes</p>
+              <a
+                href={`https://instagram.com/${contact.instagramHandle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans text-sm text-muted transition-colors hover:text-gold"
+              >
+                @{contact.instagramHandle}
+              </a>
             </div>
           )}
 

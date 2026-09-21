@@ -2,16 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { hero } from "@/data/content";
+import { CTA_LABEL, CTA_HREF } from "@/components/cta/StartServiceCTA";
 
 /**
  * Mobile-only persistent CTA bar — the header's own CTA collapses on small
  * screens (logo + full text + hamburger has no room), so this is where the
- * "always reachable" reservation entry point lives instead. Appears once
- * the visitor scrolls past the Hero (its own CTA is already in view before
- * that, so showing this immediately would be redundant), and disappears for
- * good once they reach the reservation section — no point offering a
- * shortcut to a form the visitor is already looking at.
+ * "always reachable" atendimento entry point lives instead. Appears once
+ * the visitor scrolls past DESEJO (its own CTA is already in view before
+ * that), and disappears for good once they reach COMPRA — no point
+ * offering a shortcut to a form the visitor is already looking at, and the
+ * brief is explicit that no fixed bar should sit over the final CTA.
  */
 export default function MobileStickyCta() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -20,16 +20,16 @@ export default function MobileStickyCta() {
 
   useEffect(() => {
     if (isDesktop) return;
-    const heroEl = document.getElementById("topo");
-    const reservaEl = document.getElementById("reserva");
-    if (!heroEl || !reservaEl) return;
+    const heroEl = document.getElementById("desejo");
+    const compraEl = document.getElementById("atendimento");
+    if (!heroEl || !compraEl) return;
 
     const update = () => {
       tickingRef.current = false;
       const y = window.scrollY;
       const heroBottom = heroEl.getBoundingClientRect().bottom + y;
-      const reservaTop = reservaEl.getBoundingClientRect().top + y;
-      setVisible(y > heroBottom - 80 && y < reservaTop - 120);
+      const compraTop = compraEl.getBoundingClientRect().top + y;
+      setVisible(y > heroBottom - 80 && y < compraTop - 120);
     };
     const onScroll = () => {
       if (tickingRef.current) return;
@@ -57,12 +57,12 @@ export default function MobileStickyCta() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <a
-        href="#reserva"
+        href={CTA_HREF}
         tabIndex={visible ? 0 : -1}
         className="group flex min-h-[52px] items-center justify-center gap-3 px-6 font-sans text-[11px] font-medium uppercase tracking-[0.18em] text-ivory transition-transform duration-150 active:scale-[0.98]"
       >
         <span className="h-px w-5 bg-rouge/70 transition-all duration-300 group-active:w-7" aria-hidden="true" />
-        {hero.ctaPrimary}
+        {CTA_LABEL}
         <span className="transition-transform duration-300 group-active:translate-x-1" aria-hidden="true">
           &rarr;
         </span>

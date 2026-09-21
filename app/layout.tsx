@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HashScrollFix from "@/components/layout/HashScrollFix";
 import MobileStickyCta from "@/components/layout/MobileStickyCta";
+import NarrativeIndicator from "@/components/layout/NarrativeIndicator";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     template: "%s — Le Grand Amour",
   },
   description:
-    "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações. Flor de Maria Ateliê em parceria com Patrícia Marchi.",
+    "Não é apenas um buquê. É uma declaração. Uma coleção autoral de alta floricultura da Flor de Maria Ateliê, em parceria com Patrícia Marchi.",
   keywords: [
     "Le Grand Amour",
     "Flor de Maria Ateliê",
@@ -92,6 +93,7 @@ export default function RootLayout({
         <main id="conteudo-principal">{children}</main>
         <Footer />
         <MobileStickyCta />
+        <NarrativeIndicator />
       </body>
     </html>
   );

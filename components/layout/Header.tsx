@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { nav, hero } from "@/data/content";
+import { nav } from "@/data/content";
 import LogoMark from "./LogoMark";
-import AtelierButton from "@/components/ui/AtelierButton";
+import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuMounted, setMenuMounted] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -24,18 +23,6 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Keep the panel mounted through its own exit transition instead of
-  // unmounting the instant `menuOpen` flips false — otherwise it just
-  // vanishes rather than closing.
-  useEffect(() => {
-    if (menuOpen) {
-      setMenuMounted(true);
-      return;
-    }
-    const timer = setTimeout(() => setMenuMounted(false), 320);
-    return () => clearTimeout(timer);
-  }, [menuOpen]);
-
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
@@ -44,7 +31,9 @@ export default function Header() {
       style={{ height: "var(--header-height-mobile)" }}
     >
       <div className="container-lga flex h-[72px] items-center justify-between md:h-[88px]">
-        <a href="#topo" className="flex items-center gap-2">
+        {/* The logo leads back to the very top — DESEJO is the page's own
+            opening, so it doesn't need its own nav item. */}
+        <a href="#desejo" className="flex items-center gap-2">
           <LogoMark compact />
           <span className="sr-only">Le Grand Amour — página inicial</span>
         </a>
@@ -62,14 +51,8 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {/* Tablet/small-desktop range (sm–lg) gets the short label — full
-              logo + nav + long CTA + hamburger never need to coexist here;
-              lg+ nav takes over and the CTA reverts to its full text. */}
           <span className="hidden sm:inline-block">
-            <AtelierButton href="#reserva" variant="header">
-              <span className="lg:hidden">Reservar</span>
-              <span className="hidden lg:inline">{hero.ctaPrimary}</span>
-            </AtelierButton>
+            <StartServiceCTA variant="header" />
           </span>
           <button
             type="button"
@@ -95,40 +78,41 @@ export default function Header() {
         </div>
       </div>
 
-      {menuMounted && (
+      {/* Always mounted — visibility/interactivity controlled by `inert` +
+          CSS, not by mounting on open and timing an unmount for the exit
+          transition. Same pattern already used by the reservation form's
+          own expand/collapse (avoids a setState-in-effect timing dance). */}
+      <div
+        id="mobile-menu"
+        inert={menuOpen ? undefined : true}
+        className={`fixed inset-0 top-[72px] z-40 flex flex-col bg-noir px-6 py-10 transition-[opacity,transform] duration-300 ease-out lg:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
+      >
+        <nav className="flex flex-col gap-6" aria-label="Navegação mobile">
+          {nav.map((item, i) => (
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              style={{ transitionDelay: menuOpen ? `${90 + i * 60}ms` : "0ms" }}
+              className={`font-display text-3xl text-ivory transition-[opacity,transform] duration-400 ease-out hover:text-gold ${
+                menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+              }`}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
         <div
-          id="mobile-menu"
-          className={`fixed inset-0 top-[72px] z-40 flex flex-col bg-noir px-6 py-10 transition-[opacity,transform] duration-300 ease-out lg:hidden ${
-            menuOpen ? "opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
+          style={{ transitionDelay: menuOpen ? `${90 + nav.length * 60}ms` : "0ms" }}
+          className={`mt-10 transition-[opacity,transform] duration-400 ease-out ${
+            menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           }`}
         >
-          <nav className="flex flex-col gap-6" aria-label="Navegação mobile">
-            {nav.map((item, i) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                style={{ transitionDelay: menuOpen ? `${90 + i * 60}ms` : "0ms" }}
-                className={`font-display text-3xl text-ivory transition-[opacity,transform] duration-400 ease-out hover:text-gold ${
-                  menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <div
-            style={{ transitionDelay: menuOpen ? `${90 + nav.length * 60}ms` : "0ms" }}
-            className={`mt-10 transition-[opacity,transform] duration-400 ease-out ${
-              menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
-            }`}
-          >
-            <AtelierButton href="#reserva" variant="primary" onClick={() => setMenuOpen(false)} className="w-full">
-              {hero.ctaPrimary}
-            </AtelierButton>
-          </div>
+          <StartServiceCTA className="w-full" onClick={() => setMenuOpen(false)} />
         </div>
-      )}
+      </div>
     </header>
   );
 }

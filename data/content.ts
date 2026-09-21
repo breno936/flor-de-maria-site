@@ -4,178 +4,101 @@
  * Fields marked EDITABLE_* are intentionally empty — they require real
  * business data the client has not supplied yet (phone numbers, launch
  * date, studio deliverables). Do not fill them with invented values.
+ *
+ * Narrative restructure (client-approved direction): the page now follows
+ * exactly six stages — DESEJO → CONCEITO → PRODUTO → EXPERIÊNCIA → AUTORIA →
+ * COMPRA. Each export below is grouped under its stage.
  */
 
 export const brand = {
   collabLine: "Flor de Maria Ateliê × Patrícia Marchi",
   name: "LE GRAND AMOUR",
-  tagline: "Há amores que não foram feitos para ser discretos.",
   signature: "Amor que se vê. Presença que fica.",
-  manifestoTitle: "Le Grand Amour não é apenas uma coleção. É uma declaração.",
-  directionName: "A DECLARAÇÃO VIVA",
-  narrativeArc: ["sentir", "revelar", "criar", "declarar", "entregar", "permanecer"],
 };
 
+/** Etapa 01 — DESEJO (o hero). Impacto emocional antes de explicar o produto. */
 export const hero = {
-  eyebrowTop: "Flores também contam grandes histórias",
   eyebrow: brand.collabLine,
   title: brand.name,
-  tagline: "Uma declaração floral criada para transformar uma entrega em acontecimento.",
-  ctaPrimary: "Reservar minha declaração",
-  signature: brand.signature,
+  /** "Frase principal" — entregue em duas linhas, nunca disputando protagonismo com o título. */
+  phraseLines: ["Amor que se vê.", "Presença que fica."],
+  support: "Uma declaração floral criada para transformar uma entrega em acontecimento.",
 };
 
-/**
- * Cena 2 — "O Entendimento". Typographic scene, not a second hero: a
- * headline, one short support line, and a secondary link forward to the
- * Ritual scene (where "a experiência" is actually shown).
- */
-export const entendimento = {
-  eyebrow: "A EXPERIÊNCIA",
-  headline: "Não é apenas um buquê.",
-  support: ["É a escolha das flores.", "A composição.", "O acabamento.", "A forma como chega."],
-  secondaryCta: "Entender a experiência",
-  secondaryHref: "#ritual",
-  windowLabel: "BELEZA ESCOLHIDA COM PROPÓSITO",
+/** Etapa 02 — CONCEITO. Transforma o desejo inicial em significado; incorpora o antigo "Para quem". */
+export const conceito = {
+  eyebrow: "02 — CONCEITO",
+  headlineLines: ["Não é apenas um buquê.", "É uma declaração."],
+  body: [
+    "Algumas histórias pedem mais do que um presente.",
+    "Le Grand Amour nasce para transformar sentimentos em presença: na escolha das flores, na composição, no acabamento e na forma como cada criação chega.",
+  ],
+  occasions: [
+    "Para dizer eu te amo.",
+    "Para celebrar.",
+    "Para pedir perdão.",
+    "Para marcar um dia que merece ser lembrado.",
+  ],
 };
 
-/** Kept for the original client manifesto copy — no longer the loudest text on screen, folded into the Coleção scene as a quieter secondary line. */
-export const manifesto = {
-  title: brand.manifestoTitle,
-  body: "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações. Há sentimentos que pedem presença. Gestos que precisam ocupar espaço. Rosas que não chegam apenas como presente, mas como a lembrança de um momento impossível de ignorar.",
+/** Etapa 03 — PRODUTO. Revela claramente o que está sendo vendido — ver data/products.ts para as duas criações. */
+export const produtoScene = {
+  eyebrow: "03 — PRODUTO",
 };
 
-/** Cena 3 — "A Coleção". Staged presentation of both creations together, not two symmetric cards. */
-export const colecaoScene = {
-  eyebrow: "A COLEÇÃO",
-  cta: "Escolher minha declaração",
-};
-
-export const loveTakesShape = {
-  eyebrow: "O Amor Toma Forma",
-  stages: [
+/** Etapa 04 — EXPERIÊNCIA. Por que comprar a coleção é diferente de comprar flores comuns (antigo Ritual). */
+export const experiencia = {
+  eyebrow: "04 — EXPERIÊNCIA",
+  title: "Cada detalhe prepara a presença.",
+  caption: "O amor também se reconhece nos detalhes.",
+  steps: [
+    { label: "ESCOLHA", text: "Flores selecionadas no auge da beleza." },
+    { label: "CRIAÇÃO", text: "Composição preparada de forma autoral para cada declaração." },
+    { label: "ACABAMENTO", text: "Cada detalhe finalizado à mão, com tempo e cuidado." },
     {
-      id: "origem",
-      range: [0, 20] as [number, number],
-      text: "Toda grande declaração começa em um detalhe.",
-    },
-    {
-      id: "gesto",
-      range: [20, 45] as [number, number],
-      text: "Cada rosa é escolhida para ocupar seu lugar.",
-    },
-    {
-      id: "composicao",
-      range: [45, 72] as [number, number],
-      text: "O sentimento ganha forma, volume e presença.",
-    },
-    {
-      id: "revelacao",
-      range: [72, 90] as [number, number],
-      text: "Uma declaração não precisa ser explicada. Precisa ser sentida.",
-    },
-    {
-      id: "hold",
-      range: [90, 100] as [number, number],
-      text: "",
-      cta: "Conhecer as criações",
+      label: "ENTREGA",
+      text: "Apresentação e logística pensadas para que a chegada também faça parte do acontecimento.",
     },
   ],
 };
 
-export const ambassadorSection = {
-  title: "Uma coleção sobre presença, apresentada por quem sabe ocupá-la.",
-  signatureLine: "by Patrícia Marchi",
+/** Etapa 05 — AUTORIA. Origem e legitimidade da coleção (antigo "Patrícia Marchi"). */
+export const autoria = {
+  eyebrow: "05 — AUTORIA",
+  title: "Uma criação feita para ocupar presença.",
   curatorNote:
-    "Projeto idealizado e assinado por Susan, Diretora Criativa da Flor de Maria, que apresenta oficialmente Patrícia Marchi como musa e embaixadora da coleção.",
+    "Projeto idealizado e assinado por Susan, Diretora Criativa da Flor de Maria Ateliê, com Patrícia Marchi como musa e embaixadora da coleção.",
+  signatureLine: "by Patrícia Marchi",
   /** EDITABLE — real, authorized quote from Patrícia Marchi. Do not invent. */
   testimonialQuote: "",
 };
 
-/** Cena 4 — "O que torna especial". The one deliberately light (ivory) pause in the experience. */
-export const especial = {
-  eyebrow: "O que torna Le Grand Amour especial",
-  facts: [
-    { label: "Flores selecionadas", body: "Variedades nobres, escolhidas no auge da beleza." },
-    {
-      label: "Composição autoral",
-      body: "Arranjos exclusivos, criados por Flor de Maria Ateliê × Patrícia Marchi.",
-    },
-    { label: "Acabamento manual", body: "Cada detalhe é finalizado à mão, com tempo e cuidado." },
-    {
-      label: "Entrega preparada para o momento",
-      body: "Embalagem, apresentação e logística pensadas para uma chegada impecável.",
-    },
-  ],
-};
-
-/** Cena 5 — "O Ritual". One pinned full-bleed scene, four stages — not a 9-item list. */
-export const ritual = {
-  eyebrow: "O RITUAL",
-  title: "Cada detalhe prepara a presença.",
-  caption: "O amor também se reconhece nos detalhes.",
-  steps: ["Escolha", "Criação", "Acabamento", "Entrega"],
-};
-
-/** Cena 6 — "Para quem é". Occasion-identification, distinct from the Patrícia ambassador scene. */
-export const paraQuem = {
-  eyebrow: "PARA QUEM",
-  sideLabel: "Algumas histórias merecem flores.",
-  lines: [
-    "Para dizer eu te amo.",
-    "Para celebrar.",
-    "Para pedir perdão.",
-    "Ou para marcar um dia que merece ser lembrado.",
-  ],
-  support: "Cada declaração é preparada sob medida.",
-  cta: "Falar sobre a minha",
-};
-
-/**
- * Closing rose scene ("Da emoção ao gesto") — the emotional hinge between
- * the collection and the atendimento form. Kept separate from `reservation`
- * below: this is the campaign's closing statement, the form section has its
- * own, more practical heading.
- */
-export const roseClosing = {
-  title: "Algumas pessoas merecem mais do que um presente.",
-  phrase: brand.signature,
-};
-
-export const reservation = {
-  eyebrow: "VAMOS CRIAR",
+/** Etapa 06 — COMPRA. Atendimento privado — sem carrinho tradicional. */
+export const compra = {
+  eyebrow: "06 — COMPRA",
   title: "Vamos criar a sua declaração.",
-  body: "Conte-nos a ocasião e cuidaremos do restante.",
-  note: "Atendimento personalizado com todo o sigilo.",
-  ctaPrimary: "Solicitar atendimento",
-  ctaSecondary: "Falar diretamente pelo WhatsApp",
-  whatsappMessage:
-    "Olá! Conheci a coleção Le Grand Amour e gostaria de receber atendimento para escolher minha declaração.",
-  successTitle: "Recebemos sua solicitação.",
-  successBody: "Vamos conversar sobre a sua declaração.",
-  privacyConsentLabel:
-    "Autorizo o contato da Flor de Maria Ateliê para tratar da minha solicitação, conforme a Política de Privacidade.",
-  privacyNote: "Suas informações são tratadas com segurança e utilizadas apenas para atendimento.",
-  messageLabel: "O que você deseja dizer?",
-  detailsToggle: "Adicionar detalhes do presente",
-  creationOptions: [
-    { value: "le-bouquet", label: "Le Bouquet" },
-    { value: "le-coeur-royale", label: "Le Cœur Royale" },
-    { value: "ainda-nao-decidi", label: "Quero orientação" },
-  ] as const,
+  body: "Informe seu nome e WhatsApp. A Flor de Maria entrará em contato para entender o momento e conduzir cada detalhe.",
+  note: "Seus dados serão utilizados exclusivamente para iniciar este atendimento.",
+  successTitle: "Atendimento iniciado.",
+  successBody: "Recebemos seus dados e entraremos em contato pelo WhatsApp.",
 };
 
-export const closing = {
-  collabLine: brand.collabLine,
-  title: brand.name,
-  signature: brand.signature,
-};
+/** Indicador narrativo editorial — as seis etapas aprovadas, nesta ordem exata. */
+export const narrativeSteps = [
+  { id: "desejo", number: "01", label: "DESEJO" },
+  { id: "conceito", number: "02", label: "CONCEITO" },
+  { id: "produto", number: "03", label: "PRODUTO" },
+  { id: "experiencia", number: "04", label: "EXPERIÊNCIA" },
+  { id: "autoria", number: "05", label: "AUTORIA" },
+  { id: "atendimento", number: "06", label: "COMPRA" },
+] as const;
 
+/** Navegação principal — "Desejo" é o próprio início e não precisa de item de menu; a logo leva ao topo. */
 export const nav = [
-  { label: "A coleção", href: "#colecao" },
-  { label: "A experiência", href: "#ritual" },
-  { label: "Para quem", href: "#para-quem" },
-  { label: "Reserva", href: "#reserva" },
+  { label: "Conceito", href: "#conceito" },
+  { label: "Produtos", href: "#produto" },
+  { label: "Experiência", href: "#experiencia" },
+  { label: "Autoria", href: "#autoria" },
 ];
 
 /**

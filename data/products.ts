@@ -4,7 +4,6 @@ export type Product = {
   name: string;
   tagline: string;
   facts: string[];
-  cta: string;
 };
 
 /**
@@ -23,7 +22,6 @@ export const products: Product[] = [
       "Design floral autoral",
       "Acabamento premium",
     ],
-    cta: "Tenho interesse nesta criação",
   },
   {
     id: "le-coeur-royale",
@@ -36,6 +34,5 @@ export const products: Product[] = [
       "Aproximadamente 60 a 70 rosas",
       "Acabamento premium",
     ],
-    cta: "Tenho interesse nesta criação",
   },
 ];

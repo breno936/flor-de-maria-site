@@ -4,23 +4,27 @@ import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { ambassadorSection } from "@/data/content";
+import { autoria } from "@/data/content";
 import ManagedVideo from "@/components/media/ManagedVideo";
+import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
 /**
- * Cena 8 — Patrícia Marchi. The center-out clip-path reveal + signature
- * fade is shared by every breakpoint, untouched from before. Mobile/tablet
- * only adds: a brightness lift woven into the same reveal (the "mudança de
- * luz" the brief asks for, additive — it doesn't change the desktop timing
- * or values at all), a very subtle scroll parallax on the film once
- * revealed, and a portrait-tuned crop so Patrícia stays framed in a narrow
- * viewport instead of the default center crop pushing her out of frame.
+ * Etapa 05 — AUTORIA. Demonstrates the origin and legitimacy of the
+ * collection — a calmer, more human beat right after the intensity of
+ * Experiência. The center-out clip-path reveal + signature fade is shared
+ * by every breakpoint, untouched from before. Mobile/tablet only adds: a
+ * brightness lift woven into the same reveal, a very subtle scroll
+ * parallax on the film once revealed, and a portrait-tuned crop so
+ * Patrícia stays framed in a narrow viewport. Closes with the shared CTA —
+ * this section previously had none, but the brief asks every stage from
+ * PRODUTO onward to resolve toward "iniciar atendimento".
  */
 export default function PatriciaFilm() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
   const filmRef = useRef<HTMLDivElement>(null);
   const signatureRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -33,12 +37,13 @@ export default function PatriciaFilm() {
 
     if (reducedMotion) {
       gsap.set(reveal, { clipPath: "inset(0% 0% 0% 0%)", filter: "brightness(1)" });
-      gsap.set(signature, { opacity: 1, y: 0 });
+      gsap.set([signature, ctaRef.current], { opacity: 1, y: 0 });
       return;
     }
 
     gsap.set(reveal, { clipPath: "inset(0% 48% 0% 48%)" });
     gsap.set(signature, { opacity: 0, y: 10 });
+    gsap.set(ctaRef.current, { opacity: 0, y: 12 });
     if (!isDesktop) gsap.set(reveal, { filter: "brightness(0.65)" });
 
     const trigger = ScrollTrigger.create({
@@ -49,7 +54,11 @@ export default function PatriciaFilm() {
         const tl = gsap.timeline({ defaults: { ease: "power3.inOut" } });
         tl.to(reveal, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1 }, 0);
         if (!isDesktop) tl.to(reveal, { filter: "brightness(1)", duration: 1.1, ease: "power2.out" }, 0);
-        tl.to(signature, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");
+        tl.to(signature, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2").to(
+          ctaRef.current,
+          { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+          "-=0.1"
+        );
       },
     });
 
@@ -77,10 +86,10 @@ export default function PatriciaFilm() {
 
   return (
     <section
-      id="patricia"
+      id="autoria"
       ref={sectionRef}
       className="relative flex min-h-[80svh] items-center overflow-hidden"
-      aria-labelledby="patricia-title"
+      aria-labelledby="autoria-title"
     >
       <div ref={revealRef} className="absolute inset-0">
         <div ref={filmRef} className="absolute inset-[-6%_0]">
@@ -102,25 +111,27 @@ export default function PatriciaFilm() {
       </div>
 
       <div className="container-lga relative z-10 max-w-xl py-24">
-        <p className="mono-label mb-4">MUSA DA COLEÇÃO</p>
+        <p className="mono-label mb-4">{autoria.eyebrow}</p>
         <div className="rule-gold mb-6" />
-        <h2 id="patricia-title" className="font-display text-3xl leading-tight text-ivory sm:text-4xl">
-          {ambassadorSection.title}
+        <h2 id="autoria-title" className="font-display text-3xl leading-tight text-ivory sm:text-4xl">
+          {autoria.title}
         </h2>
 
-        {ambassadorSection.testimonialQuote ? (
+        {autoria.testimonialQuote ? (
           <blockquote className="mt-6 border-l border-gold/50 pl-5 font-display text-xl italic text-champagne">
-            {ambassadorSection.testimonialQuote}
+            {autoria.testimonialQuote}
           </blockquote>
         ) : (
-          <p className="mt-6 max-w-md font-sans text-sm leading-relaxed text-muted">
-            {ambassadorSection.curatorNote}
-          </p>
+          <p className="mt-6 max-w-md font-sans text-sm leading-relaxed text-muted">{autoria.curatorNote}</p>
         )}
 
         <p ref={signatureRef} className="mt-8 font-signature text-4xl text-gold lg:text-3xl">
-          {ambassadorSection.signatureLine}
+          {autoria.signatureLine}
         </p>
+
+        <div ref={ctaRef} className="mt-10">
+          <StartServiceCTA />
+        </div>
       </div>
     </section>
   );

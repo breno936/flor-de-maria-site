@@ -7,8 +7,8 @@ import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { hero } from "@/data/content";
 import { temporaryMedia } from "@/data/temporary-media";
-import AtelierButton from "@/components/ui/AtelierButton";
 import ManagedVideo from "@/components/media/ManagedVideo";
+import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
 const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 const HIDDEN_BOTTOM = "inset(100% 0% 0% 0%)";
@@ -23,28 +23,26 @@ const ribbonMedia = temporaryMedia["ribbon-detail"];
 const heroMedia = temporaryMedia["rose-lateral-light"];
 
 /**
- * "Dos detalhes à grande declaração" — a single ≤2s GSAP timeline, not tied
- * to scroll, reinterpreting the Codrops "Rapid Layers Animation" idea for
- * this collection: matéria (petal) → acabamento (fita) → presença (mão e
- * rosa, cortina central) → assinatura (texto). See MEDIA-MANIFEST.md for
- * what of the reference could/couldn't be inspected.
+ * Etapa 01 — DESEJO. A single ≤2.3s GSAP timeline, not tied to scroll:
+ * matéria (petal) → acabamento (fita) → presença (mão e rosa, cortina
+ * central) → assinatura (eyebrow, título, frase principal, texto de apoio,
+ * CTA). See MEDIA-MANIFEST.md for reference-source notes.
  *
- * The base composition — main film, title, tagline, CTAs — is always in the
- * DOM with its final, fully visible values; only when `playOpening` is true
- * (resolved client-side, after hydration) do the opening layers mount and
- * the base layer's own curtain mask starts closed. No JS, reduced motion,
- * or a direct anchor load all land on that same base state with nothing
- * missing — the opening is a rendered-on-top enhancement, never a
- * prerequisite for seeing a complete hero.
- *
- * Plays on every full page load (including refresh) — deliberately not
- * gated behind a "seen once this session" flag. A direct anchor load
- * (e.g. `/#reserva`) still skips it, since the visitor is arriving to see
- * that section, not the top of the page.
+ * The base composition — main film, eyebrow, title, phrase, support text,
+ * CTA — is always in the DOM with its final, fully visible values; only
+ * when `playOpening` is true (resolved client-side, after hydration) do the
+ * opening layers mount and the base layer's own curtain mask starts closed.
+ * No JS, reduced motion, or a direct anchor load all land on that same base
+ * state with nothing missing — every essential text stays legible even if
+ * the animation never runs. That's also what guards against the opening
+ * ever leaving a text element stuck at opacity 0: nothing here is hidden by
+ * a JSX `style` prop (which would be re-applied — and silently undo any
+ * GSAP tween — on every re-render), only by this one-time `useLayoutEffect`
+ * write, gone for good the moment `playOpening` is false.
  */
 function resolveShouldPlayOpening(): boolean {
   if (typeof window === "undefined") return false;
-  const hasHash = Boolean(window.location.hash) && window.location.hash !== "#topo";
+  const hasHash = Boolean(window.location.hash) && window.location.hash !== "#desejo";
   return !hasHash;
 }
 const shouldPlayOpeningOnLoad = resolveShouldPlayOpening();
@@ -75,7 +73,8 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
   const eyebrowInnerRef = useRef<HTMLSpanElement>(null);
   const line1InnerRef = useRef<HTMLSpanElement>(null);
   const line2InnerRef = useRef<HTMLSpanElement>(null);
-  const taglineRef = useRef<HTMLParagraphElement>(null);
+  const phraseRef = useRef<HTMLParagraphElement>(null);
+  const supportRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
@@ -95,15 +94,6 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
   // useLayoutEffect (not useEffect): the hidden starting values below must
   // land before the browser paints, and — critically — this whole block
   // must run exactly once when `playOpening` flips true and never again.
-  // These elements carry no `style` prop of their own in the JSX (see
-  // render below), so once GSAP has written a value here, no later
-  // re-render (e.g. the `setOverlaysDone`/`setOpeningComplete` calls below,
-  // which do trigger re-renders of this component) can reset it — a
-  // JSX-declared `style={{ ... playOpening ... }}` would be reapplied on
-  // every one of those re-renders and silently undo whatever GSAP had
-  // already animated, which is exactly the bug this replaced: the title
-  // and eyebrow lines were snapping back to their hidden position the
-  // instant the timeline's own completion callback fired a state update.
   useLayoutEffect(() => {
     if (!playOpening) return;
 
@@ -112,7 +102,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     // resting size, not just a subtle settle-down, per the brief's own values.
     gsap.set(curtainInnerRef.current, { scale: 0.88 });
     gsap.set([eyebrowInnerRef.current, line1InnerRef.current, line2InnerRef.current], { yPercent: 110 });
-    gsap.set([taglineRef.current, ctaRef.current], { opacity: 0, y: 16 });
+    gsap.set([phraseRef.current, supportRef.current, ctaRef.current], { opacity: 0, y: 16 });
     gsap.set(petalInnerRef.current, { yPercent: -3, scale: 1.04 });
     gsap.set(ribbonMaskRef.current, { clipPath: HIDDEN_BOTTOM });
     gsap.set(ribbonInnerRef.current, { yPercent: 3 });
@@ -122,21 +112,15 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     tl.to(petalInnerRef.current, { yPercent: 0, scale: 1, duration: 0.4 }, 0)
       // Mask (clip-path wipe) and inner content (counter-drift) read as one
       // motion — a mismatched ease between the two made the photo look like
-      // it "slipped" relative to its own reveal window, most visible right
-      // at the tail where the two curves diverge most. Same explicit ease
+      // it "slipped" relative to its own reveal window. Same explicit ease
       // on both keeps the wipe edge and the image locked together.
       //
       // Both clip-path tweens use `.fromTo()` with an explicit starting
-      // string rather than `.to()`. The reason: HIDDEN_BOTTOM/HIDDEN_CENTER
-      // are symmetric (e.g. left inset === right inset), and the browser
-      // serializes symmetric inset() values into a shorter canonical form
-      // (`inset(0% 50% 0% 50%)` reads back as `inset(0% 50%)`). `.to()`
-      // infers its start value from that serialized computed style, so it
-      // was tweening from a 2-token value toward a 4-token target — GSAP's
-      // interpolator can't align mismatched token counts, so one axis
-      // snapped straight to its end value instead of animating, producing
-      // a visible jump partway through the reveal. Passing the from-value
-      // as our own literal sidesteps the round-trip through the DOM entirely.
+      // string rather than `.to()`: HIDDEN_BOTTOM/HIDDEN_CENTER are
+      // symmetric insets, and browsers serialize symmetric inset() values
+      // into a shorter canonical form GSAP can't reliably infer a start
+      // value from — passing the from-value as our own literal sidesteps
+      // that round-trip entirely.
       .fromTo(ribbonMaskRef.current, { clipPath: HIDDEN_BOTTOM }, { clipPath: OPEN_CLIP, duration: 0.6, ease: "power2.out" }, 0.22)
       .to(ribbonInnerRef.current, { yPercent: 0, duration: 0.6, ease: "power2.out" }, 0.22)
       .fromTo(curtainMaskRef.current, { clipPath: HIDDEN_CENTER }, { clipPath: OPEN_CLIP, duration: 0.7, ease: "power2.inOut" }, 0.65)
@@ -146,16 +130,20 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
       .to(eyebrowInnerRef.current, { yPercent: 0, duration: 0.4 }, 1.0)
       .to(line1InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.12)
       .to(line2InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.24)
-      .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.4)
-      .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.55)
-      .call(() => setOpeningComplete(true), [], 2.05);
+      .to(phraseRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.3)
+      .to(supportRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.5)
+      .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.68)
+      // Belt-and-suspenders: guarantee every essential text element lands
+      // exactly at its final visible value, even if a slow device dropped
+      // frames mid-tween — nothing essential is allowed to end up stuck
+      // between states.
+      .set([eyebrowInnerRef.current, line1InnerRef.current, line2InnerRef.current], { yPercent: 0 })
+      .set([phraseRef.current, supportRef.current, ctaRef.current], { opacity: 1, y: 0 })
+      .call(() => setOpeningComplete(true), [], 2.15);
 
     // The thread — it "prende a cortina": a single red line appears to hold
     // the curtain seam as it starts to part, drawn in as the curtain opens,
-    // then released (fades) the instant the curtain is fully open. It never
-    // touches the CTA directly; the CTA's own double frame (AtelierButton's
-    // ThreadFrame, with `threadRevealDelayMs` below) picks the motif back up
-    // as its payoff, so the thread reads as one continuous idea in two beats.
+    // then released (fades) the instant the curtain is fully open.
     if (isDesktop) {
       tl.to(threadTieRef.current, { scaleY: 1, duration: 0.55, ease: "power2.out" }, 0.55).to(
         threadTieRef.current,
@@ -170,12 +158,9 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     // The whole choreography runs on a fixed clock, but the curtain (0.65s
     // in) uncovers the hero film underneath — starting on schedule
     // regardless of the video's own state means a still-buffering
-    // connection can open the curtain onto a frozen poster frame, then
-    // visibly "pop" into motion once the video catches up. Gate playback
-    // start on the film actually being ready (`canplay`), capped by a short
-    // fallback so a very slow connection still gets the opening rather than
-    // an indefinite stall. On a typical connection the video is already
-    // ready by the time this runs, so `start()` fires immediately below.
+    // connection can open the curtain onto a frozen poster frame. Gate
+    // playback start on the film actually being ready (`canplay`), capped
+    // by a short fallback so a very slow connection still gets the opening.
     let started = false;
     const start = () => {
       if (started) return;
@@ -213,12 +198,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
 
   // Controlled parallax: the main film drifts a few px slower than the
   // scroll, only across the hero's own height, never under reduced motion.
-  // Independent of the opening timeline (different property — y, not scale
-  // — so nothing fights over the same value). Mobile gets a noticeably
-  // smaller amplitude ("muito sutil") than desktop, not zero — enough to
-  // read as alive when the visitor's thumb starts the scroll, not enough to
-  // fight the curtain's own settle or shift the crop distractingly on a
-  // narrow viewport.
+  // Mobile gets a noticeably smaller amplitude than desktop, not zero.
   useEffect(() => {
     if (reducedMotion) return;
     registerGsap();
@@ -241,13 +221,15 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
 
   return (
     <section
-      id="topo"
+      id="desejo"
       ref={sectionRef}
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-noir"
-      aria-label="Le Grand Amour — dos detalhes à grande declaração"
+      aria-label="Le Grand Amour — amor que se vê, presença que fica"
     >
-      {/* Base composition — always rendered with its final values; this is
-          exactly what a no-JS or reduced-motion visitor sees immediately. */}
+      {/* Base composition — always rendered with its final values, z-[3]
+          for the film itself; every essential text lives in a higher
+          stacking context (z-10) so it can never end up visually trapped
+          behind the curtain, thread or overlay layers below it. */}
       <div ref={curtainMaskRef} className="absolute inset-0 z-[3] overflow-hidden">
         <div ref={curtainInnerRef} className="absolute inset-0">
           <ManagedVideo
@@ -263,12 +245,16 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             }}
           />
         </div>
+        {/* Strengthened, always-on scrim (not tied to the opening
+            animation) — guarantees contrast for the text column
+            regardless of the underlying frame's brightness, on both the
+            left-aligned desktop layout and the bottom-centered mobile one. */}
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(7,5,4,0.7) 0%, rgba(7,5,4,0.35) 40%, transparent 64%), linear-gradient(0deg, rgba(7,5,4,0.55) 0%, transparent 30%, transparent 78%, rgba(7,5,4,0.4) 100%)",
+              "linear-gradient(90deg, rgba(7,5,4,0.78) 0%, rgba(7,5,4,0.42) 42%, rgba(7,5,4,0.12) 68%, transparent 100%), linear-gradient(0deg, rgba(7,5,4,0.8) 0%, rgba(7,5,4,0.28) 34%, transparent 55%, transparent 75%, rgba(7,5,4,0.5) 100%)",
           }}
         />
       </div>
@@ -283,12 +269,13 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
         />
       )}
 
-      {/* Text content — same elements whether the opening plays or is skipped */}
+      {/* Text content — same elements whether the opening plays or is
+          skipped, always above every visual layer (z-10). */}
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-end px-6 pb-16 pt-28 sm:px-10 sm:pb-20 md:justify-center md:pb-0 md:pl-16 lg:pl-24">
         <div className="max-w-lg text-center md:text-left">
           <div className="overflow-hidden">
             <span ref={eyebrowInnerRef} className="eyebrow block">
-              {hero.eyebrowTop}
+              {hero.eyebrow}
             </span>
           </div>
           <h1 className="mt-3 font-display leading-[0.95] text-ivory text-[2.75rem] sm:text-6xl lg:text-[4.75rem]">
@@ -303,18 +290,23 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
               </span>
             </span>
           </h1>
-          <p className="mt-2 font-sans text-xs uppercase tracking-[0.2em] text-champagne/80">{hero.eyebrow}</p>
-          <p ref={taglineRef} className="mt-5 max-w-md font-display text-lg italic text-champagne sm:text-2xl">
-            {hero.tagline}
+
+          {/* Frase principal — entrega o significado; o título apenas
+              apresenta a campanha, nunca disputam o mesmo protagonismo. */}
+          <p ref={phraseRef} className="mt-6 max-w-md font-display text-xl italic leading-snug text-champagne sm:text-2xl lg:text-[1.75rem]">
+            {hero.phraseLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </p>
-          <div ref={ctaRef} className="mt-7 flex justify-center md:justify-start">
-            <AtelierButton
-              href="#reserva"
-              variant="primary"
-              threadRevealDelayMs={playOpening ? 1700 : undefined}
-            >
-              {hero.ctaPrimary}
-            </AtelierButton>
+
+          <p ref={supportRef} className="mt-5 max-w-sm font-sans text-sm leading-relaxed text-ivory/75 sm:text-base">
+            {hero.support}
+          </p>
+
+          <div ref={ctaRef} className="mt-8 flex justify-center md:justify-start">
+            <StartServiceCTA threadRevealDelayMs={playOpening ? 1700 : undefined} />
           </div>
         </div>
       </div>
@@ -339,8 +331,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             </div>
           </div>
           {/* Petal (matéria) — the very first thing the visitor sees, so it
-              is already fully open on mount (no wipe-from-nothing at t=0);
-              only scale/drift animate. Everything above covers it in turn. */}
+              is already fully open on mount; only scale/drift animate. */}
           <div ref={petalMaskRef} className="absolute inset-0 z-[1] overflow-hidden">
             <div ref={petalInnerRef} className="absolute inset-[-8%_0_-8%_0]">
               {petalMedia && (

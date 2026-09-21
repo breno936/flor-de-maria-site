@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 /**
  * `scroll-behavior: smooth` (globals.css) can strand the browser's native
- * initial hash-jump mid-flight: it starts animating toward `#reserva` (or
+ * initial hash-jump mid-flight: it starts animating toward `#atendimento` (or
  * any anchor) before webfonts swap in, the swap shifts every section's
  * height underneath it, and the animation stops wherever it happened to be
  * instead of continuing to the real target. Re-issuing the jump once fonts

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { ritual } from "@/data/content";
+import { experiencia } from "@/data/content";
 import { temporaryMedia } from "@/data/temporary-media";
 import type { MediaClipId } from "@/data/media-manifest";
 
@@ -19,26 +19,31 @@ function phase(progress: number, start: number, end: number) {
 }
 
 /**
- * Cena 5 — "O Ritual". Desktop (≥1024px): the original pinned crossfade
- * scene. Mobile/tablet: its own pinned sequence (`RitualMobilePinned`) —
- * shorter (220–250svh vs. 320svh) and built from continuous scale/brightness/
- * vertical-drift instead of a plain crossfade, so each stage reads as its
- * own beat rather than a slideshow. Reduced motion, at any breakpoint, gets
- * `RitualGallery` — a swipeable, user-driven filmstrip with nothing
- * auto-playing.
+ * Etapa 04 — EXPERIÊNCIA. Why buying this collection is different from
+ * buying ordinary flowers — four stages (Escolha, Criação, Acabamento,
+ * Entrega), each its own visual moment, connected by a progress line.
+ * Desktop (≥1024px): a pinned crossfade scene, shortened from 320svh to
+ * 220svh. Mobile/tablet: its own pinned sequence (`ExperienciaMobilePinned`),
+ * shortened from 235svh to 190svh, built from continuous scale/brightness/
+ * vertical-drift instead of a plain crossfade. Reduced motion, at any
+ * breakpoint, gets `ExperienciaGallery` — a swipeable, user-driven
+ * filmstrip with nothing auto-playing.
  */
 export default function CreationRitual() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  if (reducedMotion) return <RitualGallery reducedMotion={reducedMotion} />;
-  return isDesktop ? <RitualPinned /> : <RitualMobilePinned />;
+  if (reducedMotion) return <ExperienciaGallery reducedMotion={reducedMotion} />;
+  return isDesktop ? <ExperienciaPinned /> : <ExperienciaMobilePinned />;
 }
 
-function RitualPinned() {
+function ExperienciaPinned() {
   const outerRef = useRef<HTMLDivElement>(null);
   const frameRefs = useRef<(HTMLDivElement | null)[]>([]);
   const stepRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const numberRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const activeCaptionRef = useRef<HTMLParagraphElement>(null);
+  const progressFillRef = useRef<HTMLDivElement>(null);
+  const lastActiveIndex = useRef(0);
 
   useEffect(() => {
     registerGsap();
@@ -48,14 +53,15 @@ function RitualPinned() {
     gsap.set(frameRefs.current[0], { opacity: 1 });
     gsap.set(frameRefs.current.slice(1), { opacity: 0 });
 
+    const stepCount = stepMedia.length;
+
     const trigger = ScrollTrigger.create({
       trigger: outer,
       start: "top top",
-      end: () => `+=${window.innerHeight * 2.2}`,
+      end: () => `+=${window.innerHeight * 1.2}`,
       scrub: 0.5,
       onUpdate: (self) => {
         const p = self.progress * 100;
-        const stepCount = stepMedia.length;
         const activeIndex = Math.min(stepCount - 1, Math.floor((p / 100) * stepCount));
 
         // Crossfade windows are centered ON each boundary and shared by the
@@ -77,6 +83,14 @@ function RitualPinned() {
         numberRefs.current.forEach((num, i) => {
           gsap.set(num, { color: i === activeIndex ? "var(--rouge)" : "rgba(163,23,31,0.45)" });
         });
+        gsap.set(progressFillRef.current, { scaleX: p / 100 });
+
+        if (activeIndex !== lastActiveIndex.current && activeCaptionRef.current) {
+          lastActiveIndex.current = activeIndex;
+          const caption = activeCaptionRef.current;
+          caption.textContent = experiencia.steps[activeIndex].text;
+          gsap.fromTo(caption, { opacity: 0.3 }, { opacity: 1, duration: 0.35, ease: "power2.out" });
+        }
       },
     });
 
@@ -86,9 +100,9 @@ function RitualPinned() {
   return (
     <section
       ref={outerRef}
-      id="ritual"
-      className="relative h-[320svh]"
-      aria-labelledby="ritual-title"
+      id="experiencia"
+      className="relative h-[220svh]"
+      aria-labelledby="experiencia-title"
     >
       <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
         {media.map((m, i) => (
@@ -111,19 +125,27 @@ function RitualPinned() {
           }}
         />
 
-        <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{ritual.eyebrow}</p>
+        <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{experiencia.eyebrow}</p>
         <p className="mono-label absolute right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
-          {ritual.caption}
+          {experiencia.caption}
         </p>
 
         <div className="container-lga relative w-full pb-16 pt-24 md:pb-24">
-          <h2 id="ritual-title" className="max-w-2xl font-display text-4xl leading-tight text-ivory sm:text-5xl">
-            {ritual.title}
+          <h2 id="experiencia-title" className="max-w-2xl font-display text-4xl leading-tight text-ivory sm:text-5xl">
+            {experiencia.title}
           </h2>
 
-          <ol className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-4 sm:gap-x-5">
-            {ritual.steps.map((step, i) => (
-              <li key={step} className="flex items-center gap-3 sm:gap-5">
+          <p ref={activeCaptionRef} className="mt-4 max-w-md font-sans text-sm leading-relaxed text-champagne/85">
+            {experiencia.steps[0].text}
+          </p>
+
+          <div className="relative mt-10 h-px w-full max-w-2xl bg-champagne/20">
+            <div ref={progressFillRef} className="absolute inset-y-0 left-0 h-px w-full origin-left scale-x-0 bg-rouge" />
+          </div>
+
+          <ol className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-4 sm:gap-x-5">
+            {experiencia.steps.map((step, i) => (
+              <li key={step.label} className="flex items-center gap-3 sm:gap-5">
                 <span
                   ref={(el) => {
                     stepRefs.current[i] = el;
@@ -138,9 +160,9 @@ function RitualPinned() {
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  {step}
+                  {step.label}
                 </span>
-                {i < ritual.steps.length - 1 && (
+                {i < experiencia.steps.length - 1 && (
                   <span className="text-champagne/30" aria-hidden="true">
                     &rarr;
                   </span>
@@ -160,19 +182,20 @@ function RitualPinned() {
 const ENTRY_DIRECTION = [0, 22, -22, 22];
 
 /**
- * Mobile/tablet pinned sequence. Shorter than desktop (`h-[235svh]`, inside
- * the 220–250svh range) and built from continuous scale + brightness +
- * vertical drift rather than a plain crossfade — the outgoing stage scales
- * up and dims ("perde profundidade"), the incoming stage settles in from
- * its own directional offset, and a fill bar under the step list ties the
- * four stages together as one continuous scroll-driven gesture instead of
- * four isolated appear/disappear beats.
+ * Mobile/tablet pinned sequence. Shortened from 235svh to 190svh, built
+ * from continuous scale + brightness + vertical drift rather than a plain
+ * crossfade — the outgoing stage scales up and dims ("perde profundidade"),
+ * the incoming stage settles in from its own directional offset, and a
+ * fill bar under the step list ties the four stages together as one
+ * continuous scroll-driven gesture instead of four isolated appear/
+ * disappear beats.
  */
-function RitualMobilePinned() {
+function ExperienciaMobilePinned() {
   const outerRef = useRef<HTMLDivElement>(null);
   const frameRefs = useRef<(HTMLDivElement | null)[]>([]);
   const numberRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const activeLabelRef = useRef<HTMLParagraphElement>(null);
+  const activeCaptionRef = useRef<HTMLParagraphElement>(null);
   const progressFillRef = useRef<HTMLDivElement>(null);
   const lastActiveIndex = useRef(0);
 
@@ -191,7 +214,7 @@ function RitualMobilePinned() {
     const trigger = ScrollTrigger.create({
       trigger: outer,
       start: "top top",
-      end: () => `+=${window.innerHeight * 1.35}`,
+      end: () => `+=${window.innerHeight * 0.9}`,
       scrub: 0.5,
       onUpdate: (self) => {
         const p = self.progress * 100;
@@ -223,11 +246,16 @@ function RitualMobilePinned() {
         });
         gsap.set(progressFillRef.current, { scaleX: p / 100 });
 
-        if (activeIndex !== lastActiveIndex.current && activeLabelRef.current) {
+        if (activeIndex !== lastActiveIndex.current) {
           lastActiveIndex.current = activeIndex;
-          const label = activeLabelRef.current;
-          label.textContent = ritual.steps[activeIndex];
-          gsap.fromTo(label, { opacity: 0.3 }, { opacity: 1, duration: 0.35, ease: "power2.out" });
+          if (activeLabelRef.current) {
+            activeLabelRef.current.textContent = experiencia.steps[activeIndex].label;
+            gsap.fromTo(activeLabelRef.current, { opacity: 0.3 }, { opacity: 1, duration: 0.35, ease: "power2.out" });
+          }
+          if (activeCaptionRef.current) {
+            activeCaptionRef.current.textContent = experiencia.steps[activeIndex].text;
+            gsap.fromTo(activeCaptionRef.current, { opacity: 0.3 }, { opacity: 1, duration: 0.35, ease: "power2.out" });
+          }
         }
       },
     });
@@ -236,7 +264,7 @@ function RitualMobilePinned() {
   }, []);
 
   return (
-    <section ref={outerRef} id="ritual" className="relative h-[235svh] lg:hidden" aria-labelledby="ritual-title-mobile">
+    <section ref={outerRef} id="experiencia" className="relative h-[190svh] lg:hidden" aria-labelledby="experiencia-title-mobile">
       <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
         {media.map((m, i) => (
           <div
@@ -258,22 +286,24 @@ function RitualMobilePinned() {
           }}
         />
 
-        <p className="mono-label absolute left-6 top-20">{ritual.eyebrow}</p>
+        <p className="mono-label absolute left-6 top-20">{experiencia.eyebrow}</p>
 
         <div className="container-lga relative w-full pb-12 pt-20">
-          <h2 id="ritual-title-mobile" className="max-w-xs font-display text-3xl leading-[1.15] text-ivory">
-            {ritual.title}
+          <h2 id="experiencia-title-mobile" className="max-w-xs font-display text-3xl leading-[1.15] text-ivory">
+            {experiencia.title}
           </h2>
-          <p className="mt-3 max-w-[13rem] font-sans text-xs leading-relaxed text-champagne/70">{ritual.caption}</p>
+          <p ref={activeCaptionRef} className="mt-3 max-w-[15rem] font-sans text-xs leading-relaxed text-champagne/70">
+            {experiencia.steps[0].text}
+          </p>
 
           <div className="relative mt-8 h-px w-full bg-champagne/20">
             <div ref={progressFillRef} className="absolute inset-y-0 left-0 h-px w-full origin-left scale-x-0 bg-rouge" />
           </div>
 
           <div className="mt-5 flex items-center justify-between">
-            {ritual.steps.map((step, i) => (
+            {experiencia.steps.map((step, i) => (
               <span
-                key={step}
+                key={step.label}
                 ref={(el) => {
                   numberRefs.current[i] = el;
                 }}
@@ -284,7 +314,7 @@ function RitualMobilePinned() {
             ))}
           </div>
           <p ref={activeLabelRef} className="mt-2 font-sans text-xs uppercase tracking-[0.2em] text-ivory">
-            {ritual.steps[0]}
+            {experiencia.steps[0].label}
           </p>
         </div>
       </div>
@@ -295,12 +325,11 @@ function RitualMobilePinned() {
 /**
  * Swipeable filmstrip: one full-bleed frame per stage, native CSS scroll-snap
  * (not GSAP-driven — this is deliberately just the browser's own smooth,
- * momentum-correct touch scrolling, the thing mobile visitors already know
- * how to use). A tap on a dot jumps straight there; the active dot tracks
- * scroll position via a plain scroll listener. Used only under reduced
- * motion, at any breakpoint — nothing here auto-plays.
+ * momentum-correct touch scrolling). A tap on a dot jumps straight there;
+ * the active dot tracks scroll position via a plain scroll listener. Used
+ * only under reduced motion, at any breakpoint — nothing here auto-plays.
  */
-function RitualGallery({ reducedMotion }: { reducedMotion: boolean }) {
+function ExperienciaGallery({ reducedMotion }: { reducedMotion: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -346,13 +375,13 @@ function RitualGallery({ reducedMotion }: { reducedMotion: boolean }) {
   }
 
   return (
-    <section ref={sectionRef} id="ritual" className="relative overflow-hidden bg-noir py-20 md:py-28" aria-labelledby="ritual-title">
+    <section ref={sectionRef} id="experiencia" className="relative overflow-hidden bg-noir py-20 md:py-28" aria-labelledby="experiencia-title">
       <div className="container-lga">
-        <p className="mono-label">{ritual.eyebrow}</p>
-        <h2 id="ritual-title" className="mt-4 max-w-md font-display text-3xl leading-[1.1] text-ivory sm:text-4xl">
-          {ritual.title}
+        <p className="mono-label">{experiencia.eyebrow}</p>
+        <h2 id="experiencia-title" className="mt-4 max-w-md font-display text-3xl leading-[1.1] text-ivory sm:text-4xl">
+          {experiencia.title}
         </h2>
-        <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-champagne/70">{ritual.caption}</p>
+        <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-champagne/70">{experiencia.caption}</p>
       </div>
 
       <div
@@ -374,21 +403,24 @@ function RitualGallery({ reducedMotion }: { reducedMotion: boolean }) {
               className="absolute inset-0"
               style={{ background: "linear-gradient(0deg, rgba(7,6,6,0.85) 0%, rgba(7,6,6,0.05) 45%, transparent 70%)" }}
             />
-            <div className="absolute bottom-5 left-6 flex items-baseline gap-3">
-              <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
-              <span className="font-sans text-xs uppercase tracking-[0.2em] text-ivory">{ritual.steps[i]}</span>
+            <div className="absolute bottom-5 left-6 right-6">
+              <div className="flex items-baseline gap-3">
+                <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-sans text-xs uppercase tracking-[0.2em] text-ivory">{experiencia.steps[i].label}</span>
+              </div>
+              <p className="mt-2 max-w-xs font-sans text-xs leading-relaxed text-champagne/80">{experiencia.steps[i].text}</p>
             </div>
           </div>
         ))}
       </div>
 
       <div className="container-lga mt-7 flex items-center justify-center gap-3">
-        {ritual.steps.map((step, i) => (
+        {experiencia.steps.map((step, i) => (
           <button
-            key={step}
+            key={step.label}
             type="button"
             onClick={() => goTo(i)}
-            aria-label={`Ver etapa: ${step}`}
+            aria-label={`Ver etapa: ${step.label}`}
             aria-current={activeIndex === i}
             className={`h-1.5 rounded-full transition-all duration-300 ${
               activeIndex === i ? "w-7 bg-rouge" : "w-1.5 bg-champagne/30 hover:bg-champagne/55"

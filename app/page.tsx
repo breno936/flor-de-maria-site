@@ -1,11 +1,9 @@
 import Hero from "@/components/hero/Hero";
-import Manifesto from "@/components/manifesto/Manifesto";
-import Colecao from "@/components/products/Colecao";
-import WhatMakesItSpecial from "@/components/special/WhatMakesItSpecial";
+import Conceito from "@/components/concept/Conceito";
+import Produto from "@/components/products/Produto";
 import CreationRitual from "@/components/ritual/CreationRitual";
-import ForWhom from "@/components/occasion/ForWhom";
 import PatriciaFilm from "@/components/ambassador/PatriciaFilm";
-import ReservationScene from "@/components/reservation/ReservationScene";
+import Compra from "@/components/purchase/Compra";
 import { contact } from "@/data/content";
 
 const jsonLd = {
@@ -22,6 +20,11 @@ const jsonLd = {
   },
 };
 
+/**
+ * Narrative order — client-approved, exact:
+ * DESEJO → CONCEITO → PRODUTO → EXPERIÊNCIA → AUTORIA → COMPRA.
+ * No macrosections between these six stages.
+ */
 export default function Home() {
   return (
     <>
@@ -30,13 +33,11 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero />
-      <Manifesto />
-      <Colecao />
-      <WhatMakesItSpecial />
+      <Conceito />
+      <Produto />
       <CreationRitual />
-      <ForWhom />
       <PatriciaFilm />
-      <ReservationScene />
+      <Compra />
     </>
   );
 }

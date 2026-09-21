@@ -18,7 +18,11 @@ export async function submitReservation(input: ReservationInput) {
   };
 
   if (!webhookUrl) {
-    console.info("[reservation] RESERVATION_WEBHOOK_URL not configured — logging only:", payload);
+    // Technical log only — never the visitor's name/WhatsApp.
+    console.info("[reservation] RESERVATION_WEBHOOK_URL not configured — submission received but not delivered", {
+      source: payload.source,
+      submittedAt: payload.submittedAt,
+    });
     return { delivered: false as const };
   }
 

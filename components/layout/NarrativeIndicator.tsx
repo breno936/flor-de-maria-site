@@ -80,37 +80,42 @@ export default function NarrativeIndicator() {
 
   const activeIndex = Math.max(0, narrativeSteps.findIndex((step) => step.id === activeId));
   const active = narrativeSteps[activeIndex];
-  // No indicator during the hero itself (redundant with the opening) or
-  // during Atendimento — "não manter uma barra fixa sobre os CTAs" on
-  // mobile, and on desktop the lateral indicator's own ivory label would
-  // otherwise sit directly over the form panel's cream background right
-  // where the active step ("ATENDIMENTO") reads widest — illegible against
-  // a light ground, and exactly the overlap the brief calls out avoiding.
-  const showIndicator = active.id !== "desejo" && active.id !== "atendimento";
+  // Mobile keeps hiding during Hero/Atendimento — "não manter uma barra
+  // fixa sobre os CTAs", and the form deserves full, uncompeted focus at
+  // that narrow width. The desktop lateral version stays visible the whole
+  // page through instead: legibility over the light form panel is handled
+  // by `mix-blend-difference` below (white against dark inverts to a light
+  // read, white against the cream panel inverts to a dark read), so it
+  // never needs to disappear to stay readable.
+  const showMobile = active.id !== "desejo" && active.id !== "atendimento";
 
   return (
     <>
-      {/* Desktop — lateral, discreet: every stage's number stays quietly
-          visible, only the active one gains its label and color. */}
+      {/* Desktop — lateral, discreet, always on: every stage's number stays
+          quietly visible, only the active one gains its label and color.
+          `mix-blend-difference` on the active row guarantees contrast
+          whether it's sitting over a dark section or the form's cream
+          panel, without ever needing to hide. */}
       <div
         aria-hidden="true"
-        className={`pointer-events-none fixed right-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-end gap-3 transition-opacity duration-300 xl:flex ${
-          showIndicator ? "opacity-100" : "opacity-0"
-        }`}
+        className="pointer-events-none fixed right-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-end gap-3 xl:flex"
       >
         {narrativeSteps.map((step) => {
           const isActive = step.id === activeId;
           return (
-            <div key={step.id} className="flex items-center justify-end gap-2">
+            <div
+              key={step.id}
+              className={`flex items-center justify-end gap-2 ${isActive ? "mix-blend-difference" : ""}`}
+            >
               <span
-                className={`font-sans text-[10px] uppercase tracking-[0.16em] text-ivory transition-opacity duration-300 ${
-                  isActive ? "opacity-100" : "opacity-0"
+                className={`font-sans text-[10px] uppercase tracking-[0.16em] transition-opacity duration-300 ${
+                  isActive ? "text-white opacity-100" : "text-ivory opacity-0"
                 }`}
               >
                 {step.label}
               </span>
               <span
-                className={`mono-label transition-colors duration-300 ${isActive ? "text-rouge" : "text-champagne/35"}`}
+                className={`mono-label transition-colors duration-300 ${isActive ? "text-white" : "text-champagne/35"}`}
               >
                 {step.number}
               </span>
@@ -123,7 +128,7 @@ export default function NarrativeIndicator() {
       <div
         aria-hidden="true"
         className={`pointer-events-none fixed right-3 z-30 transition-opacity duration-300 lg:hidden ${
-          showIndicator ? "opacity-100" : "opacity-0"
+          showMobile ? "opacity-100" : "opacity-0"
         }`}
         style={{ top: "calc(var(--header-height-mobile) + 10px)" }}
       >

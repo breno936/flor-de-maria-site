@@ -103,6 +103,7 @@ export const nav = [
   { label: "Produtos", href: "#produto" },
   { label: "Experiência", href: "#experiencia" },
   { label: "Autoria", href: "#autoria" },
+  { label: "Orçamento", href: "#atendimento" },
 ];
 
 /**

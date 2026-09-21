@@ -28,8 +28,8 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  letter-spacing: -0.025em;
 }
 
 a:focus-visible,
@@ -70,19 +70,20 @@ section[id] {
 
 .eyebrow {
   font-family: var(--font-sans);
-  font-size: 0.7rem;
-  letter-spacing: 0.28em;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold);
 }
 
-/* Small technical/directorial credits — "COLEÇÃO 01", "ATELIÊ / SP" — the
-   one place a monospace face earns its keep here: fashion-editorial
-   caption/slate typography, not a UI label. */
+/* Small technical/directorial credits — "COLEÇÃO 01", "ATELIÊ / SP" — same
+   eyebrow scale as `.eyebrow`, DM Sans throughout, never a display face. */
 .mono-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--muted);
 }

@@ -43,7 +43,7 @@ export default function Header() {
             <a
               key={item.href}
               href={item.href}
-              className="font-sans text-xs uppercase tracking-[0.2em] text-ivory/80 transition-colors hover:text-gold"
+              className="font-sans text-[0.78rem] font-medium uppercase tracking-[0.14em] text-ivory/80 transition-colors hover:text-gold"
             >
               {item.label}
             </a>
@@ -96,7 +96,7 @@ export default function Header() {
               href={item.href}
               onClick={() => setMenuOpen(false)}
               style={{ transitionDelay: menuOpen ? `${90 + i * 60}ms` : "0ms" }}
-              className={`font-display text-3xl text-ivory transition-[opacity,transform] duration-400 ease-out hover:text-gold ${
+              className={`font-sans text-2xl font-medium uppercase tracking-[0.05em] text-ivory transition-[opacity,transform] duration-400 ease-out hover:text-gold ${
                 menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
               }`}
             >

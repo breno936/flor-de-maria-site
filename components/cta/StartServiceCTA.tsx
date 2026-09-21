@@ -11,7 +11,6 @@ type StartServiceCTAProps = {
   variant?: Variant;
   className?: string;
   hideArrow?: boolean;
-  threadRevealDelayMs?: number;
   onClick?: MouseEventHandler<HTMLAnchorElement>;
   "aria-label"?: string;
   children?: ReactNode;
@@ -30,7 +29,6 @@ export default function StartServiceCTA({
   variant = "primary",
   className,
   hideArrow,
-  threadRevealDelayMs,
   onClick,
   children,
   ...rest
@@ -41,7 +39,6 @@ export default function StartServiceCTA({
       variant={variant}
       className={className}
       hideArrow={hideArrow}
-      threadRevealDelayMs={threadRevealDelayMs}
       onClick={onClick}
       {...rest}
     >

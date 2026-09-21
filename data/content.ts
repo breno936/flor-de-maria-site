@@ -73,9 +73,13 @@ export const autoria = {
   testimonialQuote: "",
 };
 
-/** Etapa 06 — COMPRA. Atendimento privado — sem carrinho tradicional. */
+/**
+ * Etapa 06 — COMPRA (nome interno do funil). Ao público, esta etapa se
+ * apresenta como "Atendimento Privado" — é assim que a compra realmente
+ * começa, sem carrinho tradicional.
+ */
 export const compra = {
-  eyebrow: "06 — COMPRA",
+  eyebrow: "06 — ATENDIMENTO PRIVADO",
   title: "Vamos criar a sua declaração.",
   body: "Informe seu nome e WhatsApp. A Flor de Maria entrará em contato para entender o momento e conduzir cada detalhe.",
   note: "Seus dados serão utilizados exclusivamente para iniciar este atendimento.",
@@ -90,7 +94,7 @@ export const narrativeSteps = [
   { id: "produto", number: "03", label: "PRODUTO" },
   { id: "experiencia", number: "04", label: "EXPERIÊNCIA" },
   { id: "autoria", number: "05", label: "AUTORIA" },
-  { id: "atendimento", number: "06", label: "COMPRA" },
+  { id: "atendimento", number: "06", label: "ATENDIMENTO" },
 ] as const;
 
 /** Navegação principal — "Desejo" é o próprio início e não precisa de item de menu; a logo leva ao topo. */

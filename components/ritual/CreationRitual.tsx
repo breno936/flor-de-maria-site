@@ -378,7 +378,7 @@ function ExperienciaGallery({ reducedMotion }: { reducedMotion: boolean }) {
     <section ref={sectionRef} id="experiencia" className="relative overflow-hidden bg-noir py-20 md:py-28" aria-labelledby="experiencia-title">
       <div className="container-lga">
         <p className="mono-label">{experiencia.eyebrow}</p>
-        <h2 id="experiencia-title" className="mt-4 max-w-md font-display text-3xl leading-[1.1] text-ivory sm:text-4xl">
+        <h2 id="experiencia-title" className="mt-4 max-w-md font-display text-[clamp(2.8rem,5vw,5.2rem)] leading-[0.94] text-ivory">
           {experiencia.title}
         </h2>
         <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-champagne/70">{experiencia.caption}</p>

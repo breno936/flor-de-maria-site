@@ -57,18 +57,36 @@ export default function NarrativeIndicator() {
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+
+    // Produto and Experiência's own `isDesktop`/reduced-motion detection
+    // starts `false` and self-corrects a moment after mount, swapping in a
+    // taller or shorter DOM subtree. This first `update()` call can land
+    // squarely inside that transient, wrong-for-this-viewport layout — a
+    // *correct* read of temporarily-wrong geometry, not a stale reference,
+    // so re-querying fresh (above) doesn't help. It's only caught by
+    // reading again once that swap has settled: after fonts are ready (they
+    // also reflow every heading) and after a couple of extra frames.
+    const timers: number[] = [];
+    document.fonts?.ready.then(update);
+    requestAnimationFrame(() => requestAnimationFrame(update));
+    timers.push(window.setTimeout(update, 600));
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      timers.forEach((t) => window.clearTimeout(t));
     };
   }, []);
 
   const activeIndex = Math.max(0, narrativeSteps.findIndex((step) => step.id === activeId));
   const active = narrativeSteps[activeIndex];
   // No indicator during the hero itself (redundant with the opening) or
-  // during Compra on mobile — "não manter uma barra fixa sobre os CTAs",
-  // and the form deserves full, uncompeted focus.
-  const showMobile = active.id !== "desejo" && active.id !== "atendimento";
+  // during Atendimento — "não manter uma barra fixa sobre os CTAs" on
+  // mobile, and on desktop the lateral indicator's own ivory label would
+  // otherwise sit directly over the form panel's cream background right
+  // where the active step ("ATENDIMENTO") reads widest — illegible against
+  // a light ground, and exactly the overlap the brief calls out avoiding.
+  const showIndicator = active.id !== "desejo" && active.id !== "atendimento";
 
   return (
     <>
@@ -76,7 +94,9 @@ export default function NarrativeIndicator() {
           visible, only the active one gains its label and color. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed right-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-end gap-3 xl:flex"
+        className={`pointer-events-none fixed right-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-end gap-3 transition-opacity duration-300 xl:flex ${
+          showIndicator ? "opacity-100" : "opacity-0"
+        }`}
       >
         {narrativeSteps.map((step) => {
           const isActive = step.id === activeId;
@@ -103,7 +123,7 @@ export default function NarrativeIndicator() {
       <div
         aria-hidden="true"
         className={`pointer-events-none fixed right-3 z-30 transition-opacity duration-300 lg:hidden ${
-          showMobile ? "opacity-100" : "opacity-0"
+          showIndicator ? "opacity-100" : "opacity-0"
         }`}
         style={{ top: "calc(var(--header-height-mobile) + 10px)" }}
       >

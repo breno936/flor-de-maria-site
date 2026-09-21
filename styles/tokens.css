@@ -38,8 +38,6 @@
   --color-ivory: var(--ivory);
   --color-muted: var(--muted);
 
-  --font-display: var(--font-cormorant);
-  --font-sans: var(--font-manrope);
-  --font-signature: var(--font-parisienne);
-  --font-mono: var(--font-courier-prime);
+  --font-display: var(--font-instrument-serif);
+  --font-sans: var(--font-dm-sans);
 }

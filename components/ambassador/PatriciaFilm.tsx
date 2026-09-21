@@ -125,7 +125,7 @@ export default function PatriciaFilm() {
           <p className="mt-6 max-w-md font-sans text-sm leading-relaxed text-muted">{autoria.curatorNote}</p>
         )}
 
-        <p ref={signatureRef} className="mt-8 font-signature text-4xl text-gold lg:text-3xl">
+        <p ref={signatureRef} className="mt-8 font-display text-3xl italic text-gold lg:text-2xl">
           {autoria.signatureLine}
         </p>
 

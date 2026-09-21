@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope, Parisienne, Courier_Prime } from "next/font/google";
+import { Instrument_Serif, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -7,32 +7,18 @@ import HashScrollFix from "@/components/layout/HashScrollFix";
 import MobileStickyCta from "@/components/layout/MobileStickyCta";
 import NarrativeIndicator from "@/components/layout/NarrativeIndicator";
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const parisienne = Parisienne({
-  variable: "--font-parisienne",
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-});
-
-const courierPrime = Courier_Prime({
-  variable: "--font-courier-prime",
-  subsets: ["latin"],
-  weight: ["400"],
   display: "swap",
 });
 
@@ -82,7 +68,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${cormorant.variable} ${manrope.variable} ${parisienne.variable} ${courierPrime.variable}`}
+      className={`${instrumentSerif.variable} ${dmSans.variable}`}
     >
       <body>
         <HashScrollFix />

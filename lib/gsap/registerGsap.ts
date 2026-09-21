@@ -7,7 +7,7 @@ let registered = false;
 
 /**
  * Registers ScrollTrigger exactly once, client-side only, and refreshes
- * trigger positions once webfonts finish swapping in. Cormorant Garamond
+ * trigger positions once webfonts finish swapping in. Instrument Serif
  * loads with font-display: swap, so every heading's line-height changes
  * after first paint — without this, downstream sections (Patrícia, the
  * reservation form) end up with scroll-trigger start positions computed

@@ -59,11 +59,11 @@ export default function MobileStickyCta() {
       <a
         href={CTA_HREF}
         tabIndex={visible ? 0 : -1}
-        className="group flex min-h-[52px] items-center justify-center gap-3 px-6 font-sans text-[11px] font-medium uppercase tracking-[0.18em] text-ivory transition-transform duration-150 active:scale-[0.98]"
+        className="group flex min-h-[52px] items-center justify-center gap-3 px-6 font-sans text-[0.78rem] font-medium uppercase tracking-[0.14em] text-ivory"
       >
         <span className="h-px w-5 bg-rouge/70 transition-all duration-300 group-active:w-7" aria-hidden="true" />
         {CTA_LABEL}
-        <span className="transition-transform duration-300 group-active:translate-x-1" aria-hidden="true">
+        <span className="transition-transform duration-[320ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-active:translate-x-[3px]" aria-hidden="true">
           &rarr;
         </span>
       </a>

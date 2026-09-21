@@ -278,7 +278,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
               {hero.eyebrow}
             </span>
           </div>
-          <h1 className="mt-3 font-display leading-[0.95] text-ivory text-[2.75rem] sm:text-6xl lg:text-[4.75rem]">
+          <h1 className="mt-3 font-display text-ivory text-[clamp(4rem,8vw,8.5rem)] leading-[0.86]">
             <span className="block overflow-hidden">
               <span ref={line1InnerRef} className="block">
                 {line1}
@@ -301,12 +301,12 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             ))}
           </p>
 
-          <p ref={supportRef} className="mt-5 max-w-sm font-sans text-sm leading-relaxed text-ivory/75 sm:text-base">
+          <p ref={supportRef} className="mt-5 max-w-sm font-sans text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.6] text-ivory/75">
             {hero.support}
           </p>
 
           <div ref={ctaRef} className="mt-8 flex justify-center md:justify-start">
-            <StartServiceCTA threadRevealDelayMs={playOpening ? 1700 : undefined} />
+            <StartServiceCTA />
           </div>
         </div>
       </div>

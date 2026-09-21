@@ -66,7 +66,7 @@ export default function ReservationForm() {
 
   if (status === "success") {
     return (
-      <div className="border border-oxblood/20 bg-ivory p-8 text-center" role="status">
+      <div className="border border-oxblood/20 bg-ivory p-8 text-center sm:p-10" role="status">
         <p className="font-display text-2xl text-noir">{compra.successTitle}</p>
         <p className="mt-3 font-sans text-sm text-noir/60">{compra.successBody}</p>
       </div>
@@ -74,7 +74,7 @@ export default function ReservationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative flex flex-col gap-7 bg-ivory p-7 sm:p-10">
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="relative flex flex-col gap-6 bg-ivory p-7 sm:p-8 lg:p-16">
       {/* Honeypot — hidden from sighted and screen-reader users, bots still fill it */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
         <label htmlFor="company">Empresa</label>
@@ -113,20 +113,20 @@ export default function ReservationForm() {
         </p>
       )}
 
-      <div>
+      <div className="mt-1">
         <AtelierButton type="submit" variant="submit" loading={status === "submitting"}>
           {status === "submitting" ? "Enviando..." : CTA_LABEL}
         </AtelierButton>
-        <p className="mt-4 font-sans text-xs text-noir/50">{compra.note}</p>
+        <p className="mt-4 font-sans text-xs leading-relaxed text-noir/50">{compra.note}</p>
       </div>
     </form>
   );
 }
 
 function inputClass(hasError: boolean) {
-  // py-3.5 keeps every field at a real ≥48px tap target, on every breakpoint.
-  return `w-full border-0 border-b bg-transparent px-0 py-3.5 font-sans text-sm text-noir outline-none transition-colors placeholder:text-noir/30 focus:border-rouge ${
-    hasError ? "border-rouge" : "border-oxblood/25 hover:border-oxblood/45"
+  // min-h-[56px] + a single bottom border only — no box around the field.
+  return `block min-h-[56px] w-full border-0 border-b bg-transparent px-0 py-3 font-sans text-sm text-noir outline-none transition-colors placeholder:text-noir/30 focus:border-[#70111d] ${
+    hasError ? "border-rouge" : "border-[rgba(112,17,29,0.25)] hover:border-[rgba(112,17,29,0.45)]"
   }`;
 }
 
@@ -143,7 +143,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-2 block font-sans text-[11px] uppercase tracking-[0.16em] text-oxblood/80">
+      <label htmlFor={htmlFor} className="mb-2 block font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-oxblood/80">
         {label}
       </label>
       {children}

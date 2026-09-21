@@ -127,7 +127,7 @@ export default function Conceito() {
 
         <div className="md:col-span-8 md:pl-6">
           <p className="mono-label">{conceito.eyebrow}</p>
-          <h2 id="conceito-title" className="mt-4 max-w-lg font-display text-4xl leading-[1.08] text-ivory sm:text-5xl lg:text-6xl">
+          <h2 id="conceito-title" className="mt-4 max-w-lg font-display text-[clamp(2.8rem,5vw,5.2rem)] leading-[0.94] text-ivory">
             {conceito.headlineLines.map((line, i) => (
               <span key={line} className="block overflow-hidden">
                 <span
@@ -149,7 +149,7 @@ export default function Conceito() {
                 ref={(el) => {
                   bodyRefs.current[i] = el;
                 }}
-                className="mt-3 font-sans text-base leading-relaxed text-champagne first:mt-0"
+                className="mt-3 font-sans text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.6] text-champagne first:mt-0"
               >
                 {paragraph}
               </p>

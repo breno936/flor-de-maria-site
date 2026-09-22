@@ -278,12 +278,35 @@ const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 const HIDDEN_LEFT = "inset(0% 0% 0% 100%)";
 
 /**
- * Mobile/tablet: no pin. Each creation is its own block — full photo first
- * (the complete bouquet/box, never a macro crop), facts below. Lê Bouquet
- * keeps a vertical curtain-style wipe; Lê Cœur Royale gets a slow-approach
- * scale-in instead, so the two blocks don't read as the same reveal twice.
+ * Mobile/tablet: no pin (pinning/scrubbing the viewport is scroll-jacking on
+ * a phone), but every other layer of motion from the desktop version is
+ * kept — each creation is its own block, full photo first, facts below. Lê
+ * Bouquet keeps a vertical curtain-style wipe; Lê Cœur Royale gets a
+ * slow-approach scale-in instead, so the two blocks don't read as the same
+ * reveal twice. Each block also carries a small continuous parallax on its
+ * photo while it's in view (the mobile-scale version of the desktop pin's
+ * camera move) and the closing CTA gets its own entrance instead of just
+ * appearing — mobile is the primary device here, so it shouldn't read as
+ * the stripped-down version of the section.
  */
 function ProdutoMobile() {
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    registerGsap();
+    const cta = ctaRef.current;
+    if (!cta) return;
+
+    gsap.set(cta, { opacity: 0, y: 14 });
+    const trigger = ScrollTrigger.create({
+      trigger: cta,
+      start: "top 90%",
+      once: true,
+      onEnter: () => gsap.to(cta, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }),
+    });
+    return () => trigger.kill();
+  }, []);
+
   return (
     <section id="produto" className="relative bg-oxblood py-20" aria-labelledby="produto-title-mobile">
       <div
@@ -305,13 +328,15 @@ function ProdutoMobile() {
           <ProdutoBlock index={1} product={coeur} media={coeurMedia} crops={coeurDetails} variant="approach" />
         </div>
 
-        <div className="mt-14 flex justify-center">
+        <div ref={ctaRef} className="mt-14 flex justify-center">
           <StartServiceCTA />
         </div>
       </div>
     </section>
   );
 }
+
+const PARALLAX_RANGE = 10; // vertical % the photo drifts across the block's time in view — small on purpose (mobile spec: reduced parallax)
 
 function ProdutoBlock({
   index,
@@ -327,7 +352,8 @@ function ProdutoBlock({
   variant: "curtain" | "approach";
 }) {
   const blockRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -335,47 +361,74 @@ function ProdutoBlock({
     const block = blockRef.current;
     if (!block) return;
 
+    // The photo lives in its own inner layer, permanently overscaled, so it
+    // has headroom to drift vertically for the parallax without ever
+    // exposing the frame's edge.
+    gsap.set(innerRef.current, { scale: 1.12, yPercent: 0 });
     if (variant === "curtain") {
-      gsap.set(imageRef.current, { clipPath: HIDDEN_LEFT });
+      gsap.set(frameRef.current, { clipPath: HIDDEN_LEFT });
     } else {
-      gsap.set(imageRef.current, { clipPath: OPEN_CLIP, scale: 1.12, opacity: 0.4 });
+      gsap.set(frameRef.current, { clipPath: OPEN_CLIP, opacity: 0.4 });
+      gsap.set(innerRef.current, { scale: 1.24 });
     }
     gsap.set(copyRef.current, { opacity: 0, y: 12 });
 
-    const trigger = ScrollTrigger.create({
+    const entrance = ScrollTrigger.create({
       trigger: block,
       start: "top 78%",
       once: true,
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
         if (variant === "curtain") {
-          tl.fromTo(imageRef.current, { clipPath: HIDDEN_LEFT }, { clipPath: OPEN_CLIP, duration: 0.8, ease: "power2.out" }, 0);
+          tl.fromTo(frameRef.current, { clipPath: HIDDEN_LEFT }, { clipPath: OPEN_CLIP, duration: 0.8, ease: "power2.out" }, 0);
         } else {
-          tl.to(imageRef.current, { scale: 1, opacity: 1, duration: 1.1, ease: "power2.out" }, 0);
+          tl.to(frameRef.current, { opacity: 1, duration: 0.9 }, 0).to(
+            innerRef.current,
+            { scale: 1.12, duration: 1.1, ease: "power2.out" },
+            0
+          );
         }
         tl.to(copyRef.current, { opacity: 1, y: 0, duration: 0.45 }, 0.35);
       },
     });
 
-    return () => trigger.kill();
+    // Small continuous drift while the block is in view — the mobile,
+    // scroll-native counterpart to the desktop pin's camera move. Targets
+    // yPercent only, never scale, so it can't fight the entrance tween.
+    const parallax = ScrollTrigger.create({
+      trigger: block,
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 0.6,
+      onUpdate: (self) => {
+        gsap.set(innerRef.current, { yPercent: (self.progress - 0.5) * PARALLAX_RANGE });
+      },
+    });
+
+    return () => {
+      entrance.kill();
+      parallax.kill();
+    };
   }, [variant]);
 
   return (
     <div ref={blockRef} className="flex flex-col">
       <div
-        ref={imageRef}
+        ref={frameRef}
         className={`relative w-full overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)] ${
           variant === "curtain" ? "aspect-[4/5]" : "aspect-square rounded-[2rem]"
         }`}
       >
-        <Image
-          src={media.src}
-          alt={media.alt}
-          fill
-          sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: variant === "curtain" ? "40% 25%" : "50% 40%" }}
-        />
+        <div ref={innerRef} className="absolute inset-0">
+          <Image
+            src={media.src}
+            alt={media.alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            style={{ objectPosition: variant === "curtain" ? "40% 25%" : "50% 40%" }}
+          />
+        </div>
       </div>
       <div ref={copyRef} className="mt-6">
         <p className="mono-label">

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { products, type Product } from "@/data/products";
+import { products } from "@/data/products";
 import { produtoScene } from "@/data/content";
 import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
@@ -50,7 +50,7 @@ export default function Produto() {
   const reducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   if (reducedMotion) return <ProdutoStatic reducedMotion={reducedMotion} />;
-  return isDesktop ? <ProdutoFocus /> : <ProdutoMobile />;
+  return isDesktop ? <ProdutoFocus /> : <ProdutoMobilePinned />;
 }
 
 function DetailStrip({ media, crops, label }: { media: ProductMedia; crops: string[]; label: string }) {
@@ -274,179 +274,173 @@ function ProdutoFocus() {
   );
 }
 
-const OPEN_CLIP = "inset(0% 0% 0% 0%)";
-const HIDDEN_LEFT = "inset(0% 0% 0% 100%)";
-
 /**
- * Mobile/tablet: no pin (pinning/scrubbing the viewport is scroll-jacking on
- * a phone), but every other layer of motion from the desktop version is
- * kept — each creation is its own block, full photo first, facts below. Lê
- * Bouquet keeps a vertical curtain-style wipe; Lê Cœur Royale gets a
- * slow-approach scale-in instead, so the two blocks don't read as the same
- * reveal twice. Each block also carries a small continuous parallax on its
- * photo while it's in view (the mobile-scale version of the desktop pin's
- * camera move) and the closing CTA gets its own entrance instead of just
- * appearing — mobile is the primary device here, so it shouldn't read as
- * the stripped-down version of the section.
+ * Mobile/tablet: the same mechanism as desktop — a pinned, scroll-scrubbed
+ * hand-off between the two creations, not a stack of blocks with decorative
+ * motion — just shorter (170svh vs desktop's 200svh) and full-bleed instead
+ * of the asymmetric two-frame composition, which needs more width than a
+ * phone has to still read as "two distinct silhouettes" rather than "two
+ * overlapping thumbnails". This mirrors `ExperienciaMobilePinned` further
+ * down this file: this same site's own proof that a pinned scrub reads fine
+ * on touch as long as it's shorter and well-tuned, not scroll-jacking.
  */
-function ProdutoMobile() {
+function ProdutoMobilePinned() {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const bouquetFrameRef = useRef<HTMLDivElement>(null);
+  const coeurFrameRef = useRef<HTMLDivElement>(null);
+  const bouquetCopyRef = useRef<HTMLDivElement>(null);
+  const coeurCopyRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const numberRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
     registerGsap();
-    const cta = ctaRef.current;
-    if (!cta) return;
+    const outer = outerRef.current;
+    if (!outer) return;
 
-    gsap.set(cta, { opacity: 0, y: 14 });
+    gsap.set(bouquetFrameRef.current, { opacity: 1, scale: 1, filter: "brightness(1)" });
+    gsap.set(coeurFrameRef.current, { opacity: 0, scale: 1.06, filter: "brightness(0.55)" });
+    gsap.set(coeurCopyRef.current, { opacity: 0, y: 12 });
+    gsap.set(ctaRef.current, { opacity: 0, y: 14 });
+
     const trigger = ScrollTrigger.create({
-      trigger: cta,
-      start: "top 90%",
-      once: true,
-      onEnter: () => gsap.to(cta, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }),
+      trigger: outer,
+      start: "top top",
+      end: () => `+=${window.innerHeight * 0.8}`,
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress * 100;
+        const focusCoeur = phase(p, 15, 65);
+
+        gsap.set(bouquetFrameRef.current, {
+          opacity: 1 - focusCoeur,
+          scale: 1 + focusCoeur * 0.05,
+          filter: `brightness(${1 - focusCoeur * 0.45})`,
+        });
+        gsap.set(coeurFrameRef.current, {
+          opacity: focusCoeur,
+          scale: 1.06 - focusCoeur * 0.06,
+          filter: `brightness(${0.55 + focusCoeur * 0.45})`,
+        });
+
+        const bouquetOut = phase(p, 28, 46);
+        const coeurIn = phase(p, 40, 58);
+        gsap.set(bouquetCopyRef.current, { opacity: 1 - bouquetOut, y: bouquetOut * -10 });
+        gsap.set(coeurCopyRef.current, { opacity: coeurIn, y: 12 - coeurIn * 12 });
+
+        const ctaIn = phase(p, 74, 94);
+        gsap.set(ctaRef.current, { opacity: ctaIn, y: 14 - ctaIn * 14 });
+
+        const activeIndex = focusCoeur >= 0.5 ? 1 : 0;
+        stepRefs.current.forEach((step, i) => {
+          gsap.set(step, { color: i === activeIndex ? "var(--ivory)" : "rgba(241,237,229,0.45)" });
+        });
+        numberRefs.current.forEach((num, i) => {
+          gsap.set(num, { color: i === activeIndex ? "var(--champagne)" : "rgba(175,147,103,0.4)" });
+        });
+      },
     });
+
     return () => trigger.kill();
   }, []);
 
   return (
-    <section id="produto" className="relative bg-oxblood py-20" aria-labelledby="produto-title-mobile">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          background:
-            "radial-gradient(60% 50% at 30% 10%, rgba(216,200,168,0.08) 0%, transparent 60%), radial-gradient(70% 60% at 80% 90%, rgba(7,6,6,0.6) 0%, transparent 70%)",
-        }}
-      />
-      <div className="container-lga relative">
-        <p className="mono-label">{produtoScene.eyebrow}</p>
-        <h2 id="produto-title-mobile" className="sr-only">
-          Lê Bouquet e Lê Cœur Royale — as criações da coleção Lê Grand Amour
-        </h2>
-
-        <div className="mt-10 flex flex-col gap-16">
-          <ProdutoBlock index={0} product={bouquet} media={bouquetMedia} crops={bouquetDetails} variant="curtain" />
-          <ProdutoBlock index={1} product={coeur} media={coeurMedia} crops={coeurDetails} variant="approach" />
-        </div>
-
-        <div ref={ctaRef} className="mt-14 flex justify-center">
-          <StartServiceCTA />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const PARALLAX_RANGE = 10; // vertical % the photo drifts across the block's time in view — small on purpose (mobile spec: reduced parallax)
-
-function ProdutoBlock({
-  index,
-  product,
-  media,
-  crops,
-  variant,
-}: {
-  index: number;
-  product: Product;
-  media: ProductMedia;
-  crops: string[];
-  variant: "curtain" | "approach";
-}) {
-  const blockRef = useRef<HTMLDivElement>(null);
-  const frameRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    registerGsap();
-    const block = blockRef.current;
-    if (!block) return;
-
-    // The photo lives in its own inner layer, permanently overscaled, so it
-    // has headroom to drift vertically for the parallax without ever
-    // exposing the frame's edge.
-    gsap.set(innerRef.current, { scale: 1.12, yPercent: 0 });
-    if (variant === "curtain") {
-      gsap.set(frameRef.current, { clipPath: HIDDEN_LEFT });
-    } else {
-      gsap.set(frameRef.current, { clipPath: OPEN_CLIP, opacity: 0.4 });
-      gsap.set(innerRef.current, { scale: 1.24 });
-    }
-    gsap.set(copyRef.current, { opacity: 0, y: 12 });
-
-    const entrance = ScrollTrigger.create({
-      trigger: block,
-      start: "top 78%",
-      once: true,
-      onEnter: () => {
-        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        if (variant === "curtain") {
-          tl.fromTo(frameRef.current, { clipPath: HIDDEN_LEFT }, { clipPath: OPEN_CLIP, duration: 0.8, ease: "power2.out" }, 0);
-        } else {
-          tl.to(frameRef.current, { opacity: 1, duration: 0.9 }, 0).to(
-            innerRef.current,
-            { scale: 1.12, duration: 1.1, ease: "power2.out" },
-            0
-          );
-        }
-        tl.to(copyRef.current, { opacity: 1, y: 0, duration: 0.45 }, 0.35);
-      },
-    });
-
-    // Small continuous drift while the block is in view — the mobile,
-    // scroll-native counterpart to the desktop pin's camera move. Targets
-    // yPercent only, never scale, so it can't fight the entrance tween.
-    const parallax = ScrollTrigger.create({
-      trigger: block,
-      start: "top bottom",
-      end: "bottom top",
-      scrub: 0.6,
-      onUpdate: (self) => {
-        gsap.set(innerRef.current, { yPercent: (self.progress - 0.5) * PARALLAX_RANGE });
-      },
-    });
-
-    return () => {
-      entrance.kill();
-      parallax.kill();
-    };
-  }, [variant]);
-
-  return (
-    <div ref={blockRef} className="flex flex-col">
-      <div
-        ref={frameRef}
-        className={`relative w-full overflow-hidden border border-champagne/40 shadow-[0_20px_60px_rgba(0,0,0,0.5)] ${
-          variant === "curtain" ? "aspect-[4/5]" : "aspect-square rounded-[2rem]"
-        }`}
-      >
-        <div ref={innerRef} className="absolute inset-0">
+    <section ref={outerRef} id="produto" className="relative h-[170svh] lg:hidden" aria-labelledby="produto-title-mobile">
+      <div className="sticky top-0 h-svh w-full overflow-hidden bg-oxblood">
+        <div ref={bouquetFrameRef} className="absolute inset-0">
           <Image
-            src={media.src}
-            alt={media.alt}
+            src={bouquetMedia.src}
+            alt={bouquetMedia.alt}
             fill
             sizes="100vw"
             className="object-cover"
-            style={{ objectPosition: variant === "curtain" ? "40% 25%" : "50% 40%" }}
+            style={{ objectPosition: "38% 20%" }}
           />
         </div>
+        <div ref={coeurFrameRef} className="absolute inset-0">
+          <Image
+            src={coeurMedia.src}
+            alt={coeurMedia.alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+            style={{ objectPosition: "50% 40%" }}
+          />
+        </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(0deg, rgba(7,6,6,0.92) 0%, rgba(7,6,6,0.55) 42%, rgba(7,6,6,0.2) 68%, rgba(7,6,6,0.58) 100%)",
+          }}
+        />
+
+        <div className="container-lga relative flex h-full flex-col justify-end pb-10 pt-24">
+          <p className="mono-label absolute left-6 top-8">{produtoScene.eyebrow}</p>
+          <h2 id="produto-title-mobile" className="sr-only">
+            Lê Bouquet e Lê Cœur Royale — as criações da coleção Lê Grand Amour
+          </h2>
+
+          <ol className="flex flex-wrap gap-x-6 gap-y-2 border-b border-champagne/15 pb-4">
+            {[bouquet, coeur].map((product, i) => (
+              <li key={product.id}>
+                <span
+                  ref={(el) => {
+                    stepRefs.current[i] = el;
+                  }}
+                  className="flex items-baseline gap-2 font-display text-base"
+                >
+                  <span
+                    ref={(el) => {
+                      numberRefs.current[i] = el;
+                    }}
+                    className="mono-label"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {product.name}
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          <div className="relative mt-6 grid">
+            <div ref={bouquetCopyRef} className="[grid-area:1/1]">
+              <p className="mono-label">{bouquet.eyebrow}</p>
+              <p className="mt-3 font-display text-xl italic text-champagne">{bouquet.tagline}</p>
+              <ul className="mt-5 flex flex-col gap-2">
+                {bouquet.facts.map((fact) => (
+                  <li key={fact} className="flex items-center gap-3 font-sans text-sm text-ivory/75">
+                    <span className="h-px w-5 bg-rouge/70" aria-hidden="true" />
+                    {fact}
+                  </li>
+                ))}
+              </ul>
+              <DetailStrip media={bouquetMedia} crops={bouquetDetails} label={bouquet.name} />
+            </div>
+            <div ref={coeurCopyRef} className="[grid-area:1/1]">
+              <p className="mono-label">{coeur.eyebrow}</p>
+              <p className="mt-3 font-display text-xl italic text-champagne">{coeur.tagline}</p>
+              <ul className="mt-5 flex flex-col gap-2">
+                {coeur.facts.map((fact) => (
+                  <li key={fact} className="flex items-center gap-3 font-sans text-sm text-ivory/75">
+                    <span className="h-px w-5 bg-rouge/70" aria-hidden="true" />
+                    {fact}
+                  </li>
+                ))}
+              </ul>
+              <DetailStrip media={coeurMedia} crops={coeurDetails} label={coeur.name} />
+            </div>
+          </div>
+
+          <div ref={ctaRef} className="mt-8">
+            <StartServiceCTA />
+          </div>
+        </div>
       </div>
-      <div ref={copyRef} className="mt-6">
-        <p className="mono-label">
-          {String(index + 1).padStart(2, "0")} — {product.eyebrow}
-        </p>
-        <p className="mt-3 font-display text-2xl italic text-champagne">{product.name}</p>
-        <p className="mt-1 font-display text-xl italic text-champagne/85">{product.tagline}</p>
-        <ul className="mt-5 flex flex-col gap-2">
-          {product.facts.map((fact) => (
-            <li key={fact} className="flex items-center gap-3 font-sans text-sm text-ivory/75">
-              <span className="h-px w-5 bg-rouge/70" aria-hidden="true" />
-              {fact}
-            </li>
-          ))}
-        </ul>
-        <DetailStrip media={media} crops={crops} label={product.name} />
-      </div>
-    </div>
+    </section>
   );
 }
 

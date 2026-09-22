@@ -35,7 +35,7 @@ export default function Header() {
             opening, so it doesn't need its own nav item. */}
         <a href="#desejo" className="flex items-center gap-2">
           <LogoMark compact />
-          <span className="sr-only">Le Grand Amour — página inicial</span>
+          <span className="sr-only">Lê Grand Amour — página inicial</span>
         </a>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">

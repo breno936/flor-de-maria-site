@@ -1,4 +1,5 @@
 import Hero from "@/components/hero/Hero";
+import CampaignMoment from "@/components/campaign/CampaignMoment";
 import Conceito from "@/components/concept/Conceito";
 import Produto from "@/components/products/Produto";
 import CreationRitual from "@/components/ritual/CreationRitual";
@@ -11,7 +12,7 @@ const jsonLd = {
   "@type": "Florist",
   name: "Flor de Maria Ateliê",
   description:
-    "Alta floricultura autoral. Coleção Le Grand Amour, em parceria com Patrícia Marchi.",
+    "Alta Floricultura. Amor em sua forma mais grandiosa. Coleção Lê Grand Amour, em parceria com Patrícia Marchi.",
   areaServed: contact.serviceArea,
   address: {
     "@type": "PostalAddress",
@@ -33,6 +34,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero />
+      <CampaignMoment />
       <Conceito />
       <Produto />
       <CreationRitual />

@@ -70,7 +70,7 @@ export default function Footer() {
           <p className="font-sans text-[11px] text-muted/70">
             © {new Date().getFullYear()} Flor de Maria Ateliê × Patrícia Marchi. Todos os direitos reservados.
           </p>
-          <p className="font-sans text-[11px] text-muted/70">Coleção Le Grand Amour</p>
+          <p className="font-sans text-[11px] text-muted/70">Coleção Lê Grand Amour</p>
         </div>
       </div>
     </footer>

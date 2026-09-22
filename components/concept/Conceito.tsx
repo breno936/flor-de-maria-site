@@ -127,7 +127,7 @@ export default function Conceito() {
 
         <div className="md:col-span-8 md:pl-6">
           <p className="mono-label">{conceito.eyebrow}</p>
-          <h2 id="conceito-title" className="mt-4 max-w-lg font-display text-[clamp(2.8rem,5vw,5.2rem)] leading-[0.94] text-ivory">
+          <h2 id="conceito-title" className="mt-4 max-w-2xl font-display text-[clamp(2.2rem,4.2vw,4.4rem)] italic leading-[1.08] text-ivory">
             {conceito.headlineLines.map((line, i) => (
               <span key={line} className="block overflow-hidden">
                 <span

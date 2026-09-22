@@ -1,37 +1,44 @@
 /**
- * Confirmed copy only. Every string here traces back to the client brief
- * or the "Le Grand Amour" partnership presentation (Flor de Maria × Patrícia Marchi).
- * Fields marked EDITABLE_* are intentionally empty — they require real
- * business data the client has not supplied yet (phone numbers, launch
- * date, studio deliverables). Do not fill them with invented values.
+ * Confirmed copy only. Every string here traces back to the client brief,
+ * the official Instagram (@legrandamour.ofc) or the approved product
+ * photography. Fields marked EDITABLE_* are intentionally empty — they
+ * require real business data the client has not supplied yet (phone
+ * numbers, launch date, studio deliverables). Do not fill them with
+ * invented values.
  *
- * Narrative restructure (client-approved direction): the page now follows
- * exactly six stages — DESEJO → CONCEITO → PRODUTO → EXPERIÊNCIA → AUTORIA →
- * COMPRA. Each export below is grouped under its stage.
+ * Art-direction pass: repositioned as "Alta Floricultura" (haute-couture
+ * language, not a traditional florist). The page still follows exactly six
+ * stages — DESEJO → CONCEITO → PRODUTO → EXPERIÊNCIA → AUTORIA → COMPRA
+ * (public label "Atendimento Privado"). Each export below is grouped under
+ * its stage.
  */
 
 export const brand = {
   collabLine: "Flor de Maria Ateliê × Patrícia Marchi",
-  name: "LE GRAND AMOUR",
-  signature: "Amor que se vê. Presença que fica.",
+  name: "LÊ GRAND AMOUR",
+  /** Official positioning line, from the brand's own materials. */
+  positioning: ["Alta Floricultura.", "Amor em sua forma mais grandiosa."],
+  /** Full signature as used on official cards/plaques. */
+  signatureFull: "LÊ GRAND AMOUR by Flor de Maria",
 };
 
 /** Etapa 01 — DESEJO (o hero). Impacto emocional antes de explicar o produto. */
 export const hero = {
-  eyebrow: brand.collabLine,
-  title: brand.name,
-  /** "Frase principal" — entregue em duas linhas, nunca disputando protagonismo com o título. */
-  phraseLines: ["Amor que se vê.", "Presença que fica."],
-  support: "Uma declaração floral criada para transformar uma entrega em acontecimento.",
+  /** Rendered as the official logo image, never reconstructed in a web font. */
+  logoAlt: "Logotipo dourado da Lê Grand Amour sobre fundo preto.",
+  signature: "by Flor de Maria",
+  /** "Frase principal" — entregue em duas linhas, nunca disputando protagonismo com o logotipo. */
+  phraseLines: ["Amor em sua forma", "mais grandiosa."],
+  support: "Alta floricultura criada para histórias que não cabem em gestos comuns.",
+  campaignAlt: "Campanha Lê Grand Amour com mulher segurando buquê monumental de rosas brancas.",
 };
 
 /** Etapa 02 — CONCEITO. Transforma o desejo inicial em significado; incorpora o antigo "Para quem". */
 export const conceito = {
   eyebrow: "02 — CONCEITO",
-  headlineLines: ["Não é apenas um buquê.", "É uma declaração."],
+  headlineLines: ["Algumas histórias não precisam ser contadas.", "Precisam ser sentidas."],
   body: [
-    "Algumas histórias pedem mais do que um presente.",
-    "Le Grand Amour nasce para transformar sentimentos em presença: na escolha das flores, na composição, no acabamento e na forma como cada criação chega.",
+    "Lê Grand Amour nasce para transformar sentimentos em presença — na escolha, na composição, no acabamento e na forma como cada criação chega.",
   ],
   occasions: [
     "Para dizer eu te amo.",
@@ -80,8 +87,8 @@ export const autoria = {
  */
 export const compra = {
   eyebrow: "06 — ATENDIMENTO PRIVADO",
-  title: "Vamos criar a sua declaração.",
-  body: "Informe seu nome e WhatsApp. A Flor de Maria entrará em contato para entender o momento e conduzir cada detalhe.",
+  title: "Comece a sua história.",
+  body: "Compartilhe seus dados e nossa equipe entrará em contato para compreender cada detalhe desse gesto.",
   note: "Seus dados serão utilizados exclusivamente para iniciar este atendimento.",
   successTitle: "Atendimento iniciado.",
   successBody: "Recebemos seus dados e entraremos em contato pelo WhatsApp.",
@@ -114,8 +121,8 @@ export const nav = [
 export const contact = {
   /** EDITABLE — Flor de Maria's own WhatsApp number, digits only, e.g. "5519999999999". */
   whatsappNumber: "",
-  /** EDITABLE — Flor de Maria's own Instagram handle for Le Grand Amour. */
-  instagramHandle: "",
+  /** Official Lê Grand Amour Instagram, given directly by the client. */
+  instagramHandle: "legrandamour.ofc",
   atelierLocation: "Hortolândia – SP",
   serviceArea: "Região Metropolitana de Campinas",
 };

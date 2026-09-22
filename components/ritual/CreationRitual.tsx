@@ -6,11 +6,34 @@ import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { experiencia } from "@/data/content";
-import { temporaryMedia } from "@/data/temporary-media";
-import type { MediaClipId } from "@/data/media-manifest";
 
-const stepMedia: MediaClipId[] = ["hands-selecting", "bouquet-assembly", "ribbon-detail", "delivery-moment"];
-const media = stepMedia.map((id) => temporaryMedia[id]!);
+type StepMedia = { src: string; alt: string; position: string };
+
+// Four different framings of the two approved product photographs, not a
+// second photoshoot — "recortes das imagens fornecidas para mostrar
+// texturas e materiais", exactly as the brief asks for.
+const media: StepMedia[] = [
+  {
+    src: "/assets/le-grand-amour/le-bouquet-vermelho.webp",
+    alt: "Rosas vermelhas selecionadas, close da composição do Lê Bouquet.",
+    position: "18% 20%",
+  },
+  {
+    src: "/assets/le-grand-amour/le-bouquet-vermelho.webp",
+    alt: "Composição autoral do buquê Lê Bouquet, embalagem preta e laço.",
+    position: "42% 55%",
+  },
+  {
+    src: "/assets/le-grand-amour/le-coeur-royale.webp",
+    alt: "Acabamento dourado e fita da caixa Lê Cœur Royale.",
+    position: "68% 20%",
+  },
+  {
+    src: "/assets/le-grand-amour/le-coeur-royale.webp",
+    alt: "Cartão e placa dourada da Lê Grand Amour prontos para a entrega.",
+    position: "28% 78%",
+  },
+];
 
 function phase(progress: number, start: number, end: number) {
   if (progress <= start) return 0;
@@ -53,7 +76,7 @@ function ExperienciaPinned() {
     gsap.set(frameRefs.current[0], { opacity: 1 });
     gsap.set(frameRefs.current.slice(1), { opacity: 0 });
 
-    const stepCount = stepMedia.length;
+    const stepCount = media.length;
 
     const trigger = ScrollTrigger.create({
       trigger: outer,
@@ -107,13 +130,13 @@ function ExperienciaPinned() {
       <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
         {media.map((m, i) => (
           <div
-            key={m.clipId}
+            key={`${m.src}-${i}`}
             ref={(el) => {
               frameRefs.current[i] = el;
             }}
             className="absolute inset-0"
           >
-            <Image src={m.temporaryImage} alt={m.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+            <Image src={m.src} alt={m.alt} fill sizes="100vw" className="object-cover" style={{ objectPosition: m.position }} />
           </div>
         ))}
         <div
@@ -204,7 +227,7 @@ function ExperienciaMobilePinned() {
     const outer = outerRef.current;
     if (!outer) return;
 
-    const stepCount = stepMedia.length;
+    const stepCount = media.length;
 
     gsap.set(frameRefs.current[0], { opacity: 1, scale: 1, y: 0, filter: "brightness(1)" });
     frameRefs.current.slice(1).forEach((frame, idx) => {
@@ -268,13 +291,13 @@ function ExperienciaMobilePinned() {
       <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
         {media.map((m, i) => (
           <div
-            key={m.clipId}
+            key={`${m.src}-${i}`}
             ref={(el) => {
               frameRefs.current[i] = el;
             }}
             className="absolute inset-0"
           >
-            <Image src={m.temporaryImage} alt={m.alt} fill sizes="100vw" className="object-cover" data-temporary-media="true" />
+            <Image src={m.src} alt={m.alt} fill sizes="100vw" className="object-cover" style={{ objectPosition: m.position }} />
           </div>
         ))}
         <div
@@ -362,7 +385,7 @@ function ExperienciaGallery({ reducedMotion }: { reducedMotion: boolean }) {
     if (!scroller) return;
     const onScroll = () => {
       const index = Math.round(scroller.scrollLeft / Math.max(1, scroller.clientWidth));
-      setActiveIndex(Math.min(stepMedia.length - 1, Math.max(0, index)));
+      setActiveIndex(Math.min(media.length - 1, Math.max(0, index)));
     };
     scroller.addEventListener("scroll", onScroll, { passive: true });
     return () => scroller.removeEventListener("scroll", onScroll);
@@ -389,14 +412,14 @@ function ExperienciaGallery({ reducedMotion }: { reducedMotion: boolean }) {
         className="mt-10 flex w-full snap-x snap-mandatory overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {media.map((m, i) => (
-          <div key={m.clipId} className="relative aspect-[4/5] w-full shrink-0 snap-center sm:aspect-[3/4]">
+          <div key={`${m.src}-${i}`} className="relative aspect-[4/5] w-full shrink-0 snap-center sm:aspect-[3/4]">
             <Image
-              src={m.temporaryImage}
+              src={m.src}
               alt={m.alt}
               fill
               sizes="100vw"
               className="object-cover"
-              data-temporary-media="true"
+              style={{ objectPosition: m.position }}
             />
             <div
               aria-hidden="true"

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { autoria } from "@/data/content";
+import { autoria, brand } from "@/data/content";
 import ManagedVideo from "@/components/media/ManagedVideo";
 import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
@@ -95,7 +95,7 @@ export default function PatriciaFilm() {
         <div ref={filmRef} className="absolute inset-[-6%_0]">
           <ManagedVideo
             clipId="patricia-film"
-            description="Patrícia Marchi caminhando e observando a criação Le Grand Amour, tocando as rosas, olhando para fora de câmera."
+            description="Patrícia Marchi caminhando e observando a criação Lê Grand Amour, tocando as rosas, olhando para fora de câmera."
             aspectClassName="h-full w-full"
             objectPositionClassName="object-[50%_24%] lg:object-center"
           />
@@ -125,7 +125,11 @@ export default function PatriciaFilm() {
           <p className="mt-6 max-w-md font-sans text-sm leading-relaxed text-muted">{autoria.curatorNote}</p>
         )}
 
-        <p ref={signatureRef} className="mt-8 font-display text-3xl italic text-gold lg:text-2xl">
+        <p className="mt-6 font-sans text-[0.68rem] font-medium uppercase tracking-[0.2em] text-champagne/60">
+          {brand.signatureFull}
+        </p>
+
+        <p ref={signatureRef} className="mt-4 font-display text-3xl italic text-gold lg:text-2xl">
           {autoria.signatureLine}
         </p>
 

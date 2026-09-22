@@ -14,10 +14,6 @@ const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 const HIDDEN_BOTTOM = "inset(100% 0% 0% 0%)";
 const HIDDEN_CENTER = "inset(0% 50% 0% 50%)";
 
-const words = hero.title.split(" ");
-const line1 = words.slice(0, -1).join(" ");
-const line2 = words.slice(-1).join(" ");
-
 const petalMedia = temporaryMedia["petal-macro"];
 const ribbonMedia = temporaryMedia["ribbon-detail"];
 const heroMedia = temporaryMedia["rose-lateral-light"];
@@ -70,9 +66,8 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
   const ribbonMaskRef = useRef<HTMLDivElement>(null);
   const ribbonInnerRef = useRef<HTMLDivElement>(null);
   const threadTieRef = useRef<HTMLDivElement>(null);
-  const eyebrowInnerRef = useRef<HTMLSpanElement>(null);
-  const line1InnerRef = useRef<HTMLSpanElement>(null);
-  const line2InnerRef = useRef<HTMLSpanElement>(null);
+  const logoInnerRef = useRef<HTMLSpanElement>(null);
+  const signatureInnerRef = useRef<HTMLSpanElement>(null);
   const phraseRef = useRef<HTMLParagraphElement>(null);
   const supportRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -101,7 +96,8 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
     // The rose "surges" into view — starts visibly smaller (0.88) than its
     // resting size, not just a subtle settle-down, per the brief's own values.
     gsap.set(curtainInnerRef.current, { scale: 0.88 });
-    gsap.set([eyebrowInnerRef.current, line1InnerRef.current, line2InnerRef.current], { yPercent: 110 });
+    gsap.set(logoInnerRef.current, { opacity: 0, scale: 1.04 });
+    gsap.set(signatureInnerRef.current, { yPercent: 110 });
     gsap.set([phraseRef.current, supportRef.current, ctaRef.current], { opacity: 0, y: 16 });
     gsap.set(petalInnerRef.current, { yPercent: -3, scale: 1.04 });
     gsap.set(ribbonMaskRef.current, { clipPath: HIDDEN_BOTTOM });
@@ -127,9 +123,8 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
       .to(curtainInnerRef.current, { scale: 1, duration: 0.85, ease: "power2.out" }, 0.65)
       .set([petalMaskRef.current, ribbonMaskRef.current], { autoAlpha: 0 }, 1.35)
       .call(() => setOverlaysDone(true), [], 1.35)
-      .to(eyebrowInnerRef.current, { yPercent: 0, duration: 0.4 }, 1.0)
-      .to(line1InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.12)
-      .to(line2InnerRef.current, { yPercent: 0, duration: 0.42 }, 1.24)
+      .to(logoInnerRef.current, { opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" }, 1.0)
+      .to(signatureInnerRef.current, { yPercent: 0, duration: 0.4 }, 1.3)
       .to(phraseRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.3)
       .to(supportRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.5)
       .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.4 }, 1.68)
@@ -137,7 +132,8 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
       // exactly at its final visible value, even if a slow device dropped
       // frames mid-tween — nothing essential is allowed to end up stuck
       // between states.
-      .set([eyebrowInnerRef.current, line1InnerRef.current, line2InnerRef.current], { yPercent: 0 })
+      .set([logoInnerRef.current], { opacity: 1, scale: 1 })
+      .set([signatureInnerRef.current], { yPercent: 0 })
       .set([phraseRef.current, supportRef.current, ctaRef.current], { opacity: 1, y: 0 })
       .call(() => setOpeningComplete(true), [], 2.15);
 
@@ -224,7 +220,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
       id="desejo"
       ref={sectionRef}
       className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-noir"
-      aria-label="Le Grand Amour — amor que se vê, presença que fica"
+      aria-label="Lê Grand Amour — amor em sua forma mais grandiosa"
     >
       {/* Base composition — always rendered with its final values, z-[3]
           for the film itself; every essential text lives in a higher
@@ -234,7 +230,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
         <div ref={curtainInnerRef} className="absolute inset-0">
           <ManagedVideo
             clipId="rose-lateral-light"
-            description={heroMedia?.alt ?? "Filme da coleção Le Grand Amour: mão erguendo uma rosa vermelha contra fundo escuro."}
+            description={heroMedia?.alt ?? "Filme da coleção Lê Grand Amour: mão erguendo uma rosa vermelha contra fundo escuro."}
             aspectClassName="h-full w-full"
             objectPositionClassName="object-[55%_30%] md:object-[64%_34%]"
             priority
@@ -273,27 +269,38 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
           skipped, always above every visual layer (z-10). */}
       <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-end px-6 pb-16 pt-28 sm:px-10 sm:pb-20 md:justify-center md:pb-0 md:pl-16 lg:pl-24">
         <div className="max-w-lg text-center md:text-left">
-          <div className="overflow-hidden">
-            <span ref={eyebrowInnerRef} className="eyebrow block">
-              {hero.eyebrow}
-            </span>
-          </div>
-          <h1 className="mt-3 font-display text-ivory text-[clamp(4rem,8vw,8.5rem)] leading-[0.86]">
-            <span className="block overflow-hidden">
-              <span ref={line1InnerRef} className="block">
-                {line1}
-              </span>
-            </span>
-            <span className="block overflow-hidden">
-              <span ref={line2InnerRef} className="block">
-                {line2}
-              </span>
+          {/* O logotipo oficial é usado como imagem — nunca reconstruído em
+              fonte web. Funciona como o h1 da página: a imagem carrega o
+              nome da marca, o texto alternativo entrega o nome acessível. */}
+          <h1 className="inline-block">
+            <span
+              ref={logoInnerRef}
+              className="relative inline-block h-[4.2rem] w-[13rem] sm:h-[5.4rem] sm:w-[16.5rem] lg:h-[6.4rem] lg:w-[19.5rem]"
+            >
+              {/* mix-blend-screen: the source file is a flattened JPEG on a
+                  solid black square canvas, not a transparent PNG — screen
+                  blending drops that black canvas out against whatever
+                  sits behind it (black stays black, only the gold mark
+                  shows), so no visible logo "tile" edge sits on the film. */}
+              <Image
+                src="/assets/le-grand-amour/le-grand-amour-logo.webp"
+                alt={hero.logoAlt}
+                fill
+                priority
+                sizes="(max-width: 640px) 13rem, (max-width: 1024px) 16.5rem, 19.5rem"
+                className="object-contain object-left mix-blend-screen"
+              />
             </span>
           </h1>
+          <div className="mt-2 overflow-hidden">
+            <span ref={signatureInnerRef} className="mono-label block">
+              {hero.signature}
+            </span>
+          </div>
 
-          {/* Frase principal — entrega o significado; o título apenas
+          {/* Frase principal — entrega o significado; o logotipo apenas
               apresenta a campanha, nunca disputam o mesmo protagonismo. */}
-          <p ref={phraseRef} className="mt-6 max-w-md font-display text-xl italic leading-snug text-champagne sm:text-2xl lg:text-[1.75rem]">
+          <p ref={phraseRef} className="mt-6 max-w-md font-display text-[clamp(2.2rem,4vw,3.2rem)] italic leading-[1.05] text-champagne">
             {hero.phraseLines.map((line) => (
               <span key={line} className="block">
                 {line}

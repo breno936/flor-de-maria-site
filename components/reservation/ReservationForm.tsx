@@ -125,8 +125,8 @@ export default function ReservationForm() {
 
 function inputClass(hasError: boolean) {
   // min-h-[56px] + a single bottom border only — no box around the field.
-  return `block min-h-[56px] w-full border-0 border-b bg-transparent px-0 py-3 font-sans text-sm text-noir outline-none transition-colors placeholder:text-noir/30 focus:border-[#70111d] ${
-    hasError ? "border-rouge" : "border-[rgba(112,17,29,0.25)] hover:border-[rgba(112,17,29,0.45)]"
+  return `block min-h-[56px] w-full border-0 border-b bg-transparent px-0 py-3 font-sans text-sm text-noir outline-none transition-colors placeholder:text-noir/30 focus:border-rouge ${
+    hasError ? "border-rouge" : "border-oxblood/30 hover:border-oxblood/55"
   }`;
 }
 

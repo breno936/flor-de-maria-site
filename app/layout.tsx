@@ -1,24 +1,25 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, DM_Sans } from "next/font/google";
+import { Bodoni_Moda, Manrope } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HashScrollFix from "@/components/layout/HashScrollFix";
 import MobileStickyCta from "@/components/layout/MobileStickyCta";
 import NarrativeIndicator from "@/components/layout/NarrativeIndicator";
+import LogoIntro from "@/components/intro/LogoIntro";
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+const bodoniModa = Bodoni_Moda({
+  variable: "--font-bodoni",
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600"],
   display: "swap",
 });
 
@@ -27,35 +28,36 @@ const siteUrl = "https://www.legrandamour.com.br";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Le Grand Amour — Flor de Maria Ateliê × Patrícia Marchi",
-    template: "%s — Le Grand Amour",
+    default: "Lê Grand Amour — Alta Floricultura by Flor de Maria",
+    template: "%s — Lê Grand Amour",
   },
   description:
-    "Não é apenas um buquê. É uma declaração. Uma coleção autoral de alta floricultura da Flor de Maria Ateliê, em parceria com Patrícia Marchi.",
+    "Alta Floricultura. Amor em sua forma mais grandiosa. Uma coleção autoral da Lê Grand Amour by Flor de Maria, em parceria com Patrícia Marchi.",
   keywords: [
-    "Le Grand Amour",
-    "Flor de Maria Ateliê",
+    "Lê Grand Amour",
+    "Flor de Maria",
+    "alta floricultura",
     "Patrícia Marchi",
     "buquê de rosas de luxo",
     "presente de luxo Campinas",
-    "Le Bouquet",
-    "Le Cœur Royale",
+    "Lê Bouquet",
+    "Lê Cœur Royale",
   ],
   alternates: { canonical: siteUrl },
   openGraph: {
     type: "website",
     locale: "pt_BR",
     url: siteUrl,
-    siteName: "Le Grand Amour",
-    title: "Le Grand Amour — Amor que se vê. Presença que fica.",
+    siteName: "Lê Grand Amour",
+    title: "Lê Grand Amour — Amor em sua forma mais grandiosa.",
     description:
-      "Uma coleção autoral de alta floricultura da Flor de Maria Ateliê, em parceria com Patrícia Marchi.",
+      "Alta Floricultura by Flor de Maria, em parceria com Patrícia Marchi.",
     images: [{ url: "/media/og/le-grand-amour-og.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Le Grand Amour",
-    description: "Há amores que não foram feitos para ser discretos.",
+    title: "Lê Grand Amour",
+    description: "Alta Floricultura. Amor em sua forma mais grandiosa.",
   },
   icons: {
     icon: "/favicon.ico",
@@ -68,9 +70,10 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${instrumentSerif.variable} ${dmSans.variable}`}
+      className={`${bodoniModa.variable} ${manrope.variable}`}
     >
       <body>
+        <LogoIntro />
         <HashScrollFix />
         <a href="#conteudo-principal" className="skip-link">
           Pular para o conteúdo principal

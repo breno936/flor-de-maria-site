@@ -2,13 +2,13 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Le Grand Amour — Flor de Maria Ateliê × Patrícia Marchi",
-    short_name: "Le Grand Amour",
-    description: "Uma coleção autoral de alta floricultura criada para transformar sentimentos em grandes declarações.",
+    name: "Lê Grand Amour — Alta Floricultura by Flor de Maria",
+    short_name: "Lê Grand Amour",
+    description: "Alta Floricultura. Amor em sua forma mais grandiosa.",
     start_url: "/",
     display: "standalone",
-    background_color: "#070504",
-    theme_color: "#070504",
+    background_color: "#050505",
+    theme_color: "#050505",
     icons: [
       { src: "/favicon.ico", sizes: "any", type: "image/x-icon" },
     ],

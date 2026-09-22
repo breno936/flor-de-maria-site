@@ -14,7 +14,7 @@ export const products: Product[] = [
   {
     id: "le-bouquet",
     eyebrow: "Criação I",
-    name: "LE BOUQUET",
+    name: "LÊ BOUQUET",
     tagline: "Uma presença impossível de ignorar.",
     facts: [
       "Buquê monumental",
@@ -26,7 +26,7 @@ export const products: Product[] = [
   {
     id: "le-coeur-royale",
     eyebrow: "Criação II",
-    name: "LE CŒUR ROYALE",
+    name: "LÊ CŒUR ROYALE",
     tagline: "O amor em sua forma mais emblemática.",
     facts: [
       "Caixa rígida autoral",

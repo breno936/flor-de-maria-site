@@ -1,29 +1,30 @@
-/* Le Grand Amour — design tokens, "O Fio da Declaração"
-   Predominantly dark ground, with ONE deliberate ivory pause (Cena 4 —
-   "O que torna especial") as an editorial breath in the middle of the
-   experience — not a return to a light template. --oxblood is the large
-   panel/background color (Coleção, Ritual, Reserva); --rouge stays the
-   vivid "thread" accent (the silk thread, CTA inner line, small live
-   details); --gold remains only for hairline rules and focus outlines,
-   never as the dominant accent — --champagne carries that role now. */
+/* Le Grand Amour — design tokens, art-direction pass (haute-couture
+   positioning). Predominantly black ground; --oxblood ("burgundy") creates
+   pointed, occasional atmosphere shifts — not every section. Red is meant
+   to read mostly through the roses themselves; --rouge ("deep-red") stays a
+   small, deliberate accent (thread lines, active states), not a wash.
+   --gold/--champagne-light carry hairlines, small titles, buttons and
+   institutional detail; long-form text uses --ivory or --muted, never gold. */
 
 :root {
-  --noir: #070606;
-  --noir-soft: #120d0b;
-  --oxblood: #4a0a10;
-  --rouge: #a3171f;
-  --bordeaux: #6e1015;
-  --wine-shadow: #260406;
-  --gold: #b58a4a;
-  --champagne: #af9367;
-  --ivory: #e8dfd2;
-  --muted: #968d82;
+  --noir: #050505;
+  --noir-soft: #0a0807;
+  --oxblood: #47070e;
+  --rouge: #760d19;
+  --bordeaux: #5a0b13;
+  --wine-shadow: #1a0304;
+  --gold: #d7bd88;
+  --champagne: #b9975b;
+  --champagne-light: #d7bd88;
+  --ivory: #f0e7da;
+  --muted: #a99d90;
 
   --header-height: 88px;
   --header-height-mobile: 72px;
 
   --ease-signature: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-couture: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
@@ -35,9 +36,10 @@
   --color-wine-shadow: var(--wine-shadow);
   --color-gold: var(--gold);
   --color-champagne: var(--champagne);
+  --color-champagne-light: var(--champagne-light);
   --color-ivory: var(--ivory);
   --color-muted: var(--muted);
 
-  --font-display: var(--font-instrument-serif);
-  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-bodoni);
+  --font-sans: var(--font-manrope);
 }

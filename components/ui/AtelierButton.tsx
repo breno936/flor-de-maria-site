@@ -38,14 +38,15 @@ const base =
   `group relative inline-flex items-center overflow-hidden font-sans text-[0.78rem] font-medium uppercase tracking-[0.14em] ${TRANSITION} focus-visible:outline focus-visible:outline-1 focus-visible:outline-champagne focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-50`;
 
 // One border only, per variant context — champagne on the dark ground
-// (primary/header/secondary), vinho on the cream form panel (submit). No
-// inner frame, no second border of any kind.
+// (primary/header/secondary), a deep-red hairline on the cream form panel
+// (submit) so it still reads against a light background. No inner frame,
+// no second border of any kind.
 const shapes: Record<Variant, string> = {
-  primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-[rgba(190,151,93,0.5)] text-champagne hover:text-ivory",
-  secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-[rgba(190,151,93,0.5)] text-champagne hover:text-ivory",
-  text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne/90 underline decoration-champagne/40 underline-offset-4 hover:text-ivory hover:decoration-champagne",
-  header: "h-10 pl-5 pr-9 min-w-[44px] border border-[rgba(190,151,93,0.5)] text-champagne hover:text-ivory",
-  submit: "h-[54px] pl-8 pr-14 min-w-[44px] border border-[rgba(112,17,29,0.75)] text-noir hover:text-ivory",
+  primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-champagne/55 text-champagne hover:text-noir",
+  secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-champagne/55 text-champagne hover:text-noir",
+  text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne/90 underline decoration-champagne/40 underline-offset-4 hover:text-champagne-light hover:decoration-champagne-light",
+  header: "h-10 pl-5 pr-9 min-w-[44px] border border-champagne/55 text-champagne hover:text-noir",
+  submit: "h-[54px] pl-8 pr-14 min-w-[44px] border border-oxblood/55 text-noir hover:text-noir",
 };
 
 const arrowPosition: Record<Variant, string> = {
@@ -56,10 +57,10 @@ const arrowPosition: Record<Variant, string> = {
   submit: "right-6",
 };
 
-// The hover "fill" — a single flat-color layer, no border of its own,
-// sweeping in from the left. Every bordered variant shares the same vinho
-// tone so the CTA reads consistently whether it sits on dark or cream.
-const FILL_COLOR = "#70111d";
+// The hover "fill" — a single flat champagne layer, no border of its own,
+// sweeping in from the left. Every bordered variant shares the same warm
+// gold tone so the CTA reads consistently whether it sits on dark or cream.
+const FILL_COLOR = "#D7BD88";
 
 /**
  * The one CTA system for the whole site. A single hairline border, no inner

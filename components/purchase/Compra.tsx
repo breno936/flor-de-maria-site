@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { brand, compra } from "@/data/content";
@@ -75,7 +76,7 @@ export default function Compra() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(65% 55% at 82% 12%, rgba(163,23,31,0.14) 0%, transparent 60%), linear-gradient(165deg, #2a0407 0%, #4a0a10 55%, #1c0305 130%)",
+              "radial-gradient(65% 55% at 82% 12%, rgba(118,13,25,0.16) 0%, transparent 60%), linear-gradient(165deg, #1a0304 0%, #47070e 55%, #0a0203 130%)",
           }}
         />
         <svg className="absolute inset-0 h-full w-full opacity-[0.05]" focusable="false">
@@ -86,17 +87,21 @@ export default function Compra() {
         </svg>
         {/* Faint editorial monogram — the collection's own mark, not a
             second photographic subject. */}
-        <span
-          className="font-display absolute -bottom-10 -right-4 text-[13rem] italic leading-none text-champagne/[0.05] sm:text-[16rem]"
-        >
-          L
-        </span>
+        <div className="absolute bottom-10 right-10 h-20 w-20 sm:h-24 sm:w-24">
+          <Image
+            src="/assets/le-grand-amour/le-grand-amour-logo.webp"
+            alt=""
+            fill
+            sizes="96px"
+            className="object-contain opacity-40 mix-blend-screen"
+          />
+        </div>
       </div>
 
       <div
         ref={threadRef}
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-px origin-left bg-gradient-to-r from-rouge via-rouge/70 to-rouge/0"
+        className="absolute inset-x-0 top-0 h-px origin-left bg-gradient-to-r from-champagne-light via-champagne/70 to-champagne/0"
       />
 
       <div className="relative mx-auto grid w-full max-w-[1600px] gap-16 px-6 md:px-12 lg:grid-cols-12 lg:items-center lg:gap-x-24">

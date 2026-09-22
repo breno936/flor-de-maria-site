@@ -234,8 +234,8 @@ function ProdutoFocus() {
                 ))}
               </ol>
 
-              <div className="relative mt-8 min-h-[260px]">
-                <div ref={bouquetCopyRef} className="absolute inset-0">
+              <div className="relative mt-8 grid">
+                <div ref={bouquetCopyRef} className="[grid-area:1/1]">
                   <p className="mono-label">{bouquet.eyebrow}</p>
                   <p className="mt-3 font-display text-2xl italic text-champagne">{bouquet.tagline}</p>
                   <ul className="mt-6 flex flex-col gap-2">
@@ -248,7 +248,7 @@ function ProdutoFocus() {
                   </ul>
                   <DetailStrip media={bouquetMedia} crops={bouquetDetails} label={bouquet.name} />
                 </div>
-                <div ref={coeurCopyRef} className="absolute inset-0">
+                <div ref={coeurCopyRef} className="[grid-area:1/1]">
                   <p className="mono-label">{coeur.eyebrow}</p>
                   <p className="mt-3 font-display text-2xl italic text-champagne">{coeur.tagline}</p>
                   <ul className="mt-6 flex flex-col gap-2">

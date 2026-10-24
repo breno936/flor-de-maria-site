@@ -47,7 +47,7 @@ export default function CampaignMoment() {
 
     const trigger = ScrollTrigger.create({
       trigger: section,
-      start: "top 80%",
+      start: "top 88%",
       once: true,
       onEnter: () => {
         gsap.timeline({ defaults: { ease: "power3.out" } })

@@ -25,6 +25,9 @@ export type ManagedVideoProps = {
   showDebugLabel?: boolean;
   /** Escape hatch for callers that need imperative control (e.g. a visible pause/play toggle). Called with the live <video> element, or null when none is rendered (image/gradient tier). */
   onVideoElement?: (video: HTMLVideoElement | null) => void;
+  /** `sizes` for the still tiers (desktop / mobile image) — e.g. the Hero asks for more than the viewport so its zoomed opening stays sharp. */
+  sizes?: string;
+  mobileSizes?: string;
 };
 
 /**
@@ -52,6 +55,8 @@ export default function ManagedVideo({
   objectPositionClassName = "",
   showDebugLabel = true,
   onVideoElement,
+  sizes = "(max-width: 767px) 100vw, 60vw",
+  mobileSizes = "100vw",
 }: ManagedVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,7 +163,7 @@ export default function ManagedVideo({
             src={still.image}
             alt={still.alt}
             fill
-            sizes="(max-width: 767px) 100vw, 60vw"
+            sizes={sizes}
             className={`object-cover ${objectPositionClassName} ${still.mobileImage ? "hidden md:block" : ""}`}
             priority={priority}
             quality={80}
@@ -168,7 +173,7 @@ export default function ManagedVideo({
               src={still.mobileImage}
               alt={still.alt}
               fill
-              sizes="100vw"
+              sizes={mobileSizes}
               className={`object-cover md:hidden ${objectPositionClassName}`}
               priority={priority}
               quality={80}
@@ -197,7 +202,7 @@ export default function ManagedVideo({
             src={temp.temporaryImage}
             alt={temp.alt}
             fill
-            sizes="(max-width: 767px) 100vw, 60vw"
+            sizes={sizes}
             className={`object-cover ${objectPositionClassName} ${temp.mobileImage ? "hidden md:block" : ""}`}
             priority={priority}
             data-temporary-media="true"
@@ -208,7 +213,7 @@ export default function ManagedVideo({
               src={temp.mobileImage}
               alt={temp.alt}
               fill
-              sizes="100vw"
+              sizes={mobileSizes}
               className={`object-cover md:hidden ${objectPositionClassName}`}
               priority={priority}
               data-temporary-media="true"

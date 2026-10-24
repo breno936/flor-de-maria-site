@@ -6,7 +6,7 @@ function digitsOnly(value: string) {
 
 /**
  * Simplified to the two fields the client's approved direction asks for:
- * Nome and WhatsApp. WhatsApp accepts any formatting (spaces, parens,
+ * Nome and WhatsApp (plus the optional `creation` a product CTA carries). WhatsApp accepts any formatting (spaces, parens,
  * dashes, optional +55 country code) — validated by digit count (10–13),
  * not by a rigid pattern, since the form applies a Brazilian phone mask
  * client-side but must still accept a pasted or unmasked value.
@@ -25,6 +25,8 @@ export const reservationSchema = z.object({
       const digits = digitsOnly(value);
       return digits.length >= 10 && digits.length <= 13;
     }, "Informe um WhatsApp válido, com DDD."),
+  /** Set only when the visitor arrived from a product scene's CTA — never a visible required field. */
+  creation: z.enum(["le-bouquet", "le-coeur-royale"]).optional(),
   /** Honeypot — must stay empty. Bots fill hidden fields. Never rendered visibly. */
   company: z.string().max(0).optional().or(z.literal("")),
 });

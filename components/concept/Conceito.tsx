@@ -60,7 +60,7 @@ export default function Conceito() {
 
       const trigger = ScrollTrigger.create({
         trigger: section,
-        start: "top 68%",
+        start: "top 82%",
         once: true,
         onEnter: () => {
           const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -84,7 +84,7 @@ export default function Conceito() {
 
     const trigger = ScrollTrigger.create({
       trigger: section,
-      start: "top 72%",
+      start: "top 85%",
       once: true,
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });

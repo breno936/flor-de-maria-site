@@ -82,23 +82,23 @@ export default function NarrativeIndicator() {
   const active = narrativeSteps[activeIndex];
   // Mobile keeps hiding during Hero/Atendimento — "não manter uma barra
   // fixa sobre os CTAs", and the form deserves full, uncompeted focus at
-  // that narrow width. The desktop lateral version stays visible the whole
-  // page through instead: legibility over the light form panel is handled
-  // by `mix-blend-difference` below (white against dark inverts to a light
-  // read, white against the cream panel inverts to a dark read), so it
-  // never needs to disappear to stay readable.
+  // that narrow width. Desktop stays on through every narrative stage but
+  // also steps aside at Atendimento: there its active label ran straight
+  // over the form panel and the section's monogram.
   const showMobile = active.id !== "desejo" && active.id !== "atendimento";
+  const showDesktop = active.id !== "atendimento";
 
   return (
     <>
-      {/* Desktop — lateral, discreet, always on: every stage's number stays
-          quietly visible, only the active one gains its label and color.
-          `mix-blend-difference` on the active row guarantees contrast
-          whether it's sitting over a dark section or the form's cream
-          panel, without ever needing to hide. */}
+      {/* Desktop — lateral, discreet: every stage's number stays quietly
+          visible, only the active one gains its label and color.
+          `mix-blend-difference` on the active row keeps it legible over
+          both dark scenes and light photographs. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed right-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-end gap-3 xl:flex"
+        className={`pointer-events-none fixed right-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-end gap-3 transition-opacity duration-300 xl:flex ${
+          showDesktop ? "opacity-100" : "opacity-0"
+        }`}
       >
         {narrativeSteps.map((step) => {
           const isActive = step.id === activeId;
@@ -115,7 +115,7 @@ export default function NarrativeIndicator() {
                 {step.label}
               </span>
               <span
-                className={`mono-label transition-colors duration-300 ${isActive ? "text-white" : "text-champagne/35"}`}
+                className={`mono-label transition-colors duration-300 ${isActive ? "text-white" : "text-champagne-light/60"}`}
               >
                 {step.number}
               </span>

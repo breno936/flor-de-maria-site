@@ -88,10 +88,10 @@ export const autoria = {
 export const compra = {
   eyebrow: "06 — ATENDIMENTO PRIVADO",
   title: "Comece a sua história.",
-  body: "Compartilhe seus dados e nossa equipe entrará em contato para compreender cada detalhe desse gesto.",
+  body: "Deixe seu nome e WhatsApp. A conversa segue pelo WhatsApp, direto com o responsável pelo ateliê, para entender a ocasião e cada detalhe desse gesto.",
   note: "Seus dados serão utilizados exclusivamente para iniciar este atendimento.",
   successTitle: "Atendimento iniciado.",
-  successBody: "Recebemos seus dados e entraremos em contato pelo WhatsApp.",
+  successBody: "Recebemos seus dados. O responsável pelo ateliê vai falar com você diretamente pelo WhatsApp.",
 };
 
 /** Indicador narrativo editorial — as seis etapas aprovadas, nesta ordem exata. */
@@ -110,7 +110,7 @@ export const nav = [
   { label: "Produtos", href: "#produto" },
   { label: "Experiência", href: "#experiencia" },
   { label: "Autoria", href: "#autoria" },
-  { label: "Orçamento", href: "#atendimento" },
+  { label: "Atendimento", href: "#atendimento" },
 ];
 
 /**

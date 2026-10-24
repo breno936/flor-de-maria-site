@@ -1,7 +1,11 @@
+export type CreationId = "le-bouquet" | "le-coeur-royale";
+
 export type Product = {
-  id: "le-bouquet" | "le-coeur-royale";
+  id: CreationId;
   eyebrow: string;
   name: string;
+  /** Upright editorial display form of `name` — the scene's headline. */
+  title: string;
   tagline: string;
   facts: string[];
 };
@@ -15,6 +19,7 @@ export const products: Product[] = [
     id: "le-bouquet",
     eyebrow: "Criação I",
     name: "LÊ BOUQUET",
+    title: "Lê Bouquet",
     tagline: "Uma presença impossível de ignorar.",
     facts: [
       "Buquê monumental",
@@ -27,6 +32,7 @@ export const products: Product[] = [
     id: "le-coeur-royale",
     eyebrow: "Criação II",
     name: "LÊ CŒUR ROYALE",
+    title: "Lê Cœur Royale",
     tagline: "O amor em sua forma mais emblemática.",
     facts: [
       "Caixa rígida autoral",

@@ -45,7 +45,7 @@ export default function Compra() {
 
     const trigger = ScrollTrigger.create({
       trigger: section,
-      start: "top 75%",
+      start: "top 88%",
       once: true,
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -106,7 +106,7 @@ export default function Compra() {
 
       <div className="relative mx-auto grid w-full max-w-[1600px] gap-16 px-6 md:px-12 lg:grid-cols-12 lg:items-center lg:gap-x-24">
         <div ref={introRef} className="lg:col-span-5">
-          <p className="mono-label text-champagne/80">{compra.eyebrow}</p>
+          <p className="mono-label text-champagne-light">{compra.eyebrow}</p>
           <h2
             id="compra-title"
             className="mt-4 font-display text-[clamp(2.6rem,4vw,4.6rem)] leading-[0.96] text-ivory"
@@ -118,7 +118,7 @@ export default function Compra() {
           </p>
 
           {/* Discreet signature — a credit line, not another CTA. */}
-          <p className="mt-8 font-sans text-[0.68rem] font-medium uppercase tracking-[0.22em] text-champagne/45">
+          <p className="mt-8 font-sans text-[0.68rem] font-medium uppercase tracking-[0.22em] text-champagne-light/80">
             {brand.collabLine}
           </p>
         </div>

@@ -18,23 +18,27 @@ vídeo oficial, quando existir, continua vencendo os dois via
 
 | Arquivo | Original | Usado em |
 |---|---|---|
-| `hero-desktop.webp` / `hero-mobile.webp` | IMG_4521 / IMG_4480 | Hero — imagem principal (`rose-lateral-light`) |
-| `abertura-rosas.webp` | IMG_4415 | Hero — abertura, camada "matéria" (`petal-macro`) |
-| `fita-caixa.webp` | IMG_3926 | Hero — abertura, camada "acabamento" (`ribbon-detail`); detalhe do Lê Cœur Royale |
+| `hero-revelacao-desktop.webp` (3840px) / `hero-revelacao-mobile.webp` (3000px) | IMG_4521 / IMG_4480 | Hero — imagem principal (`rose-lateral-light`). Exportadas maiores que a tela porque a abertura começa ampliada 2,2–2,4× sobre o buquê |
+| `detalhe-rosa-luva.webp` | IMG_4646 | Hero — o close de pétalas que abre a "revelação monumental"; galeria do Lê Bouquet (Pétalas) |
 | `conceito-luva-rosa.webp` | IMG_4652 | Conceito (`hands-selecting`) |
-| `bouquet.webp` | IMG_4605 | Produto — Lê Bouquet |
-| `bouquet-luva.webp` / `bouquet-hastes.webp` / `bouquet-embalagem.webp` | IMG_4629 / IMG_4513 / IMG_4621 | Produto — detalhes do Lê Bouquet; `bouquet-embalagem` também em Experiência — Criação |
-| `coeur.webp` / `coeur-retrato.webp` | IMG_4410 / IMG_4399 | Produto — Lê Cœur Royale (desktop / celular) |
-| `coeur-placa.webp` / `coeur-rosas.webp` | IMG_3902 / IMG_4089 | Produto — detalhes do Lê Cœur Royale |
+| `produto-bouquet-escala.webp` | IMG_4606 | Produto — Lê Bouquet, foto principal (escala: corpo inteiro com o buquê) |
+| `detalhe-bouquet-rosas.webp` / `bouquet-embalagem.webp` | IMG_4629 / IMG_4621 | Produto — galeria do Lê Bouquet (Rosas, Embalagem); `bouquet-embalagem` também em Experiência — Criação |
+| `produto-coeur-escala.webp` | IMG_4413 | Produto — Lê Cœur Royale, foto principal (a caixa nas mãos) |
+| `detalhe-coeur-fita.webp` / `fita-caixa.webp` | IMG_4407 / IMG_3926 | Produto — galeria do Lê Cœur Royale (Rosas, Fita) |
+| `experiencia-acabamento.webp` | IMG_4387 | Experiência — Acabamento; galeria do Lê Cœur Royale (Assinatura) |
 | `experiencia-escolha.webp` | IMG_4655 | Experiência — Escolha |
-| `experiencia-acabamento.webp` | IMG_4387 | Experiência — Acabamento |
 | `experiencia-entrega.webp` | IMG_4583 | Experiência — Entrega |
+| `autoria-moodboard.webp` | IMG_3629 | Autoria (`patricia-film`) — o moodboard da campanha, emoldurado com legenda, até existir o retrato autorizado |
 
-Continuam como estavam: a arte de campanha do buquê branco
-(`CampaignMoment`, peça aprovada com logotipo e data embutidos) e o
-placeholder de Autoria (`patricia-film`), até a confirmação de qual dos looks
-do ensaio é a Patrícia Marchi. As artes `le-bouquet-vermelho` e
-`le-coeur-royale` ficam no disco, sem referência ativa.
+O logotipo do hero é `le-grand-amour-wordmark.webp`: a arte oficial com o
+fundo preto convertido em transparência e recortada rente à marca (o arquivo
+quadrado original deixava a assinatura pequena e mostrava um quadrado preto
+sobre a foto).
+
+Continua como estava: a arte de campanha do buquê branco
+(`CampaignMoment`, peça aprovada com logotipo e data embutidos). As artes
+`le-bouquet-vermelho` e `le-coeur-royale` ficam no disco, sem referência
+ativa.
 
 **Pendências de mídia depois do ensaio:** vídeos da diária; o ateliê
 montando o buquê / amarrando o laço (etapa "Criação" e "O último cuidado");

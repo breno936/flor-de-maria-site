@@ -25,9 +25,9 @@ function phase(progress: number, start: number, end: number) {
  * Etapa 04 — EXPERIÊNCIA. Why buying this collection is different from
  * buying ordinary flowers — four stages (Escolha, Criação, Acabamento,
  * Entrega), each its own visual moment, connected by a progress line.
- * Desktop (≥1024px): a pinned crossfade scene, shortened from 320svh to
- * 220svh. Mobile/tablet: its own pinned sequence (`ExperienciaMobilePinned`),
- * shortened from 235svh to 190svh, built from continuous scale/brightness/
+ * Desktop (≥1024px): a pinned crossfade scene, 190svh (0.9 viewport of scrub —
+ * shorter pins leave less empty scroll). Mobile/tablet: its own pinned sequence (`ExperienciaMobilePinned`),
+ * 175svh (0.75 of scrub), built from continuous scale/brightness/
  * vertical-drift instead of a plain crossfade. Reduced motion, at any
  * breakpoint, gets `ExperienciaGallery` — a swipeable, user-driven
  * filmstrip with nothing auto-playing.
@@ -61,7 +61,7 @@ function ExperienciaPinned() {
     const trigger = ScrollTrigger.create({
       trigger: outer,
       start: "top top",
-      end: () => `+=${window.innerHeight * 1.2}`,
+      end: () => `+=${window.innerHeight * 0.9}`,
       scrub: 0.5,
       onUpdate: (self) => {
         const p = self.progress * 100;
@@ -81,10 +81,10 @@ function ExperienciaPinned() {
         });
 
         stepRefs.current.forEach((step, i) => {
-          gsap.set(step, { color: i === activeIndex ? "var(--ivory)" : "rgba(216,200,168,0.5)" });
+          gsap.set(step, { color: i === activeIndex ? "var(--ivory)" : "rgba(215,189,136,0.72)" });
         });
         numberRefs.current.forEach((num, i) => {
-          gsap.set(num, { color: i === activeIndex ? "var(--rouge)" : "rgba(163,23,31,0.45)" });
+          gsap.set(num, { color: i === activeIndex ? "var(--champagne-light)" : "rgba(215,189,136,0.5)" });
         });
         gsap.set(progressFillRef.current, { scaleX: p / 100 });
 
@@ -104,7 +104,7 @@ function ExperienciaPinned() {
     <section
       ref={outerRef}
       id="experiencia"
-      className="relative h-[220svh]"
+      className="relative h-[190svh]"
       aria-labelledby="experiencia-title"
     >
       <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
@@ -124,12 +124,12 @@ function ExperienciaPinned() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(0deg, rgba(7,6,6,0.92) 0%, rgba(7,6,6,0.55) 42%, rgba(7,6,6,0.35) 70%, rgba(7,6,6,0.6) 100%)",
+              "linear-gradient(0deg, rgba(7,6,6,0.9) 0%, rgba(7,6,6,0.5) 34%, rgba(7,6,6,0.08) 62%, rgba(7,6,6,0.45) 100%)",
           }}
         />
 
-        <p className="mono-label absolute left-6 top-24 md:left-12 md:top-28">{experiencia.eyebrow}</p>
-        <p className="mono-label absolute right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
+        <p className="mono-label absolute text-champagne-light left-6 top-24 md:left-12 md:top-28">{experiencia.eyebrow}</p>
+        <p className="mono-label absolute text-ivory/85 right-6 top-24 max-w-[10rem] text-right md:right-12 md:top-28">
           {experiencia.caption}
         </p>
 
@@ -138,7 +138,7 @@ function ExperienciaPinned() {
             {experiencia.title}
           </h2>
 
-          <p ref={activeCaptionRef} className="mt-4 max-w-md font-sans text-sm leading-relaxed text-champagne/85">
+          <p ref={activeCaptionRef} className="mt-4 max-w-md font-sans text-sm leading-relaxed text-ivory/90">
             {experiencia.steps[0].text}
           </p>
 
@@ -153,20 +153,20 @@ function ExperienciaPinned() {
                   ref={(el) => {
                     stepRefs.current[i] = el;
                   }}
-                  className="flex items-baseline gap-2 font-sans text-xs uppercase tracking-[0.18em] text-champagne/50"
+                  className="flex items-baseline gap-2 font-sans text-xs uppercase tracking-[0.18em] text-champagne-light/70"
                 >
                   <span
                     ref={(el) => {
                       numberRefs.current[i] = el;
                     }}
-                    className="mono-label text-rouge/50"
+                    className="mono-label text-champagne-light/50"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {step.label}
                 </span>
                 {i < experiencia.steps.length - 1 && (
-                  <span className="text-champagne/30" aria-hidden="true">
+                  <span className="text-champagne-light/40" aria-hidden="true">
                     &rarr;
                   </span>
                 )}
@@ -185,7 +185,7 @@ function ExperienciaPinned() {
 const ENTRY_DIRECTION = [0, 22, -22, 22];
 
 /**
- * Mobile/tablet pinned sequence. Shortened from 235svh to 190svh, built
+ * Mobile/tablet pinned sequence. 175svh tall (0.75 viewport of scrub), built
  * from continuous scale + brightness + vertical drift rather than a plain
  * crossfade — the outgoing stage scales up and dims ("perde profundidade"),
  * the incoming stage settles in from its own directional offset, and a
@@ -217,7 +217,7 @@ function ExperienciaMobilePinned() {
     const trigger = ScrollTrigger.create({
       trigger: outer,
       start: "top top",
-      end: () => `+=${window.innerHeight * 0.9}`,
+      end: () => `+=${window.innerHeight * 0.75}`,
       scrub: 0.5,
       onUpdate: (self) => {
         const p = self.progress * 100;
@@ -245,7 +245,7 @@ function ExperienciaMobilePinned() {
         });
 
         numberRefs.current.forEach((num, i) => {
-          gsap.set(num, { color: i === activeIndex ? "var(--rouge)" : "rgba(163,23,31,0.45)" });
+          gsap.set(num, { color: i === activeIndex ? "var(--champagne-light)" : "rgba(215,189,136,0.5)" });
         });
         gsap.set(progressFillRef.current, { scaleX: p / 100 });
 
@@ -267,7 +267,7 @@ function ExperienciaMobilePinned() {
   }, []);
 
   return (
-    <section ref={outerRef} id="experiencia" className="relative h-[190svh] lg:hidden" aria-labelledby="experiencia-title-mobile">
+    <section ref={outerRef} id="experiencia" className="relative h-[175svh] lg:hidden" aria-labelledby="experiencia-title-mobile">
       <div className="sticky top-0 flex h-svh w-full items-end overflow-hidden bg-noir">
         {media.map((m, i) => (
           <div
@@ -285,17 +285,17 @@ function ExperienciaMobilePinned() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(0deg, rgba(7,6,6,0.94) 0%, rgba(7,6,6,0.55) 45%, rgba(7,6,6,0.3) 72%, rgba(7,6,6,0.65) 100%)",
+              "linear-gradient(0deg, rgba(7,6,6,0.94) 0%, rgba(7,6,6,0.55) 40%, rgba(7,6,6,0.1) 66%, rgba(7,6,6,0.5) 100%)",
           }}
         />
 
-        <p className="mono-label absolute left-6 top-20">{experiencia.eyebrow}</p>
+        <p className="mono-label absolute text-champagne-light left-6 top-20">{experiencia.eyebrow}</p>
 
         <div className="container-lga relative w-full pb-12 pt-20">
           <h2 id="experiencia-title-mobile" className="max-w-xs font-display text-3xl leading-[1.15] text-ivory">
             {experiencia.title}
           </h2>
-          <p ref={activeCaptionRef} className="mt-3 max-w-[15rem] font-sans text-xs leading-relaxed text-champagne/70">
+          <p ref={activeCaptionRef} className="mt-3 max-w-[15rem] font-sans text-xs leading-relaxed text-ivory/85">
             {experiencia.steps[0].text}
           </p>
 
@@ -310,7 +310,7 @@ function ExperienciaMobilePinned() {
                 ref={(el) => {
                   numberRefs.current[i] = el;
                 }}
-                className="mono-label text-rouge/50"
+                className="mono-label text-champagne-light/50"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -380,11 +380,11 @@ function ExperienciaGallery({ reducedMotion }: { reducedMotion: boolean }) {
   return (
     <section ref={sectionRef} id="experiencia" className="relative overflow-hidden bg-noir py-20 md:py-28" aria-labelledby="experiencia-title">
       <div className="container-lga">
-        <p className="mono-label">{experiencia.eyebrow}</p>
+        <p className="mono-label text-champagne-light">{experiencia.eyebrow}</p>
         <h2 id="experiencia-title" className="mt-4 max-w-md font-display text-[clamp(2.8rem,5vw,5.2rem)] leading-[0.94] text-ivory">
           {experiencia.title}
         </h2>
-        <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-champagne/70">{experiencia.caption}</p>
+        <p className="mt-3 max-w-xs font-sans text-sm leading-relaxed text-ivory/80">{experiencia.caption}</p>
       </div>
 
       <div
@@ -408,10 +408,10 @@ function ExperienciaGallery({ reducedMotion }: { reducedMotion: boolean }) {
             />
             <div className="absolute bottom-5 left-6 right-6">
               <div className="flex items-baseline gap-3">
-                <span className="mono-label text-rouge">{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono-label text-champagne-light">{String(i + 1).padStart(2, "0")}</span>
                 <span className="font-sans text-xs uppercase tracking-[0.2em] text-ivory">{experiencia.steps[i].label}</span>
               </div>
-              <p className="mt-2 max-w-xs font-sans text-xs leading-relaxed text-champagne/80">{experiencia.steps[i].text}</p>
+              <p className="mt-2 max-w-xs font-sans text-xs leading-relaxed text-ivory/85">{experiencia.steps[i].text}</p>
             </div>
           </div>
         ))}

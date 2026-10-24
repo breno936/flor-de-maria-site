@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reservationSchema, type ReservationInput } from "@/lib/validation/reservation";
 import { compra } from "@/data/content";
+import { products } from "@/data/products";
+import { clearCreation, useSelectedCreation } from "@/lib/reservation/selectedCreation";
 import AtelierButton from "@/components/ui/AtelierButton";
 import { CTA_LABEL } from "@/components/cta/StartServiceCTA";
 
@@ -25,11 +27,15 @@ function formatBRPhone(raw: string) {
  * else the previous form asked (cidade, criação, ocasião, data, mensagem,
  * consentimento) has been removed from the interface per the client's
  * approved direction. The honeypot stays, invisible and non-tabbable, for
- * spam protection; nothing else is required before the first contact.
+ * spam protection; nothing else is required before the first contact. When
+ * the visitor came from a product scene's CTA, that creation shows above
+ * the fields (removable) and travels with the submission.
  */
 export default function ReservationForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const selectedCreation = useSelectedCreation();
+  const selectedProduct = products.find((p) => p.id === selectedCreation);
 
   const {
     register,
@@ -48,7 +54,7 @@ export default function ReservationForm() {
       const response = await fetch("/api/reservation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, creation: selectedCreation ?? undefined }),
       });
       const result = await response.json();
       if (!response.ok || !result.ok) {
@@ -58,6 +64,7 @@ export default function ReservationForm() {
       }
       setStatus("success");
       reset();
+      clearCreation();
     } catch {
       setStatus("error");
       setErrorMessage("Falha de conexão. Verifique sua internet e tente novamente.");
@@ -80,6 +87,24 @@ export default function ReservationForm() {
         <label htmlFor="company">Empresa</label>
         <input id="company" type="text" tabIndex={-1} autoComplete="off" {...register("company")} />
       </div>
+
+      {selectedProduct && (
+        <div className="flex items-center justify-between gap-4 border-b border-oxblood/20 pb-5">
+          <p className="font-sans text-[11px] font-medium uppercase tracking-[0.14em] text-oxblood/80">
+            Criação de interesse
+            <span className="mt-1 block font-display text-xl normal-case tracking-normal text-noir">
+              {selectedProduct.title}
+            </span>
+          </p>
+          <button
+            type="button"
+            onClick={clearCreation}
+            className="min-h-[44px] font-sans text-xs text-noir/65 underline decoration-noir/30 underline-offset-4 transition-colors hover:text-noir"
+          >
+            Remover
+          </button>
+        </div>
+      )}
 
       <Field label="Nome" htmlFor="name" error={errors.name?.message}>
         <input
@@ -117,7 +142,7 @@ export default function ReservationForm() {
         <AtelierButton type="submit" variant="submit" loading={status === "submitting"}>
           {status === "submitting" ? "Enviando..." : CTA_LABEL}
         </AtelierButton>
-        <p className="mt-4 font-sans text-xs leading-relaxed text-noir/50">{compra.note}</p>
+        <p className="mt-4 font-sans text-xs leading-relaxed text-noir/65">{compra.note}</p>
       </div>
     </form>
   );

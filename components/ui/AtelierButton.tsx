@@ -37,15 +37,16 @@ const TRANSITION = "transition-[color,transform] duration-[320ms] [transition-ti
 const base =
   `group relative inline-flex items-center overflow-hidden font-sans text-[0.78rem] font-medium uppercase tracking-[0.14em] ${TRANSITION} focus-visible:outline focus-visible:outline-1 focus-visible:outline-champagne focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-50`;
 
-// One border only, per variant context — champagne on the dark ground
+// One border only, per variant context — light champagne on the dark ground
 // (primary/header/secondary), a deep-red hairline on the cream form panel
 // (submit) so it still reads against a light background. No inner frame,
-// no second border of any kind.
+// no second border of any kind. The dark ground variants carry a faint
+// noir backing so label and border keep their contrast over photographs.
 const shapes: Record<Variant, string> = {
-  primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-champagne/55 text-champagne hover:text-noir",
-  secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-champagne/55 text-champagne hover:text-noir",
-  text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne/90 underline decoration-champagne/40 underline-offset-4 hover:text-champagne-light hover:decoration-champagne-light",
-  header: "h-10 pl-5 pr-9 min-w-[44px] border border-champagne/55 text-champagne hover:text-noir",
+  primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir",
+  secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir",
+  text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne-light underline decoration-champagne-light/50 underline-offset-4 hover:decoration-champagne-light",
+  header: "h-10 pl-5 pr-9 min-w-[44px] border border-champagne-light/80 text-champagne-light hover:text-noir",
   submit: "h-[54px] pl-8 pr-14 min-w-[44px] border border-oxblood/55 text-noir hover:text-noir",
 };
 

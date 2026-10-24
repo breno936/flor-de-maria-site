@@ -67,10 +67,10 @@ export default function Footer() {
 
       <div className="border-t border-gold/10">
         <div className="container-lga flex flex-col items-center gap-2 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="font-sans text-[11px] text-muted/70">
+          <p className="font-sans text-[11px] text-muted">
             © {new Date().getFullYear()} Flor de Maria Ateliê × Patrícia Marchi. Todos os direitos reservados.
           </p>
-          <p className="font-sans text-[11px] text-muted/70">Coleção Lê Grand Amour</p>
+          <p className="font-sans text-[11px] text-muted">Coleção Lê Grand Amour</p>
         </div>
       </div>
     </footer>

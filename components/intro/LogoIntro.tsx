@@ -17,6 +17,9 @@ function resolveShouldPlay(): boolean {
 }
 const shouldPlayOnLoad = resolveShouldPlay();
 
+/** Whether the branded intro will cover the first ~1s of this page load — the Hero waits for it before starting its own opening. */
+export const introPlaysOnLoad = shouldPlayOnLoad;
+
 function subscribeNever() {
   return () => {};
 }

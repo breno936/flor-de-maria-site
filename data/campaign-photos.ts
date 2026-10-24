@@ -1,4 +1,5 @@
 import type { MediaClipId } from "./media-manifest";
+import type { CreationId } from "./products";
 
 /**
  * Official campaign photography — the Lê Grand Amour studio shoot
@@ -23,55 +24,120 @@ export type CampaignStill = {
   image: string;
   mobileImage?: string;
   alt: string;
+  /** Visible caption, for frames shown as an editorial print (Autoria). */
+  caption?: string;
 };
 
 export const campaignStills: Partial<Record<MediaClipId, CampaignStill>> = {
-  // IMG_4521 (desktop) / IMG_4480 (mobile)
+  // IMG_4521 (desktop) / IMG_4480 (mobile) — exported larger than the
+  // viewport (3840 / 3000 px) so the Hero's opening can start zoomed into
+  // the bouquet and still be sharp.
   "rose-lateral-light": {
-    image: `${BASE}/hero-desktop.webp`,
-    mobileImage: `${BASE}/hero-mobile.webp`,
+    image: `${BASE}/hero-revelacao-desktop.webp`,
+    mobileImage: `${BASE}/hero-revelacao-mobile.webp`,
     alt: "Campanha Lê Grand Amour: modelo de vestido preto, capa branca e véu de tule segurando um grande buquê de rosas vermelhas, sobre fundo escuro.",
-  },
-  // IMG_4415
-  "petal-macro": {
-    image: `${BASE}/abertura-rosas.webp`,
-    alt: "Rosas vermelhas da coleção Lê Grand Amour vistas de perto, preenchendo a caixa em formato de coração.",
-  },
-  // IMG_3926
-  "ribbon-detail": {
-    image: `${BASE}/fita-caixa.webp`,
-    alt: "Fita de cetim vermelha e o logotipo Lê Grand Amour na caixa em formato de coração.",
   },
   // IMG_4652
   "hands-selecting": {
     image: `${BASE}/conceito-luva-rosa.webp`,
     alt: "Mão com luva de renda preta segurando uma rosa vermelha sobre o buquê da coleção.",
   },
+  // IMG_3629 — stands in the Autoria frame until the authorised portrait
+  // exists; a real frame of the creative process, nobody identifiable.
+  "patricia-film": {
+    image: `${BASE}/autoria-moodboard.webp`,
+    alt: "Moodboard da campanha Lê Grand Amour: referências de rosas vermelhas, caixas em formato de coração, o título da coleção e a paleta de cores.",
+    caption: "Moodboard da campanha — o processo criativo",
+  },
 };
 
-export const productPhotos = {
-  // IMG_4605
-  bouquet: {
-    src: `${BASE}/bouquet.webp`,
-    alt: "Lê Bouquet: buquê de rosas vermelhas em embalagem preta com borda dourada, nas mãos de uma modelo de vestido preto e capa branca.",
-  },
-  // IMG_4410 (desktop) / IMG_4399 (mobile)
-  coeur: {
-    src: `${BASE}/coeur.webp`,
-    mobileSrc: `${BASE}/coeur-retrato.webp`,
-    alt: "Lê Cœur Royale: caixa preta em formato de coração repleta de rosas vermelhas, com a fita Lê Grand Amour.",
-  },
-  // IMG_4629, IMG_4513, IMG_4621
-  bouquetDetails: [
-    { src: `${BASE}/bouquet-luva.webp`, position: "50% 45%" },
-    { src: `${BASE}/bouquet-hastes.webp`, position: "50% 62%" },
-    { src: `${BASE}/bouquet-embalagem.webp`, position: "56% 50%" },
+/** IMG_4646 — the petals the Hero's opening starts on before pulling back to the full scene. */
+export const heroRevealDetail: CampaignPhoto = {
+  src: `${BASE}/detalhe-rosa-luva.webp`,
+  alt: "",
+};
+
+/**
+ * One gallery per creation for the "inspeção de ateliê" lightbox. Item 0 is
+ * the scene's main photograph — the whole piece in someone's hands, so its
+ * real scale reads at a glance; the rest are the close details (roses,
+ * wrapping, ribbon, signature). Captions only describe what the frame shows.
+ */
+export type GalleryPhoto = CampaignPhoto & {
+  label: string;
+  caption: string;
+  /** object-position for the thumbnail crop. */
+  position: string;
+};
+
+export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
+  "le-bouquet": [
+    // IMG_4606
+    {
+      src: `${BASE}/produto-bouquet-escala.webp`,
+      alt: "Lê Bouquet nas mãos de uma modelo de vestido preto e capa branca, de corpo inteiro: o buquê ocupa todo o torso.",
+      label: "Escala",
+      caption: "O buquê inteiro nas mãos: a dimensão real da criação.",
+      position: "50% 30%",
+    },
+    // IMG_4629
+    {
+      src: `${BASE}/detalhe-bouquet-rosas.webp`,
+      alt: "Close das rosas vermelhas do Lê Bouquet, com uma mão de luva de renda pousada sobre elas.",
+      label: "Rosas",
+      caption: "Rosas vermelhas em composição densa, do centro à borda.",
+      position: "50% 55%",
+    },
+    // IMG_4621
+    {
+      src: `${BASE}/bouquet-embalagem.webp`,
+      alt: "O Lê Bouquet envolto em embalagem preta com bordas douradas.",
+      label: "Embalagem",
+      caption: "Embalagem preta com bordas douradas envolvendo todo o volume.",
+      position: "56% 50%",
+    },
+    // IMG_4646
+    {
+      src: `${BASE}/detalhe-rosa-luva.webp`,
+      alt: "Uma rosa vermelha em destaque sobre o buquê, segurada por uma mão de luva de renda preta.",
+      label: "Pétalas",
+      caption: "Cada rosa aberta no auge: pétalas firmes e cor profunda.",
+      position: "52% 40%",
+    },
   ],
-  // IMG_3926, IMG_3902, IMG_4089
-  coeurDetails: [
-    { src: `${BASE}/fita-caixa.webp`, position: "40% 70%" },
-    { src: `${BASE}/coeur-placa.webp`, position: "62% 60%" },
-    { src: `${BASE}/coeur-rosas.webp`, position: "50% 70%" },
+  "le-coeur-royale": [
+    // IMG_4413
+    {
+      src: `${BASE}/produto-coeur-escala.webp`,
+      alt: "Lê Cœur Royale nas mãos de uma modelo de roupa preta: a caixa em formato de coração repleta de rosas vermelhas.",
+      label: "Escala",
+      caption: "A caixa nas mãos: o coração inteiro preenchido por rosas.",
+      position: "50% 55%",
+    },
+    // IMG_4407
+    {
+      src: `${BASE}/detalhe-coeur-fita.webp`,
+      alt: "Rosas vermelhas preenchendo a caixa em formato de coração, com a fita preta Lê Grand Amour.",
+      label: "Rosas",
+      caption: "Rosas vermelhas preenchendo todo o formato de coração.",
+      position: "50% 40%",
+    },
+    // IMG_3926
+    {
+      src: `${BASE}/fita-caixa.webp`,
+      alt: "Fita de cetim vermelha e o logotipo Lê Grand Amour na caixa em formato de coração.",
+      label: "Fita",
+      caption: "Fita de cetim vermelha e a assinatura Lê Grand Amour na caixa.",
+      position: "40% 62%",
+    },
+    // IMG_4387
+    {
+      src: `${BASE}/experiencia-acabamento.webp`,
+      alt: "Mãos sobre a caixa Lê Cœur Royale, com a fita preta que leva o logotipo Lê Grand Amour.",
+      label: "Assinatura",
+      caption: "A fita com o logotipo Lê Grand Amour contornando a caixa rígida.",
+      position: "68% 70%",
+    },
   ],
 };
 

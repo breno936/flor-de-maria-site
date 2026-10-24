@@ -6,34 +6,14 @@ import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { experiencia } from "@/data/content";
+import { experienciaPhotos } from "@/data/campaign-photos";
 
 type StepMedia = { src: string; alt: string; position: string };
 
-// Four different framings of the two approved product photographs, not a
-// second photoshoot — "recortes das imagens fornecidas para mostrar
-// texturas e materiais", exactly as the brief asks for.
-const media: StepMedia[] = [
-  {
-    src: "/assets/le-grand-amour/le-bouquet-vermelho.webp",
-    alt: "Rosas vermelhas selecionadas, close da composição do Lê Bouquet.",
-    position: "18% 20%",
-  },
-  {
-    src: "/assets/le-grand-amour/le-bouquet-vermelho.webp",
-    alt: "Composição autoral do buquê Lê Bouquet, embalagem preta e laço.",
-    position: "42% 55%",
-  },
-  {
-    src: "/assets/le-grand-amour/le-coeur-royale.webp",
-    alt: "Acabamento dourado e fita da caixa Lê Cœur Royale.",
-    position: "68% 20%",
-  },
-  {
-    src: "/assets/le-grand-amour/le-coeur-royale.webp",
-    alt: "Cartão e placa dourada da Lê Grand Amour prontos para a entrega.",
-    position: "28% 78%",
-  },
-];
+// One frame of the official shoot per stage (Escolha, Criação, Acabamento,
+// Entrega). The shoot has no atelier footage, so "Criação" shows the
+// finished composition rather than hands assembling it.
+const media: StepMedia[] = experienciaPhotos;
 
 function phase(progress: number, start: number, end: number) {
   if (progress <= start) return 0;

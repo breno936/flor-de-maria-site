@@ -2,9 +2,8 @@
  * Central registry of every film clip the experience needs.
  * Per brief: 5–8 short clips, reused across sections, never all playing at once.
  *
- * None of these files exist yet (the official studio shoot with Patrícia Marchi
- * had not been scheduled as of the partnership deck — see "Próximos passos").
- * Drop the real exports into /public/media/<id>/ using these exact filenames
+ * None of these files exist yet: the official studio shoot delivered
+ * photographs only (data/campaign-photos.ts), not footage. Drop the real exports into /public/media/<id>/ using these exact filenames
  * and every section below picks them up automatically — no component code
  * needs to change.
  *

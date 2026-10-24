@@ -44,7 +44,9 @@ export default function PatriciaFilm() {
     gsap.set(reveal, { clipPath: "inset(0% 48% 0% 48%)" });
     gsap.set(signature, { opacity: 0, y: 10 });
     gsap.set(ctaRef.current, { opacity: 0, y: 12 });
-    if (!isDesktop) gsap.set(reveal, { filter: "brightness(0.65)" });
+    // Set on both branches: `isDesktop` hydrates as false, so a desktop
+    // visit runs the mobile pass first and would otherwise keep its dimming.
+    gsap.set(reveal, { filter: isDesktop ? "brightness(1)" : "brightness(0.65)" });
 
     const trigger = ScrollTrigger.create({
       trigger: section,

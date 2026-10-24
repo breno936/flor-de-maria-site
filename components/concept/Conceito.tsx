@@ -48,12 +48,15 @@ export default function Conceito() {
       return;
     }
 
+    // `isDesktop` hydrates as false, so the mobile branch below always runs
+    // once first on desktop too — each branch resets the other's starting
+    // values (the closed clip-path, the x offset) or they stick for good.
     if (isDesktop) {
-      gsap.set(windowRef.current, { scaleY: 0.82, transformOrigin: "top center" });
+      gsap.set(windowRef.current, { scaleY: 0.82, clipPath: OPEN_CLIP, transformOrigin: "top center" });
       gsap.set(threadRef.current, { scaleX: 0 });
       gsap.set(headlineInnerRefs.current, { opacity: 0, y: 18 });
-      gsap.set(bodyRefs.current, { opacity: 0, y: 14 });
-      gsap.set(occasionRefs.current, { opacity: 0, y: 10 });
+      gsap.set(bodyRefs.current, { opacity: 0, x: 0, y: 14 });
+      gsap.set(occasionRefs.current, { opacity: 0, x: 0, y: 10 });
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -73,11 +76,11 @@ export default function Conceito() {
 
     // Mobile/tablet signature: mask-reveal window, per-line phrase stagger,
     // a vertical thread standing in for the desktop's horizontal one.
-    gsap.set(windowRef.current, { clipPath: HIDDEN_TOP });
+    gsap.set(windowRef.current, { clipPath: HIDDEN_TOP, scaleY: 1 });
     gsap.set(verticalThreadRef.current, { scaleY: 0 });
     gsap.set(headlineInnerRefs.current, { opacity: 0, y: 16 });
-    gsap.set(bodyRefs.current, { opacity: 0, x: -10 });
-    gsap.set(occasionRefs.current, { opacity: 0, x: -10 });
+    gsap.set(bodyRefs.current, { opacity: 0, x: -10, y: 0 });
+    gsap.set(occasionRefs.current, { opacity: 0, x: -10, y: 0 });
 
     const trigger = ScrollTrigger.create({
       trigger: section,
@@ -118,7 +121,7 @@ export default function Conceito() {
           <div ref={windowRef} className="aspect-[3/4] w-full max-w-[280px] overflow-hidden">
             <ManagedVideo
               clipId="hands-selecting"
-              description="Mão selecionando e preparando uma rosa vermelha — referência de gesto."
+              description="Mão com luva de renda preta segurando uma rosa vermelha sobre o buquê da coleção."
               aspectClassName="h-full w-full"
               showDebugLabel={false}
             />

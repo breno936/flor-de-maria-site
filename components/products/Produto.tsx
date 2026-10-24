@@ -7,28 +7,24 @@ import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { products } from "@/data/products";
 import { produtoScene } from "@/data/content";
+import { productPhotos } from "@/data/campaign-photos";
 import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
-type ProductMedia = { src: string; alt: string };
+/** `mobileSrc`: a portrait frame for the full-bleed mobile scene, where the copy covers the lower half. */
+type ProductMedia = { src: string; alt: string; mobileSrc?: string };
+type ProductDetail = { src: string; position: string };
 
 const bouquet = products.find((p) => p.id === "le-bouquet")!;
 const coeur = products.find((p) => p.id === "le-coeur-royale")!;
 
-const bouquetMedia: ProductMedia = {
-  src: "/assets/le-grand-amour/le-bouquet-vermelho.webp",
-  alt: "Lê Bouquet com rosas vermelhas e embalagem preta da Lê Grand Amour.",
-};
-const coeurMedia: ProductMedia = {
-  src: "/assets/le-grand-amour/le-coeur-royale.webp",
-  alt: "Lê Cœur Royale com rosas vermelhas em caixa preta no formato de coração.",
-};
+const bouquetMedia: ProductMedia = productPhotos.bouquet;
+const coeurMedia: ProductMedia = productPhotos.coeur;
 
-// Small editorial crops of the same approved photographs — not a second
-// photoshoot, just different framings of what's already there (roses,
-// ribbon, the gold plaque) standing in for the "recortes" the brief asks
-// for. Object-position values were picked by eye against each source file.
-const bouquetDetails = ["18% 22%", "55% 15%", "38% 78%"];
-const coeurDetails = ["70% 30%", "25% 65%", "50% 85%"];
+// The "recortes" the brief asks for — textures and materials (roses,
+// ribbon, wrapping, the gold plaque), each from its own frame of the
+// official shoot. Object-position values were picked by eye per file.
+const bouquetDetails: ProductDetail[] = productPhotos.bouquetDetails;
+const coeurDetails: ProductDetail[] = productPhotos.coeurDetails;
 
 function phase(progress: number, start: number, end: number) {
   if (progress <= start) return 0;
@@ -53,7 +49,7 @@ export default function Produto() {
   return isDesktop ? <ProdutoFocus /> : <ProdutoMobilePinned />;
 }
 
-function DetailStrip({ media, crops, label }: { media: ProductMedia; crops: string[]; label: string }) {
+function DetailStrip({ details, label }: { details: ProductDetail[]; label: string }) {
   const stripRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,15 +69,15 @@ function DetailStrip({ media, crops, label }: { media: ProductMedia; crops: stri
 
   return (
     <div ref={stripRef} aria-hidden="true" className="mt-6 flex gap-2">
-      {crops.map((position, i) => (
-        <div key={position} className="relative aspect-square w-full overflow-hidden border border-champagne/25">
+      {details.map((detail, i) => (
+        <div key={detail.src} className="relative aspect-square w-full overflow-hidden border border-champagne/25">
           <Image
-            src={media.src}
+            src={detail.src}
             alt=""
             fill
-            sizes="80px"
+            sizes="160px"
             className="object-cover"
-            style={{ objectPosition: position }}
+            style={{ objectPosition: detail.position }}
           />
           <span className="sr-only">
             {label} — detalhe {i + 1}
@@ -246,7 +242,7 @@ function ProdutoFocus() {
                       </li>
                     ))}
                   </ul>
-                  <DetailStrip media={bouquetMedia} crops={bouquetDetails} label={bouquet.name} />
+                  <DetailStrip details={bouquetDetails} label={bouquet.name} />
                 </div>
                 <div ref={coeurCopyRef} className="[grid-area:1/1]">
                   <p className="mono-label">{coeur.eyebrow}</p>
@@ -259,7 +255,7 @@ function ProdutoFocus() {
                       </li>
                     ))}
                   </ul>
-                  <DetailStrip media={coeurMedia} crops={coeurDetails} label={coeur.name} />
+                  <DetailStrip details={coeurDetails} label={coeur.name} />
                 </div>
               </div>
 
@@ -350,17 +346,17 @@ function ProdutoMobilePinned() {
       <div className="sticky top-0 h-svh w-full overflow-hidden bg-oxblood">
         <div ref={bouquetFrameRef} className="absolute inset-0">
           <Image
-            src={bouquetMedia.src}
+            src={bouquetMedia.mobileSrc ?? bouquetMedia.src}
             alt={bouquetMedia.alt}
             fill
             sizes="100vw"
             className="object-cover"
-            style={{ objectPosition: "38% 20%" }}
+            style={{ objectPosition: "48% 30%" }}
           />
         </div>
         <div ref={coeurFrameRef} className="absolute inset-0">
           <Image
-            src={coeurMedia.src}
+            src={coeurMedia.mobileSrc ?? coeurMedia.src}
             alt={coeurMedia.alt}
             fill
             sizes="100vw"
@@ -418,7 +414,7 @@ function ProdutoMobilePinned() {
                   </li>
                 ))}
               </ul>
-              <DetailStrip media={bouquetMedia} crops={bouquetDetails} label={bouquet.name} />
+              <DetailStrip details={bouquetDetails} label={bouquet.name} />
             </div>
             <div ref={coeurCopyRef} className="[grid-area:1/1]">
               <p className="mono-label">{coeur.eyebrow}</p>
@@ -431,7 +427,7 @@ function ProdutoMobilePinned() {
                   </li>
                 ))}
               </ul>
-              <DetailStrip media={coeurMedia} crops={coeurDetails} label={coeur.name} />
+              <DetailStrip details={coeurDetails} label={coeur.name} />
             </div>
           </div>
 
@@ -447,8 +443,7 @@ function ProdutoMobilePinned() {
 function ProdutoStatic({ reducedMotion }: { reducedMotion: boolean }) {
   const [active, setActive] = useState<0 | 1>(0);
   const activeProduct = active === 0 ? bouquet : coeur;
-  const activeMedia = active === 0 ? bouquetMedia : coeurMedia;
-  const activeCrops = active === 0 ? bouquetDetails : coeurDetails;
+  const activeDetails = active === 0 ? bouquetDetails : coeurDetails;
   const sectionRef = useRef<HTMLElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
   const framesRef = useRef<HTMLDivElement>(null);
@@ -589,7 +584,7 @@ function ProdutoStatic({ reducedMotion }: { reducedMotion: boolean }) {
                   </li>
                 ))}
               </ul>
-              <DetailStrip media={activeMedia} crops={activeCrops} label={activeProduct.name} />
+              <DetailStrip details={activeDetails} label={activeProduct.name} />
             </div>
 
             <div className="mt-10">

@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { MediaClipId } from "@/data/media-manifest";
 import { mediaClips } from "@/data/media-manifest";
 import { temporaryMedia } from "@/data/temporary-media";
+import { campaignStills } from "@/data/campaign-photos";
 import { AVAILABLE_CLIPS } from "@/lib/video/availableClips";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useSaveData } from "@/lib/accessibility/useMediaQuery";
@@ -30,12 +31,13 @@ export type ManagedVideoProps = {
  * Single source of truth for how every decorative film clip behaves.
  *
  * Render priority:
- *   1. official clip (AVAILABLE_CLIPS)      — the real studio footage, once shot;
- *   2. temporary video (data/temporary-media) — a licensed-stock Ken Burns loop;
- *   3. temporary image (data/temporary-media) — a graded editorial still;
- *   4. VideoPoster                           — last-resort art-directed gradient.
+ *   1. official clip (AVAILABLE_CLIPS)        — the real studio footage, once delivered;
+ *   2. official still (data/campaign-photos)  — a frame from the real campaign shoot;
+ *   3. temporary video (data/temporary-media) — a licensed-stock Ken Burns loop;
+ *   4. temporary image (data/temporary-media) — a graded editorial still;
+ *   5. VideoPoster                             — last-resort art-directed gradient.
  *
- * Tiers 2–3 are marked `data-temporary-media="true"` and carry an honest,
+ * Tiers 3–4 are marked `data-temporary-media="true"` and carry an honest,
  * non-misleading alt/description — see MEDIA-MANIFEST.md. The moment an id is
  * added to AVAILABLE_CLIPS, it wins automatically and the temporary tier is
  * never consulted for that clip again — no other code needs to change.
@@ -67,14 +69,16 @@ export default function ManagedVideo({
 
   const clip = mediaClips[clipId];
   const temp = temporaryMedia[clipId];
+  const still = campaignStills[clipId];
   const isOfficialAvailable = AVAILABLE_CLIPS.has(clipId) && !hasError;
   const canPlayMotion = !reducedMotion && !saveData;
 
   const showOfficialVideo = isOfficialAvailable;
+  const showOfficialStill = !showOfficialVideo && Boolean(still);
   const showTemporaryVideo =
-    !showOfficialVideo && Boolean(temp?.temporaryVideo) && canPlayMotion && !tempVideoError;
+    !showOfficialVideo && !showOfficialStill && Boolean(temp?.temporaryVideo) && canPlayMotion && !tempVideoError;
   const showTemporaryImage =
-    !showOfficialVideo && !showTemporaryVideo && Boolean(temp?.temporaryImage);
+    !showOfficialVideo && !showOfficialStill && !showTemporaryVideo && Boolean(temp?.temporaryImage);
 
   const shouldObserve = showOfficialVideo || showTemporaryVideo;
 
@@ -148,6 +152,29 @@ export default function ManagedVideo({
           <source src={`${clip.basePath}/desktop.webm`} type="video/webm" />
           <source src={`${clip.basePath}/desktop.mp4`} type="video/mp4" />
         </video>
+      ) : showOfficialStill && still ? (
+        <>
+          <Image
+            src={still.image}
+            alt={still.alt}
+            fill
+            sizes="(max-width: 767px) 100vw, 60vw"
+            className={`object-cover ${objectPositionClassName} ${still.mobileImage ? "hidden md:block" : ""}`}
+            priority={priority}
+            quality={80}
+          />
+          {still.mobileImage && (
+            <Image
+              src={still.mobileImage}
+              alt={still.alt}
+              fill
+              sizes="100vw"
+              className={`object-cover md:hidden ${objectPositionClassName}`}
+              priority={priority}
+              quality={80}
+            />
+          )}
+        </>
       ) : showTemporaryVideo && temp?.temporaryVideo ? (
         <video
           ref={setVideoRef}

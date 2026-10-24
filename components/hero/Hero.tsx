@@ -6,7 +6,7 @@ import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { hero } from "@/data/content";
-import { temporaryMedia } from "@/data/temporary-media";
+import { campaignStills } from "@/data/campaign-photos";
 import ManagedVideo from "@/components/media/ManagedVideo";
 import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
@@ -14,9 +14,9 @@ const OPEN_CLIP = "inset(0% 0% 0% 0%)";
 const HIDDEN_BOTTOM = "inset(100% 0% 0% 0%)";
 const HIDDEN_CENTER = "inset(0% 50% 0% 50%)";
 
-const petalMedia = temporaryMedia["petal-macro"];
-const ribbonMedia = temporaryMedia["ribbon-detail"];
-const heroMedia = temporaryMedia["rose-lateral-light"];
+const petalMedia = campaignStills["petal-macro"];
+const ribbonMedia = campaignStills["ribbon-detail"];
+const heroMedia = campaignStills["rose-lateral-light"];
 
 /**
  * Etapa 01 — DESEJO. A single ≤2.3s GSAP timeline, not tied to scroll:
@@ -230,7 +230,7 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
         <div ref={curtainInnerRef} className="absolute inset-0">
           <ManagedVideo
             clipId="rose-lateral-light"
-            description={heroMedia?.alt ?? "Filme da coleção Lê Grand Amour: mão erguendo uma rosa vermelha contra fundo escuro."}
+            description={heroMedia?.alt ?? "Campanha Lê Grand Amour: buquê de rosas vermelhas sobre fundo escuro."}
             aspectClassName="h-full w-full"
             objectPositionClassName="object-[55%_30%] md:object-[64%_34%]"
             priority
@@ -277,18 +277,19 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
               ref={logoInnerRef}
               className="relative inline-block h-[4.2rem] w-[13rem] sm:h-[5.4rem] sm:w-[16.5rem] lg:h-[6.4rem] lg:w-[19.5rem]"
             >
-              {/* mix-blend-screen: the source file is a flattened JPEG on a
-                  solid black square canvas, not a transparent PNG — screen
-                  blending drops that black canvas out against whatever
-                  sits behind it (black stays black, only the gold mark
-                  shows), so no visible logo "tile" edge sits on the film. */}
+              {/* The official logo ships as a flattened JPEG on a black
+                  canvas. `mix-blend-screen` can't drop that canvas here —
+                  this text column is its own stacking context (z-10), so
+                  the blend never reaches the photo underneath and a dark
+                  "tile" showed. The -alpha file is the same artwork with
+                  the black canvas baked out to transparency instead. */}
               <Image
-                src="/assets/le-grand-amour/le-grand-amour-logo.webp"
+                src="/assets/le-grand-amour/le-grand-amour-logo-alpha.webp"
                 alt={hero.logoAlt}
                 fill
                 priority
                 sizes="(max-width: 640px) 13rem, (max-width: 1024px) 16.5rem, 19.5rem"
-                className="object-contain object-left mix-blend-screen"
+                className="object-contain object-left"
               />
             </span>
           </h1>
@@ -326,13 +327,12 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             <div ref={ribbonInnerRef} className="absolute inset-[-8%_0_-8%_0]">
               {ribbonMedia && (
                 <Image
-                  src={ribbonMedia.temporaryImage}
+                  src={ribbonMedia.image}
                   alt=""
                   fill
                   priority
                   sizes="100vw"
                   className="object-cover"
-                  data-temporary-media="true"
                 />
               )}
             </div>
@@ -343,13 +343,12 @@ function HeroShell({ playOpening }: { playOpening: boolean }) {
             <div ref={petalInnerRef} className="absolute inset-[-8%_0_-8%_0]">
               {petalMedia && (
                 <Image
-                  src={petalMedia.temporaryImage}
+                  src={petalMedia.image}
                   alt=""
                   fill
                   priority
                   sizes="100vw"
                   className="object-cover"
-                  data-temporary-media="true"
                 />
               )}
             </div>

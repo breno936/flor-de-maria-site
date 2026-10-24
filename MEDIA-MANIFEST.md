@@ -1,8 +1,52 @@
 # Le Grand Amour — inventário de mídia
 
-Nenhum vídeo ou fotografia oficial da coleção existe hoje. A apresentação da
-parceria (Flor de Maria × Patrícia Marchi) lista a diária de estúdio como um
-item em **"Próximos passos"** — ou seja, a gravação ainda não aconteceu.
+## Ensaio oficial — fotografias entregues (out/2026)
+
+A diária de estúdio aconteceu em 07/10/2026 (fotógrafo Rafael Gimenes, Canon
+EOS R8, tratamento em Lightroom). Foram entregues **406 fotografias** (JPG,
+6000×4000, Adobe RGB), em três zips "CAMPANHA LE GRAN AMOUR". **Nenhum vídeo
+foi entregue**, embora a equipe de filmagem apareça nas fotos de bastidor
+(IMG_4203–4271, set de entrevista IMG_4771–4811).
+
+Os originais **não** entram no repositório. Cada foto usada foi convertida de
+Adobe RGB para sRGB e exportada em WebP (qualidade 82) para
+`public/assets/le-grand-amour/campanha/`. Registro central:
+`data/campaign-photos.ts`. Em `ManagedVideo`, a foto oficial
+(`campaignStills`) tem prioridade sobre qualquer mídia provisória de banco; o
+vídeo oficial, quando existir, continua vencendo os dois via
+`AVAILABLE_CLIPS`.
+
+| Arquivo | Original | Usado em |
+|---|---|---|
+| `hero-desktop.webp` / `hero-mobile.webp` | IMG_4521 / IMG_4480 | Hero — imagem principal (`rose-lateral-light`) |
+| `abertura-rosas.webp` | IMG_4415 | Hero — abertura, camada "matéria" (`petal-macro`) |
+| `fita-caixa.webp` | IMG_3926 | Hero — abertura, camada "acabamento" (`ribbon-detail`); detalhe do Lê Cœur Royale |
+| `conceito-luva-rosa.webp` | IMG_4652 | Conceito (`hands-selecting`) |
+| `bouquet.webp` | IMG_4605 | Produto — Lê Bouquet |
+| `bouquet-luva.webp` / `bouquet-hastes.webp` / `bouquet-embalagem.webp` | IMG_4629 / IMG_4513 / IMG_4621 | Produto — detalhes do Lê Bouquet; `bouquet-embalagem` também em Experiência — Criação |
+| `coeur.webp` / `coeur-retrato.webp` | IMG_4410 / IMG_4399 | Produto — Lê Cœur Royale (desktop / celular) |
+| `coeur-placa.webp` / `coeur-rosas.webp` | IMG_3902 / IMG_4089 | Produto — detalhes do Lê Cœur Royale |
+| `experiencia-escolha.webp` | IMG_4655 | Experiência — Escolha |
+| `experiencia-acabamento.webp` | IMG_4387 | Experiência — Acabamento |
+| `experiencia-entrega.webp` | IMG_4583 | Experiência — Entrega |
+
+Continuam como estavam: a arte de campanha do buquê branco
+(`CampaignMoment`, peça aprovada com logotipo e data embutidos) e o
+placeholder de Autoria (`patricia-film`), até a confirmação de qual dos looks
+do ensaio é a Patrícia Marchi. As artes `le-bouquet-vermelho` e
+`le-coeur-royale` ficam no disco, sem referência ativa.
+
+**Pendências de mídia depois do ensaio:** vídeos da diária; o ateliê
+montando o buquê / amarrando o laço (etapa "Criação" e "O último cuidado");
+a tampa do Lê Cœur Royale abrindo; uma entrega real; logotipo em vetor;
+autorização de uso de imagem de todas as pessoas que aparecem.
+
+## Histórico — antes do ensaio
+
+Até outubro de 2026, nenhum vídeo ou fotografia oficial da coleção existia. A
+apresentação da parceria (Flor de Maria × Patrícia Marchi) listava a diária
+de estúdio como um item em **"Próximos passos"**. As seções abaixo registram
+como o site foi montado com mídia provisória nesse período.
 
 ## Hero — segunda reconstrução (a primeira foi reprovada visualmente)
 

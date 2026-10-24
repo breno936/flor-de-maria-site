@@ -5,43 +5,45 @@ import Image from "next/image";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap/registerGsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import { brand, compra } from "@/data/content";
-import ReservationForm from "@/components/reservation/ReservationForm";
+import { contactChannel } from "@/lib/contact/channel";
+import StartServiceCTA from "@/components/cta/StartServiceCTA";
 
 /**
  * Etapa 06 — COMPRA (pública: "Atendimento Privado"). Purchase happens
- * through private atendimento, not a cart — this is the form's section. Per
- * the brief: "Estabilidade. Legibilidade. Pouco movimento. Foco total no
- * formulário." — one quiet entrance (a thread line + a short fade), nothing
- * scroll-scrubbed, no competing motion near the form itself.
+ * through private atendimento, not a cart — and not a form either: the
+ * client asked that a visitor be able to get in touch right away rather
+ * than submit their details and wait. So the section closes on a single
+ * action that opens the conversation itself (lib/contact/channel.ts). Per
+ * the brief: "Estabilidade. Legibilidade. Pouco movimento." — one quiet
+ * entrance (a thread line + a short fade), nothing scroll-scrubbed.
  *
- * The rose photograph that used to sit under the copy has been removed —
- * at this point in the narrative the product, the desire and the authorship
- * have already been shown; the only thing left to do is convert, and a
- * decorative photo competing with the form worked against that. In its
- * place: a quiet wine gradient, the same fine grain texture used elsewhere
- * for a textured dark panel (`VideoPoster`'s technique, reused rather than
- * reinvented), a barely-there red glow, and a faint monogram — never
- * another visual subject.
+ * No photograph here — at this point in the narrative the product, the
+ * desire and the authorship have already been shown; the only thing left
+ * to do is convert. A quiet wine gradient, the same fine grain texture used
+ * elsewhere for a textured dark panel (`VideoPoster`'s technique), a
+ * barely-there red glow, and a faint monogram — never another visual
+ * subject.
  */
 export default function Compra() {
   const sectionRef = useRef<HTMLElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
-  const introRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     registerGsap();
     const section = sectionRef.current;
+    const columns = contentRef.current ? Array.from(contentRef.current.children) : [];
     if (!section) return;
 
     if (reducedMotion) {
       gsap.set(threadRef.current, { scaleX: 1 });
-      gsap.set(introRef.current, { opacity: 1, y: 0 });
+      gsap.set(columns, { opacity: 1, y: 0 });
       return;
     }
 
     gsap.set(threadRef.current, { scaleX: 0 });
-    gsap.set(introRef.current, { opacity: 0, y: 14 });
+    gsap.set(columns, { opacity: 0, y: 14 });
 
     const trigger = ScrollTrigger.create({
       trigger: section,
@@ -50,8 +52,8 @@ export default function Compra() {
       onEnter: () => {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
         tl.to(threadRef.current, { scaleX: 1, duration: 0.8, ease: "power2.inOut" }, 0).to(
-          introRef.current,
-          { opacity: 1, y: 0, duration: 0.5 },
+          columns,
+          { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 },
           0.2
         );
       },
@@ -70,7 +72,7 @@ export default function Compra() {
       {/* Quiet wine ground — no photograph. A soft gradient, a barely-there
           red glow and the same fine grain used for textured dark panels
           elsewhere in the site (see VideoPoster), all well under the
-          content so it never competes with the form. */}
+          content so it never competes with the action. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div
           className="absolute inset-0"
@@ -104,29 +106,41 @@ export default function Compra() {
         className="absolute inset-x-0 top-0 h-px origin-left bg-gradient-to-r from-champagne-light via-champagne/70 to-champagne/0"
       />
 
-      <div className="relative mx-auto grid w-full max-w-[1600px] gap-16 px-6 md:px-12 lg:grid-cols-12 lg:items-center lg:gap-x-24">
-        <div ref={introRef} className="lg:col-span-5">
+      <div
+        ref={contentRef}
+        className="relative mx-auto grid w-full max-w-[1600px] gap-10 px-6 md:px-12 lg:grid-cols-12 lg:items-end lg:gap-x-24"
+      >
+        <div className="lg:col-span-6">
           <p className="mono-label text-champagne-light">{compra.eyebrow}</p>
           <h2
             id="compra-title"
-            className="mt-4 font-display text-[clamp(2.6rem,4vw,4.6rem)] leading-[0.96] text-ivory"
+            className="mt-4 font-display text-[clamp(2.8rem,5vw,5.6rem)] leading-[0.96] text-ivory"
           >
             {compra.title}
           </h2>
-          <p className="mt-5 max-w-md font-sans text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.6] text-ivory/70">
-            {compra.body}
-          </p>
-
-          {/* Discreet signature — a credit line, not another CTA. */}
-          <p className="mt-8 font-sans text-[0.68rem] font-medium uppercase tracking-[0.22em] text-champagne-light/80">
-            {brand.collabLine}
-          </p>
         </div>
 
-        <div className="lg:col-span-7">
-          <div className="mx-auto w-full max-w-[700px] lg:mx-0">
-            <ReservationForm />
+        <div className="lg:col-span-5 lg:col-start-8">
+          <p className="max-w-md font-sans text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.6] text-ivory/80">
+            {compra.body[contactChannel.id]}
+          </p>
+
+          <div className="mt-8">
+            <StartServiceCTA
+              className="w-full sm:w-auto"
+              aria-label={`Conversar pelo ${contactChannel.name} (abre em nova aba)`}
+            >
+              Conversar pelo {contactChannel.name}
+            </StartServiceCTA>
+            {contactChannel.detail && (
+              <p className="mt-4 font-sans text-sm text-champagne-light">{contactChannel.detail}</p>
+            )}
           </div>
+
+          {/* Discreet signature — a credit line, not another CTA. */}
+          <p className="mt-12 font-sans text-[0.68rem] font-medium uppercase tracking-[0.22em] text-champagne-light/80">
+            {brand.collabLine}
+          </p>
         </div>
       </div>
     </section>

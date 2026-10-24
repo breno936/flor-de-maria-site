@@ -10,7 +10,7 @@ let registered = false;
  * trigger positions once webfonts finish swapping in. Instrument Serif
  * loads with font-display: swap, so every heading's line-height changes
  * after first paint — without this, downstream sections (Patrícia, the
- * reservation form) end up with scroll-trigger start positions computed
+ * atendimento) end up with scroll-trigger start positions computed
  * against the fallback-font layout and drift out of reach.
  *
  * The refresh itself is deferred to an idle moment (falling back to a

@@ -9,7 +9,6 @@ import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
 import { products, type Product } from "@/data/products";
 import { produtoScene } from "@/data/content";
 import { productGalleries, type GalleryPhoto } from "@/data/campaign-photos";
-import { selectCreation } from "@/lib/reservation/selectedCreation";
 import StartServiceCTA from "@/components/cta/StartServiceCTA";
 import DetailLightbox from "./DetailLightbox";
 
@@ -22,8 +21,8 @@ const OPEN = "inset(0% 0% 0% 0%)";
  * dimmed: a large photograph of the whole piece in someone's hands (scale
  * reads at a glance), the name at editorial scale in an upright serif (the
  * italic is kept for the emotional line), composition and finishing, close
- * details that open full screen (DetailLightbox), and a CTA that carries the
- * chosen piece into the atendimento form. The scenes alternate side and
+ * details that open full screen (DetailLightbox), and a CTA that opens the
+ * conversation already naming the piece. The scenes alternate side and
  * ground (noir, then oxblood) — monumental, then intimate.
  */
 export default function Produto() {
@@ -229,10 +228,7 @@ function CreationScene({ product, gallery, order }: { product: Product; gallery:
           </div>
 
           <div data-reveal className="mt-10">
-            <StartServiceCTA
-              onClick={() => selectCreation(product.id)}
-              aria-label={`Iniciar atendimento para ${product.title}`}
-            />
+            <StartServiceCTA creation={product.id} />
           </div>
         </div>
       </div>

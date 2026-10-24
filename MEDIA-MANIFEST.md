@@ -317,17 +317,15 @@ precisar tocar no componente além de trocar o asset.
 - **Depoimento real e autorizado de Patrícia Marchi** — `data/content.ts →
   ambassadorSection.testimonialQuote` está vazio de propósito; a seção usa a
   nota de curadoria da Susan (Diretora Criativa) enquanto isso.
-- **WhatsApp/telefone oficial da Flor de Maria** — `data/content.ts →
-  contact.whatsappNumber` está vazio. O número da Florence Boutique de Rosas
-  (catálogo fornecido) é de outra empresa e não deve ser usado aqui. Sem
-  esse número, o link de WhatsApp no rodapé fica oculto (não aparece um link
-  sem destino).
-- **Integração real de encaminhamento da reserva** —
-  `lib/reservation/adapter.ts` aceita e registra (`console.info`) toda
-  submissão válida, mas só reencaminha de fato para um webhook/CRM se
-  `RESERVATION_WEBHOOK_URL` estiver configurada no ambiente — hoje não está.
-  O formulário continua honesto sobre isso: a mensagem de sucesso confirma
-  o recebimento pelo site, não uma resposta humana.
+- **WhatsApp do responsável pelo ateliê** — `data/content.ts →
+  contact.whatsappNumber` está vazio. O formulário de atendimento foi
+  removido a pedido do cliente (o visitante deve poder entrar em contato na
+  hora, não enviar dados e esperar): todo "Iniciar atendimento" abre a
+  conversa direto (`lib/contact/channel.ts`). Enquanto o número não chega,
+  abre o Direct do Instagram oficial; preenchido o número, passa a abrir o
+  WhatsApp com a primeira mensagem já escrita, citando a criação quando o
+  clique vem da cena dela. O número da Florence Boutique de Rosas (catálogo
+  fornecido) é de outra empresa e não deve ser usado aqui.
 - **Instagram oficial da Le Grand Amour** — `contact.instagramHandle`.
 - **Dados de escala confirmados** (prazo, personalização, disponibilidade,
   entrega/retirada) — `data/content.ts → scaleSection.facts`. A seção

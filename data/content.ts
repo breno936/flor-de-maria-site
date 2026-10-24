@@ -83,15 +83,19 @@ export const autoria = {
 /**
  * Etapa 06 — COMPRA (nome interno do funil). Ao público, esta etapa se
  * apresenta como "Atendimento Privado" — é assim que a compra realmente
- * começa, sem carrinho tradicional.
+ * começa, sem carrinho tradicional e sem formulário: o visitante abre a
+ * conversa direto (ver lib/contact/channel.ts). O texto acompanha o canal
+ * ativo — WhatsApp quando o número estiver preenchido, Instagram até lá.
  */
 export const compra = {
   eyebrow: "06 — ATENDIMENTO PRIVADO",
   title: "Comece a sua história.",
-  body: "Deixe seu nome e WhatsApp. A conversa segue pelo WhatsApp, direto com o responsável pelo ateliê, para entender a ocasião e cada detalhe desse gesto.",
-  note: "Seus dados serão utilizados exclusivamente para iniciar este atendimento.",
-  successTitle: "Atendimento iniciado.",
-  successBody: "Recebemos seus dados. O responsável pelo ateliê vai falar com você diretamente pelo WhatsApp.",
+  body: {
+    whatsapp:
+      "Uma conversa pelo WhatsApp, direto com o responsável pelo ateliê, para entender a ocasião e cada detalhe desse gesto.",
+    instagram:
+      "Uma conversa pelo Instagram, direto com o ateliê, para entender a ocasião e cada detalhe desse gesto.",
+  },
 };
 
 /** Indicador narrativo editorial — as seis etapas aprovadas, nesta ordem exata. */
@@ -119,7 +123,11 @@ export const nav = [
  * here. Flor de Maria's own number has not been supplied yet.
  */
 export const contact = {
-  /** EDITABLE — Flor de Maria's own WhatsApp number, digits only, e.g. "5519999999999". */
+  /**
+   * EDITABLE — the ateliê's own WhatsApp number, digits only with country
+   * code, e.g. "5519999999999". Once filled in, every "Iniciar atendimento"
+   * opens WhatsApp; while empty, they open the Instagram Direct below.
+   */
   whatsappNumber: "",
   /** Official Lê Grand Amour Instagram, given directly by the client. */
   instagramHandle: "legrandamour.ofc",

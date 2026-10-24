@@ -2,16 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/accessibility/useMediaQuery";
-import { CTA_LABEL, CTA_HREF } from "@/components/cta/StartServiceCTA";
+import { CTA_LABEL } from "@/components/cta/StartServiceCTA";
+import { contactChannel, contactHref } from "@/lib/contact/channel";
 
 /**
  * Mobile-only persistent CTA bar — the header's own CTA collapses on small
  * screens (logo + full text + hamburger has no room), so this is where the
  * "always reachable" atendimento entry point lives instead. Appears once
  * the visitor scrolls past DESEJO (its own CTA is already in view before
- * that), and disappears for good once they reach COMPRA — no point
- * offering a shortcut to a form the visitor is already looking at, and the
- * brief is explicit that no fixed bar should sit over the final CTA.
+ * that), and disappears for good once they reach COMPRA — that section's
+ * own button is already in view, and the brief is explicit that no fixed
+ * bar should sit over the final CTA.
  */
 export default function MobileStickyCta() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -57,7 +58,10 @@ export default function MobileStickyCta() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <a
-        href={CTA_HREF}
+        href={contactHref()}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Iniciar atendimento pelo ${contactChannel.name} (abre em nova aba)`}
         tabIndex={visible ? 0 : -1}
         className="group flex min-h-[52px] items-center justify-center gap-3 px-6 font-sans text-[0.78rem] font-medium uppercase tracking-[0.14em] text-ivory"
       >

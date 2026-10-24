@@ -1,6 +1,6 @@
 import type { MouseEventHandler, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "text" | "header" | "submit";
+type Variant = "primary" | "secondary" | "text" | "header";
 
 type SharedProps = {
   variant?: Variant;
@@ -23,7 +23,6 @@ type ButtonProps = SharedProps & {
   type?: "button" | "submit";
   onClick?: MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
-  loading?: boolean;
 };
 
 export type AtelierButtonProps = AnchorProps | ButtonProps;
@@ -37,17 +36,14 @@ const TRANSITION = "transition-[color,transform] duration-[320ms] [transition-ti
 const base =
   `group relative inline-flex items-center overflow-hidden font-sans text-[0.78rem] font-medium uppercase tracking-[0.14em] ${TRANSITION} focus-visible:outline focus-visible:outline-1 focus-visible:outline-champagne focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-50`;
 
-// One border only, per variant context — light champagne on the dark ground
-// (primary/header/secondary), a deep-red hairline on the cream form panel
-// (submit) so it still reads against a light background. No inner frame,
-// no second border of any kind. The dark ground variants carry a faint
+// One border only — light champagne on the dark ground. No inner frame, no
+// second border of any kind. The dark ground variants carry a faint
 // noir backing so label and border keep their contrast over photographs.
 const shapes: Record<Variant, string> = {
   primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir",
   secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir",
   text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne-light underline decoration-champagne-light/50 underline-offset-4 hover:decoration-champagne-light",
   header: "h-10 pl-5 pr-9 min-w-[44px] border border-champagne-light/80 text-champagne-light hover:text-noir",
-  submit: "h-[54px] pl-8 pr-14 min-w-[44px] border border-oxblood/55 text-noir hover:text-noir",
 };
 
 const arrowPosition: Record<Variant, string> = {
@@ -55,12 +51,11 @@ const arrowPosition: Record<Variant, string> = {
   secondary: "right-5",
   text: "",
   header: "right-3",
-  submit: "right-6",
 };
 
 // The hover "fill" — a single flat champagne layer, no border of its own,
 // sweeping in from the left. Every bordered variant shares the same warm
-// gold tone so the CTA reads consistently whether it sits on dark or cream.
+// gold tone so the CTA reads consistently wherever it sits.
 const FILL_COLOR = "#D7BD88";
 
 /**
@@ -72,20 +67,9 @@ const FILL_COLOR = "#D7BD88";
 export default function AtelierButton(props: AtelierButtonProps) {
   const { variant = "primary", children, className = "", hideArrow = false } = props;
   const showArrow = !hideArrow && variant !== "text";
-  const loading = !isAnchor(props) && Boolean(props.loading);
   const showFill = variant !== "text";
 
-  const content = (
-    <>
-      {loading && (
-        <span
-          aria-hidden="true"
-          className="relative z-10 mr-2 h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-[1.5px] border-current/30 border-t-current"
-        />
-      )}
-      <span className="relative z-10 inline-block">{children}</span>
-    </>
-  );
+  const content = <span className="relative z-10 inline-block">{children}</span>;
 
   const arrow = showArrow && (
     <span
@@ -120,8 +104,7 @@ export default function AtelierButton(props: AtelierButtonProps) {
     <button
       type={props.type ?? "button"}
       onClick={props.onClick}
-      disabled={props.disabled || loading}
-      aria-busy={loading || undefined}
+      disabled={props.disabled}
       aria-label={props["aria-label"]}
       className={classes}
     >

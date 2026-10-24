@@ -6,9 +6,9 @@ import { brand, contact, nav } from "@/data/content";
  * separation comes from spacing and a hairline rule, not a background or
  * color change. Two areas: the signature (brand + partnership, large and
  * quiet) and the practical information a visitor actually needs (nav,
- * social, location, legal). No WhatsApp deep-link here — every commercial
- * path funnels through the single "Iniciar atendimento" CTA/form instead
- * of a second, competing conversion route.
+ * social, location, legal). No separate contact link here — every
+ * "Iniciar atendimento" already opens the conversation itself, and a
+ * second route would only compete with it.
  */
 export default function Footer() {
   const hasInstagram = Boolean(contact.instagramHandle);

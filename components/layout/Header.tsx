@@ -80,8 +80,7 @@ export default function Header() {
 
       {/* Always mounted — visibility/interactivity controlled by `inert` +
           CSS, not by mounting on open and timing an unmount for the exit
-          transition. Same pattern already used by the reservation form's
-          own expand/collapse (avoids a setState-in-effect timing dance). */}
+          transition (avoids a setState-in-effect timing dance). */}
       <div
         id="mobile-menu"
         inert={menuOpen ? undefined : true}

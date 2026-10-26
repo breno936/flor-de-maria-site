@@ -32,8 +32,8 @@ export default function Footer() {
           </p>
           <p className="group flex items-center gap-3 font-sans text-[11px] text-muted">
             Desenvolvido por
-            <span className="relative block aspect-[836/244] w-[5.75rem] opacity-100 transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [@media(hover:hover)]:opacity-60 [@media(hover:hover)]:grayscale [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:grayscale-0">
-              <Image src="/assets/arpex/arpex-logo.webp" alt="ArpeX Technology" fill sizes="92px" className="object-contain" />
+            <span className="relative block aspect-[836/244] w-[4.25rem] cursor-pointer opacity-100 transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [@media(hover:hover)]:opacity-60 [@media(hover:hover)]:grayscale [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:grayscale-0">
+              <Image src="/assets/arpex/arpex-logo.webp" alt="ArpeX Technology" fill sizes="68px" className="object-contain" />
             </span>
           </p>
         </div>

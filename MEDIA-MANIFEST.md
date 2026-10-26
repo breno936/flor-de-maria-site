@@ -13,16 +13,22 @@ A página tem quatro blocos, nesta ordem, sem nenhuma seção fixada ou
    Bouquet (`#le-bouquet`) e Lê Cœur Royale (`#le-coeur-royale`), cada um
    com foto principal, nome, preço, uma frase, três informações e "Pedir
    pelo WhatsApp". As âncoras de cada criação servem para links de anúncio.
-3. **Detalhes** (`#detalhes`, `components/gallery/Detalhes.tsx`) — galeria
-   curta (faixa com deslize no celular, grade no desktop) que amplia em tela
-   cheia. As antigas etapas de Experiência viraram legendas.
+3. **Detalhes** (`#detalhes`, `components/gallery/Detalhes.tsx`) — seis
+   fotos escolhidas para não se repetirem (corpo inteiro, natureza-morta da
+   caixa, fundo claro, hastes, assinatura em relevo, entrega): faixa de
+   quadros 4:5 com deslize no celular, mosaico vertical/horizontal no
+   desktop; amplia em tela cheia.
 4. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
    WhatsApp, informações práticas confirmadas e a assinatura compacta da
    marca (a antiga seção Autoria).
 
+O mini menu de capítulos na lateral direita
+(`components/layout/NarrativeIndicator.tsx`) acompanha os quatro blocos —
+links reais no desktop, selo "02 / 04 — CRIAÇÕES" no celular.
+
 As seções Conceito, Campanha (arte do buquê branco), Experiência (sequência
-fixada de quatro imagens), Autoria, a vinheta de abertura e o indicador de
-capítulos saíram nesta versão — estão no histórico do git (até o commit
+fixada de quatro imagens), Autoria e a vinheta de abertura saíram nesta
+versão — estão no histórico do git (até o commit
 `d1e3ba9`), junto com a camada de vídeo (`ManagedVideo`, clipes provisórios
 de banco de imagem).
 
@@ -61,10 +67,11 @@ Adobe RGB para sRGB e exportada em WebP (qualidade 82) para
 |---|---|---|
 | `abertura-desktop.webp` (2560px) / `abertura-mobile.webp` (1290px) | IMG_4521 / IMG_4480 | Abertura — a partir de 768px / no celular (`<picture>`), com miniatura desfocada embutida para o carregamento |
 | `produto-bouquet-escala.webp` | IMG_4606 | Criações — Lê Bouquet, foto principal |
-| `detalhe-bouquet-rosas.webp` / `bouquet-embalagem.webp` / `detalhe-rosa-luva.webp` | IMG_4629 / IMG_4621 / IMG_4646 | Fotos ampliadas do Lê Bouquet; as duas primeiras também em Detalhes |
+| `detalhe-bouquet-rosas.webp` / `bouquet-embalagem.webp` / `detalhe-rosa-luva.webp` | IMG_4629 / IMG_4621 / IMG_4646 | Fotos ampliadas do Lê Bouquet |
 | `produto-coeur-escala.webp` | IMG_4413 | Criações — Lê Cœur Royale, foto principal |
-| `detalhe-coeur-fita.webp` / `fita-caixa.webp` / `experiencia-acabamento.webp` | IMG_4407 / IMG_3926 / IMG_4387 | Fotos ampliadas do Lê Cœur Royale; a primeira e a última também em Detalhes |
-| `experiencia-escolha.webp` / `experiencia-entrega.webp` | IMG_4655 / IMG_4583 | Detalhes — Escolha, Entrega |
+| `detalhe-coeur-fita.webp` / `fita-caixa.webp` / `experiencia-acabamento.webp` | IMG_4407 / IMG_3926 / IMG_4387 | Fotos ampliadas do Lê Cœur Royale |
+| `detalhe-proporcao.webp` / `detalhe-caixa-laco.webp` / `detalhe-escala-coeur.webp` | IMG_4697 / IMG_3902 / IMG_4087 | Detalhes — Proporção, Caixa, Escala |
+| `detalhe-hastes.webp` / `detalhe-assinatura.webp` / `experiencia-entrega.webp` | IMG_4513 / IMG_4183 / IMG_4583 | Detalhes — Hastes, Assinatura, Entrega |
 
 O logotipo é `le-grand-amour-wordmark.webp`: a arte oficial com o fundo preto
 convertido em transparência e recortada rente à marca. A imagem de

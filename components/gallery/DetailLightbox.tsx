@@ -40,6 +40,7 @@ export default function DetailLightbox({
   const stageRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
   const pointerStartX = useRef<number | null>(null);
+  const scrollYBeforeOpen = useRef(0);
   const reducedMotion = useReducedMotion();
   const isOpen = index !== null;
   const photo = index !== null ? photos[index] : null;
@@ -48,10 +49,14 @@ export default function DetailLightbox({
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (isOpen && !dialog.open) {
+      scrollYBeforeOpen.current = window.scrollY;
       dialog.showModal();
       document.documentElement.style.overflow = "hidden";
     } else if (!isOpen && dialog.open) {
       dialog.close();
+      // The platform hands focus back to the photo that opened it and may
+      // scroll a tall one into full view — return exactly where we were.
+      window.scrollTo({ top: scrollYBeforeOpen.current, behavior: "instant" });
     }
     if (!isOpen) document.documentElement.style.overflow = "";
   }, [isOpen]);

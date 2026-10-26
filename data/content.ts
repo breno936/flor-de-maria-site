@@ -53,6 +53,14 @@ export const atendimento = {
   signatureLine: "by Patrícia Marchi",
 };
 
+/** Indicador lateral de capítulos (mini menu) — os quatro blocos, nesta ordem. */
+export const narrativeSteps = [
+  { id: "inicio", number: "01", label: "Abertura" },
+  { id: "criacoes", number: "02", label: "Criações" },
+  { id: "detalhes", number: "03", label: "Detalhes" },
+  { id: "atendimento", number: "04", label: "Atendimento" },
+] as const;
+
 export const nav = [
   { label: "Criações", href: "#criacoes" },
   { label: "Detalhes", href: "#detalhes" },

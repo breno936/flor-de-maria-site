@@ -117,28 +117,61 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
   ],
 };
 
+export type DetailPhoto = GalleryPhoto & { orientation: "portrait" | "landscape" };
+
 /**
- * Detalhes — a short gallery of finishing, proportion and packaging. The
- * old Experiência stages (escolha, acabamento, entrega) live on here as
- * captions, in their approved wording, instead of as a section of their own.
+ * Detalhes — a short gallery of proportion, finishing and packaging. Chosen
+ * to differ from one another and from the cards above (scale, background,
+ * subject): full figure, still life, the box on a light ground, the stems,
+ * the embossed signature, the hand-over — never six close-ups of roses.
+ * Portrait and landscape alternate so the desktop mosaic reads P·L / L·P /
+ * P·L. The Entrega caption keeps the approved Experiência wording.
  */
-export const detailGallery: GalleryPhoto[] = [
-  // IMG_4655
+export const detailGallery: DetailPhoto[] = [
+  // IMG_4697
   {
-    src: `${BASE}/experiencia-escolha.webp`,
-    alt: "Uma rosa vermelha escolhida entre as demais, na mão de luva de renda.",
-    label: "Escolha",
-    caption: "Flores selecionadas no auge da beleza.",
-    position: "58% 45%",
+    src: `${BASE}/detalhe-proporcao.webp`,
+    alt: "Modelo de vestido preto ajoelhada no estúdio, com o buquê de rosas vermelhas no ombro e a capa branca estendida no chão.",
+    label: "Proporção",
+    caption: "O buquê diante do corpo inteiro: a dimensão real da criação.",
+    position: "50% 45%",
+    orientation: "portrait",
   },
-  productGalleries["le-bouquet"][1],
-  productGalleries["le-bouquet"][2],
-  productGalleries["le-coeur-royale"][1],
-  // IMG_4387
+  // IMG_3902
   {
-    ...productGalleries["le-coeur-royale"][3],
-    label: "Acabamento",
-    caption: "Cada detalhe finalizado à mão, com tempo e cuidado.",
+    src: `${BASE}/detalhe-caixa-laco.webp`,
+    alt: "Lê Cœur Royale sobre uma mesa: caixa preta em formato de coração repleta de rosas vermelhas, com laço de cetim vermelho e a placa Lê Grand Amour na frente.",
+    label: "Caixa",
+    caption: "Lê Cœur Royale: caixa rígida com laço de cetim vermelho e a assinatura Lê Grand Amour.",
+    position: "60% 55%",
+    orientation: "landscape",
+  },
+  // IMG_4087
+  {
+    src: `${BASE}/detalhe-escala-coeur.webp`,
+    alt: "Lê Cœur Royale nas mãos de uma modelo de roupa branca, sobre fundo claro: o coração inteiro preenchido por rosas vermelhas e o laço de cetim.",
+    label: "Escala",
+    caption: "Lê Cœur Royale nas mãos: o coração inteiro preenchido por rosas.",
+    position: "45% 50%",
+    orientation: "landscape",
+  },
+  // IMG_4513
+  {
+    src: `${BASE}/detalhe-hastes.webp`,
+    alt: "Mãos de luva de renda segurando o buquê de cabeça para baixo atrás das costas: hastes longas amarradas com fitas pretas Lê Grand Amour.",
+    label: "Hastes",
+    caption: "Rosas de haste longa, amarradas com as fitas pretas Lê Grand Amour.",
+    position: "50% 50%",
+    orientation: "portrait",
+  },
+  // IMG_4183
+  {
+    src: `${BASE}/detalhe-assinatura.webp`,
+    alt: "Uma rosa vermelha pousada sobre a assinatura Lê Grand Amour gravada em relevo dourado.",
+    label: "Assinatura",
+    caption: "A assinatura Lê Grand Amour, gravada em relevo.",
+    position: "50% 60%",
+    orientation: "portrait",
   },
   // IMG_4583
   {
@@ -147,5 +180,6 @@ export const detailGallery: GalleryPhoto[] = [
     label: "Entrega",
     caption: "Apresentação e logística pensadas para que a chegada também faça parte do acontecimento.",
     position: "52% 50%",
+    orientation: "landscape",
   },
 ];

@@ -9,6 +9,7 @@ type SharedProps = {
   /** Hide the trailing arrow (shown by default on every variant except `text`). */
   hideArrow?: boolean;
   "aria-label"?: string;
+  tabIndex?: number;
 };
 
 type AnchorProps = SharedProps & {
@@ -40,10 +41,10 @@ const base =
 // second border of any kind. The dark ground variants carry a faint
 // noir backing so label and border keep their contrast over photographs.
 const shapes: Record<Variant, string> = {
-  primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir",
-  secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir",
+  primary: "h-[54px] pl-7 pr-14 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir focus-visible:text-noir active:text-noir",
+  secondary: "h-[50px] pl-6 pr-12 min-w-[44px] border border-champagne-light/80 bg-noir/35 text-champagne-light backdrop-blur-[2px] hover:text-noir focus-visible:text-noir active:text-noir",
   text: "h-auto min-h-[44px] px-0 bg-transparent text-champagne-light underline decoration-champagne-light/50 underline-offset-4 hover:decoration-champagne-light",
-  header: "h-10 pl-5 pr-9 min-w-[44px] border border-champagne-light/80 text-champagne-light hover:text-noir",
+  header: "h-10 pl-5 pr-9 min-w-[44px] border border-champagne-light/80 text-champagne-light hover:text-noir focus-visible:text-noir active:text-noir",
 };
 
 const arrowPosition: Record<Variant, string> = {
@@ -62,7 +63,8 @@ const FILL_COLOR = "#D7BD88";
  * The one CTA system for the whole site. A single hairline border, no inner
  * frame, no scale, no text movement. Hover is a flat-color sweep filling in
  * from the left behind the label — the only thing that moves is the arrow,
- * 3px to the right.
+ * 3px to the right. Keyboard focus and a finger's press get the same state
+ * (Tailwind's `hover:` only applies on devices that can hover).
  */
 export default function AtelierButton(props: AtelierButtonProps) {
   const { variant = "primary", children, className = "", hideArrow = false } = props;
@@ -74,7 +76,7 @@ export default function AtelierButton(props: AtelierButtonProps) {
   const arrow = showArrow && (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute z-10 inline-block ${TRANSITION} group-hover:translate-x-[3px] ${arrowPosition[variant]}`}
+      className={`pointer-events-none absolute z-10 inline-block ${TRANSITION} group-hover:translate-x-[3px] group-focus-visible:translate-x-[3px] group-active:translate-x-[3px] ${arrowPosition[variant]}`}
     >
       &rarr;
     </span>
@@ -83,7 +85,7 @@ export default function AtelierButton(props: AtelierButtonProps) {
   const fill = showFill && (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-0 origin-left scale-x-0 transition-transform duration-[320ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100"
+      className="pointer-events-none absolute inset-0 z-0 origin-left scale-x-0 transition-transform duration-[320ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100 group-active:scale-x-100"
       style={{ background: FILL_COLOR }}
     />
   );
@@ -92,7 +94,15 @@ export default function AtelierButton(props: AtelierButtonProps) {
 
   if (isAnchor(props)) {
     return (
-      <a href={props.href} target={props.target} rel={props.rel} onClick={props.onClick} aria-label={props["aria-label"]} className={classes}>
+      <a
+        href={props.href}
+        target={props.target}
+        rel={props.rel}
+        onClick={props.onClick}
+        aria-label={props["aria-label"]}
+        tabIndex={props.tabIndex}
+        className={classes}
+      >
         {fill}
         {content}
         {arrow}
@@ -106,6 +116,7 @@ export default function AtelierButton(props: AtelierButtonProps) {
       onClick={props.onClick}
       disabled={props.disabled}
       aria-label={props["aria-label"]}
+      tabIndex={props.tabIndex}
       className={classes}
     >
       {fill}

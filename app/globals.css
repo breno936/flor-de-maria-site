@@ -41,16 +41,19 @@ select:focus-visible {
   outline-offset: 4px;
 }
 
-/* Every scene is a `<section id="...">` used as an anchor/scroll target
-   (nav links, the hash-jump fix, footer/CTA links). Without this, jumping
-   to one lands its top edge flush with the viewport top — directly behind
-   the fixed header — hiding the section's own eyebrow/title underneath it. */
-section[id] {
+/* Every block is a `<section id="...">`, and each creation an
+   `<article id="...">`, used as anchor/scroll targets (nav links, the
+   hash-jump fix, ad links straight to one piece). Without this, jumping to
+   one lands its top edge flush with the viewport top — directly behind the
+   fixed header — hiding its own eyebrow/title underneath it. */
+section[id],
+article[id] {
   scroll-margin-top: var(--header-height-mobile);
 }
 
 @media (min-width: 768px) {
-  section[id] {
+  section[id],
+  article[id] {
     scroll-margin-top: var(--header-height);
   }
 }

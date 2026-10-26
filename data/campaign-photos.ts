@@ -1,4 +1,3 @@
-import type { MediaClipId } from "./media-manifest";
 import type { CreationId } from "./products";
 
 /**
@@ -8,10 +7,6 @@ import type { CreationId } from "./products";
  * sRGB) WebP export of one original frame; the IMG_ number on each entry is
  * the source file in the delivered shoot. See MEDIA-MANIFEST.md.
  *
- * The shoot delivered stills only, no footage — so `campaignStills` slots in
- * ahead of the stock placeholders in ManagedVideo, and the real film (once
- * delivered) still wins over both via AVAILABLE_CLIPS.
- *
  * Alt texts describe what each frame shows without naming the person in it:
  * which model is Patrícia Marchi is not confirmed yet.
  */
@@ -20,56 +15,37 @@ const BASE = "/assets/le-grand-amour/campanha";
 
 export type CampaignPhoto = { src: string; alt: string };
 
-export type CampaignStill = {
-  image: string;
-  mobileImage?: string;
-  alt: string;
-  /** Visible caption, for frames shown as an editorial print (Autoria). */
-  caption?: string;
-};
-
-export const campaignStills: Partial<Record<MediaClipId, CampaignStill>> = {
-  // IMG_4521 (desktop) / IMG_4480 (mobile) — exported larger than the
-  // viewport (3840 / 3000 px) so the Hero's opening can start zoomed into
-  // the bouquet and still be sharp.
-  "rose-lateral-light": {
-    image: `${BASE}/hero-revelacao-desktop.webp`,
-    mobileImage: `${BASE}/hero-revelacao-mobile.webp`,
-    alt: "Campanha Lê Grand Amour: modelo de vestido preto, capa branca e véu de tule segurando um grande buquê de rosas vermelhas, sobre fundo escuro.",
-  },
-  // IMG_4652
-  "hands-selecting": {
-    image: `${BASE}/conceito-luva-rosa.webp`,
-    alt: "Mão com luva de renda preta segurando uma rosa vermelha sobre o buquê da coleção.",
-  },
-  // IMG_3629 — stands in the Autoria frame until the authorised portrait
-  // exists; a real frame of the creative process, nobody identifiable.
-  "patricia-film": {
-    image: `${BASE}/autoria-moodboard.webp`,
-    alt: "Moodboard da campanha Lê Grand Amour: referências de rosas vermelhas, caixas em formato de coração, o título da coleção e a paleta de cores.",
-    caption: "Moodboard da campanha — o processo criativo",
-  },
-};
-
-/** IMG_4646 — the petals the Hero's opening starts on before pulling back to the full scene. */
-export const heroRevealDetail: CampaignPhoto = {
-  src: `${BASE}/detalhe-rosa-luva.webp`,
-  alt: "",
-};
-
 /**
- * One gallery per creation for the "inspeção de ateliê" lightbox. Item 0 is
- * the scene's main photograph — the whole piece in someone's hands, so its
- * real scale reads at a glance; the rest are the close details (roses,
- * wrapping, ribbon, signature). Captions only describe what the frame shows.
+ * The opening photograph — IMG_4521 on tablet/desktop, IMG_4480 (portrait)
+ * on phones. `blur` is a 24px-wide copy of each, shown blurred under the
+ * photo so the very first frame is already the campaign's colours, never a
+ * black screen, on a slow connection.
  */
+export const heroPhoto = {
+  desktop: { src: `${BASE}/abertura-desktop.webp`, width: 2560, height: 1707 },
+  mobile: { src: `${BASE}/abertura-mobile.webp`, width: 1290, height: 1935 },
+  alt: "Campanha Lê Grand Amour: modelo de vestido preto, capa branca e véu de tule segurando um grande buquê de rosas vermelhas, sobre fundo escuro.",
+  blur: {
+    desktop:
+      "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAAAwBACdASoYABAAPrVKnkonJCKhsAgA4BaJQBYdjSwzWB3q6Nv+5XLVXhgA/v6IJR+KpaYAvHTXP1XMZuSKtk2A3kQH1i2GKVwXfmMKe9VzMgRL8PTQHlTsBDlUOOdj5UZiV/RnVja3TBzCZARr6vC2BMTUV19mdsBfnluWwAMCWIhYppr0uAAA",
+    mobile:
+      "data:image/webp;base64,UklGRtgAAABXRUJQVlA4IMwAAAAQBgCdASoYACQAPqVCmEmmI6IhNUgAwBSJQBfte1iL5imJOn+rIVwgJhn5NzA7Cz+W8QO7JHwbR6AA/vkSyYeTemm7L4fpQABBiCJhV0aSuvqg+4L5Ad+YhO5uUwRJ1GYBZeXc1X80VC7E+0n2A3QX2GaZ0bUiVOFZPxvmR1bKj6a4N30ntDRvPBBQVd9HJChkopbAg/rzsIRrwlyBZKk/Qm31H70GDE7FLhYxFmV+1B+12PXHwyMuvZ9es4Xwovo+WG9cswoxZhAAAAA=",
+  },
+};
+
 export type GalleryPhoto = CampaignPhoto & {
   label: string;
   caption: string;
-  /** object-position for the thumbnail crop. */
+  /** object-position for the cropped frame. */
   position: string;
 };
 
+/**
+ * One gallery per creation. Item 0 is the card's main photograph — the
+ * whole piece in someone's hands, so its real scale reads at a glance; the
+ * rest open from it in the lightbox. Captions only describe what the frame
+ * shows.
+ */
 export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
   "le-bouquet": [
     // IMG_4606
@@ -141,30 +117,35 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
   ],
 };
 
-/** Experiência — one real frame per stage: Escolha, Criação, Acabamento, Entrega. */
-export const experienciaPhotos: (CampaignPhoto & { position: string })[] = [
+/**
+ * Detalhes — a short gallery of finishing, proportion and packaging. The
+ * old Experiência stages (escolha, acabamento, entrega) live on here as
+ * captions, in their approved wording, instead of as a section of their own.
+ */
+export const detailGallery: GalleryPhoto[] = [
   // IMG_4655
   {
     src: `${BASE}/experiencia-escolha.webp`,
     alt: "Uma rosa vermelha escolhida entre as demais, na mão de luva de renda.",
+    label: "Escolha",
+    caption: "Flores selecionadas no auge da beleza.",
     position: "58% 45%",
   },
-  // IMG_4621
-  {
-    src: `${BASE}/bouquet-embalagem.webp`,
-    alt: "A composição do Lê Bouquet: rosas vermelhas envoltas em embalagem preta e dourada.",
-    position: "56% 50%",
-  },
+  productGalleries["le-bouquet"][1],
+  productGalleries["le-bouquet"][2],
+  productGalleries["le-coeur-royale"][1],
   // IMG_4387
   {
-    src: `${BASE}/experiencia-acabamento.webp`,
-    alt: "Mãos ajustando a caixa Lê Cœur Royale, com a fita que leva o logotipo Lê Grand Amour.",
-    position: "20% 60%",
+    ...productGalleries["le-coeur-royale"][3],
+    label: "Acabamento",
+    caption: "Cada detalhe finalizado à mão, com tempo e cuidado.",
   },
   // IMG_4583
   {
     src: `${BASE}/experiencia-entrega.webp`,
     alt: "O momento da entrega: o buquê Lê Grand Amour passando de uma mão para outra.",
+    label: "Entrega",
+    caption: "Apresentação e logística pensadas para que a chegada também faça parte do acontecimento.",
     position: "52% 50%",
   },
 ];

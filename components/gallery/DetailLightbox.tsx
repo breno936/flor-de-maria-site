@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
 import Image from "next/image";
-import { gsap } from "@/lib/gsap/registerGsap";
+import { gsap } from "gsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import type { GalleryPhoto } from "@/data/campaign-photos";
 

@@ -1,136 +1,80 @@
 /**
  * Confirmed copy only. Every string here traces back to the client brief,
  * the official Instagram (@legrandamour.ofc) or the approved product
- * photography. Fields marked EDITABLE_* are intentionally empty — they
- * require real business data the client has not supplied yet (phone
- * numbers, launch date, studio deliverables). Do not fill them with
- * invented values.
+ * photography. Fields marked EDITABLE are intentionally empty — they
+ * require real business data the client has not supplied yet. Do not fill
+ * them with invented values.
  *
- * Art-direction pass: repositioned as "Alta Floricultura" (haute-couture
- * language, not a traditional florist). The page still follows exactly six
- * stages — DESEJO → CONCEITO → PRODUTO → EXPERIÊNCIA → AUTORIA → COMPRA
- * (public label "Atendimento Privado"). Each export below is grouped under
- * its stage.
+ * Commercial pass (Oct 2026): visitors arrive from Instagram and ads,
+ * already drawn in by the campaign, so the page is four blocks —
+ * ABERTURA → CRIAÇÕES (e valores) → DETALHES → ATENDIMENTO — contemplative
+ * in the photographs, objective in the selling. The former Conceito,
+ * Experiência and Autoria stages survive as gallery captions and a compact
+ * signature, in their approved wording.
  */
 
 export const brand = {
   collabLine: "Flor de Maria Ateliê × Patrícia Marchi",
   name: "LÊ GRAND AMOUR",
-  /** Official positioning line, from the brand's own materials. */
-  positioning: ["Alta Floricultura.", "Amor em sua forma mais grandiosa."],
   /** Full signature as used on official cards/plaques. */
   signatureFull: "LÊ GRAND AMOUR by Flor de Maria",
 };
 
-/** Etapa 01 — DESEJO (o hero). Impacto emocional antes de explicar o produto. */
+/** ABERTURA — the campaign photograph, the mark, one line and the way to the creations. */
 export const hero = {
   /** Rendered as the official logo image, never reconstructed in a web font. */
-  logoAlt: "Logotipo dourado da Lê Grand Amour sobre fundo preto.",
+  logoAlt: "Lê Grand Amour",
   signature: "by Flor de Maria",
-  /** "Frase principal" — entregue em duas linhas, nunca disputando protagonismo com o logotipo. */
-  phraseLines: ["Amor em sua forma", "mais grandiosa."],
-  support: "Alta floricultura criada para histórias que não cabem em gestos comuns.",
-  campaignAlt: "Campanha Lê Grand Amour com mulher segurando buquê monumental de rosas brancas.",
+  phrase: "Amor em sua forma mais grandiosa.",
 };
 
-/** Etapa 02 — CONCEITO. Transforma o desejo inicial em significado; incorpora o antigo "Para quem". */
-export const conceito = {
-  eyebrow: "02 — CONCEITO",
-  headlineLines: ["Algumas histórias não precisam ser contadas.", "Precisam ser sentidas."],
-  body: [
-    "Lê Grand Amour nasce para transformar sentimentos em presença — na escolha, na composição, no acabamento e na forma como cada criação chega.",
-  ],
-  occasions: [
-    "Para dizer eu te amo.",
-    "Para celebrar.",
-    "Para pedir perdão.",
-    "Para marcar um dia que merece ser lembrado.",
-  ],
+/** CRIAÇÕES — see data/products.ts for the two pieces and their prices. */
+export const criacoes = {
+  eyebrow: "Coleção Lê Grand Amour",
 };
 
-/** Etapa 03 — PRODUTO. Revela claramente o que está sendo vendido — ver data/products.ts para as duas criações. */
-export const produtoScene = {
-  eyebrow: "03 — PRODUTO",
+/** DETALHES — a short gallery; captions live with the photos in data/campaign-photos.ts. */
+export const detalhes = {
+  eyebrow: "Detalhes",
+  title: "Feito à mão, do primeiro ao último detalhe.",
 };
 
-/** Etapa 04 — EXPERIÊNCIA. Por que comprar a coleção é diferente de comprar flores comuns (antigo Ritual). */
-export const experiencia = {
-  eyebrow: "04 — EXPERIÊNCIA",
-  title: "Cada detalhe prepara a presença.",
-  caption: "O amor também se reconhece nos detalhes.",
-  steps: [
-    { label: "ESCOLHA", text: "Flores selecionadas no auge da beleza." },
-    { label: "CRIAÇÃO", text: "Composição preparada de forma autoral para cada declaração." },
-    { label: "ACABAMENTO", text: "Cada detalhe finalizado à mão, com tempo e cuidado." },
-    {
-      label: "ENTREGA",
-      text: "Apresentação e logística pensadas para que a chegada também faça parte do acontecimento.",
-    },
-  ],
-};
-
-/** Etapa 05 — AUTORIA. Origem e legitimidade da coleção (antigo "Patrícia Marchi"). */
-export const autoria = {
-  eyebrow: "05 — AUTORIA",
-  title: "Uma criação feita para ocupar presença.",
-  curatorNote:
+/** ATENDIMENTO — the closing: a compact brand signature and the way to WhatsApp. */
+export const atendimento = {
+  eyebrow: "Atendimento",
+  title: "Faça seu pedido.",
+  body: {
+    whatsapp: "Direto com o responsável pelo ateliê, pelo WhatsApp.",
+    instagram: "Direto com o ateliê, pelo Instagram.",
+  },
+  /** Autoria, compact — the approved curator note, kept as the closing signature. */
+  authorship:
     "Projeto idealizado e assinado por Susan, Diretora Criativa da Flor de Maria Ateliê, com Patrícia Marchi como musa e embaixadora da coleção.",
   signatureLine: "by Patrícia Marchi",
-  /** EDITABLE — real, authorized quote from Patrícia Marchi. Do not invent. */
-  testimonialQuote: "",
 };
 
-/**
- * Etapa 06 — COMPRA (nome interno do funil). Ao público, esta etapa se
- * apresenta como "Atendimento Privado" — é assim que a compra realmente
- * começa, sem carrinho tradicional e sem formulário: o visitante abre a
- * conversa direto (ver lib/contact/channel.ts). O texto acompanha o canal
- * ativo — WhatsApp quando o número estiver preenchido, Instagram até lá.
- */
-export const compra = {
-  eyebrow: "06 — ATENDIMENTO PRIVADO",
-  title: "Comece a sua história.",
-  body: {
-    whatsapp:
-      "Uma conversa pelo WhatsApp, direto com o responsável pelo ateliê, para entender a ocasião e cada detalhe desse gesto.",
-    instagram:
-      "Uma conversa pelo Instagram, direto com o ateliê, para entender a ocasião e cada detalhe desse gesto.",
-  },
-};
-
-/** Indicador narrativo editorial — as seis etapas aprovadas, nesta ordem exata. */
-export const narrativeSteps = [
-  { id: "desejo", number: "01", label: "DESEJO" },
-  { id: "conceito", number: "02", label: "CONCEITO" },
-  { id: "produto", number: "03", label: "PRODUTO" },
-  { id: "experiencia", number: "04", label: "EXPERIÊNCIA" },
-  { id: "autoria", number: "05", label: "AUTORIA" },
-  { id: "atendimento", number: "06", label: "ATENDIMENTO" },
-] as const;
-
-/** Navegação principal — "Desejo" é o próprio início e não precisa de item de menu; a logo leva ao topo. */
 export const nav = [
-  { label: "Conceito", href: "#conceito" },
-  { label: "Produtos", href: "#produto" },
-  { label: "Experiência", href: "#experiencia" },
-  { label: "Autoria", href: "#autoria" },
+  { label: "Criações", href: "#criacoes" },
+  { label: "Detalhes", href: "#detalhes" },
   { label: "Atendimento", href: "#atendimento" },
 ];
 
 /**
  * Contact channels. Florence Boutique de Rosas' WhatsApp/site (found in the
  * supplier catalog) belong to a different company and must never be used
- * here. Flor de Maria's own number has not been supplied yet.
+ * here.
  */
 export const contact = {
   /**
-   * EDITABLE — the ateliê's own WhatsApp number, digits only with country
-   * code, e.g. "5519999999999". Once filled in, every "Iniciar atendimento"
-   * opens WhatsApp; while empty, they open the Instagram Direct below.
+   * The ateliê's own WhatsApp number, digits only with country code
+   * (supplied by the client on 2026-10-26). Every "Pedir pelo WhatsApp"
+   * opens it; if emptied, they open the Instagram Direct below instead.
    */
   whatsappNumber: "5519982465984",
   /** Official Lê Grand Amour Instagram, given directly by the client. */
   instagramHandle: "legrandamour.ofc",
   atelierLocation: "Hortolândia – SP",
   serviceArea: "Região Metropolitana de Campinas",
+  /** EDITABLE — confirmed order lead time, e.g. "Pedidos com 2 dias de antecedência". */
+  leadTime: "",
 };

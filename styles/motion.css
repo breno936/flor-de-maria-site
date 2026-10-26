@@ -1,48 +1,62 @@
-/* Shared motion primitives. GSAP drives timelines; these classes define
-   the resting/entering states so content is never invisible without JS. */
+/* Shared motion primitives — finish only. Nothing here pins, holds or
+   scrubs the scroll, and nothing is invisible without JS: entrances are
+   CSS animations that end visible, or `Reveal` (components/motion), which
+   only hides what is still below the fold once JS is running. */
 
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-}
-
-.reveal-in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.9s var(--ease-signature), transform 0.9s var(--ease-signature);
-}
-
-.gold-line {
-  position: relative;
-  overflow: hidden;
-}
-
-.gold-line::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  transform: translateX(-100%);
-}
-
-.gold-line-draw::after {
-  animation: gold-sweep 1.1s var(--ease-signature) forwards;
-}
-
-@keyframes gold-sweep {
-  to {
-    transform: translateX(0);
+/* ABERTURA — the photograph settles from a slightly closer frame while the
+   mark, the line and the button rise in. Plays once per page load, from the
+   very first paint, with no wait on JS or on the image: everything is
+   readable within ~0.9s. */
+@keyframes hero-settle {
+  from {
+    transform: scale(1.07);
   }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-settle {
+  animation: hero-settle 1.8s var(--ease-signature) both;
+}
+
+.hero-rise {
+  animation: hero-rise 0.7s var(--ease-signature) both;
+}
+
+/* Reveal — set by components/motion/Reveal.tsx. */
+[data-reveal] {
+  transition:
+    opacity 0.7s var(--ease-signature),
+    transform 0.7s var(--ease-signature);
+}
+
+[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* Photographs inside a revealed block settle from a touch closer. */
+[data-reveal] .reveal-zoom {
+  transition: transform 1.2s var(--ease-signature);
+}
+
+[data-reveal="pending"] .reveal-zoom {
+  transform: scale(1.06);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
-  .reveal-in {
-    transition: none;
-  }
   *,
   *::before,
   *::after {
@@ -51,36 +65,4 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-.no-motion * {
-  animation: none !important;
-  transition: none !important;
-}
-
-@keyframes ritual-in {
-  from {
-    opacity: 0;
-    transform: scale(1);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.02);
-  }
-}
-
-/* Ambient, very slow breathing zoom for full-bleed editorial photos on
-   mobile, where there's no scroll-driven scale to stand in for it. Neutralised
-   automatically by the prefers-reduced-motion block above. */
-@keyframes kenburns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.06);
-  }
-}
-
-.animate-kenburns {
-  animation: kenburns 16s var(--ease-soft) infinite alternate;
 }

@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { nav } from "@/data/content";
 import LogoMark from "./LogoMark";
-import StartServiceCTA from "@/components/cta/StartServiceCTA";
+import WhatsAppCTA from "@/components/cta/WhatsAppCTA";
+import { useCommerceZone } from "@/lib/ui/useCommerceZone";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // The header's WhatsApp button joins only once the creations (and their
+  // prices) have been seen — the conversation starts after the price.
+  const { seenCreations } = useCommerceZone();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -31,9 +35,9 @@ export default function Header() {
       style={{ height: "var(--header-height-mobile)" }}
     >
       <div className="container-lga flex h-[72px] items-center justify-between md:h-[88px]">
-        {/* The logo leads back to the very top — DESEJO is the page's own
-            opening, so it doesn't need its own nav item. */}
-        <a href="#desejo" className="flex items-center gap-2">
+        {/* The logo leads back to the very top — the opening doesn't need
+            its own nav item. */}
+        <a href="#inicio" className="flex items-center gap-2">
           <LogoMark compact />
           <span className="sr-only">Lê Grand Amour — página inicial</span>
         </a>
@@ -51,8 +55,13 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <span className="hidden sm:inline-block">
-            <StartServiceCTA variant="header" />
+          <span
+            className={`hidden transition-[opacity,transform] duration-300 ease-out lg:inline-block ${
+              seenCreations ? "opacity-100" : "pointer-events-none translate-y-[-4px] opacity-0"
+            }`}
+            aria-hidden={!seenCreations}
+          >
+            <WhatsAppCTA variant="header" tabIndex={seenCreations ? 0 : -1} />
           </span>
           <button
             type="button"
@@ -109,7 +118,7 @@ export default function Header() {
             menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           }`}
         >
-          <StartServiceCTA className="w-full" onClick={() => setMenuOpen(false)} />
+          <WhatsAppCTA className="w-full" onClick={() => setMenuOpen(false)} />
         </div>
       </div>
     </header>

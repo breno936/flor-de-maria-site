@@ -1,10 +1,7 @@
 import Hero from "@/components/hero/Hero";
-import CampaignMoment from "@/components/campaign/CampaignMoment";
-import Conceito from "@/components/concept/Conceito";
-import Produto from "@/components/products/Produto";
-import CreationRitual from "@/components/ritual/CreationRitual";
-import PatriciaFilm from "@/components/ambassador/PatriciaFilm";
-import Compra from "@/components/purchase/Compra";
+import Criacoes from "@/components/products/Criacoes";
+import Detalhes from "@/components/gallery/Detalhes";
+import Atendimento from "@/components/purchase/Atendimento";
 import { contact } from "@/data/content";
 
 const jsonLd = {
@@ -22,9 +19,9 @@ const jsonLd = {
 };
 
 /**
- * Narrative order — client-approved, exact:
- * DESEJO → CONCEITO → PRODUTO → EXPERIÊNCIA → AUTORIA → COMPRA.
- * No macrosections between these six stages.
+ * Four blocks, in this order: ABERTURA → CRIAÇÕES (e valores) → DETALHES →
+ * ATENDIMENTO. Contemplative in the photographs, objective in the selling;
+ * nothing pins or holds the scroll.
  */
 export default function Home() {
   return (
@@ -34,12 +31,9 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Hero />
-      <CampaignMoment />
-      <Conceito />
-      <Produto />
-      <CreationRitual />
-      <PatriciaFilm />
-      <Compra />
+      <Criacoes />
+      <Detalhes />
+      <Atendimento />
     </>
   );
 }

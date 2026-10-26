@@ -5,8 +5,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HashScrollFix from "@/components/layout/HashScrollFix";
 import MobileStickyCta from "@/components/layout/MobileStickyCta";
-import NarrativeIndicator from "@/components/layout/NarrativeIndicator";
-import LogoIntro from "@/components/intro/LogoIntro";
 
 const bodoniModa = Bodoni_Moda({
   variable: "--font-bodoni",
@@ -73,7 +71,6 @@ export default function RootLayout({
       className={`${bodoniModa.variable} ${manrope.variable}`}
     >
       <body>
-        <LogoIntro />
         <HashScrollFix />
         <a href="#conteudo-principal" className="skip-link">
           Pular para o conteúdo principal
@@ -82,7 +79,6 @@ export default function RootLayout({
         <main id="conteudo-principal">{children}</main>
         <Footer />
         <MobileStickyCta />
-        <NarrativeIndicator />
       </body>
     </html>
   );

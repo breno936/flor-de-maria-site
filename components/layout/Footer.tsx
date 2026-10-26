@@ -1,76 +1,41 @@
-import { brand, contact, nav } from "@/data/content";
+import Image from "next/image";
+import { brand, contact } from "@/data/content";
 
 /**
- * Closing signature of the campaign, not a second reservation scene — no
- * repeated giant CTA. Continues the same dark ground as the page above it;
- * separation comes from spacing and a hairline rule, not a background or
- * color change. Two areas: the signature (brand + partnership, large and
- * quiet) and the practical information a visitor actually needs (nav,
- * social, location, legal). No separate contact link here — every
- * "Iniciar atendimento" already opens the conversation itself, and a
- * second route would only compete with it.
+ * Closing line of the page — the brand signature already lives in the
+ * Atendimento block just above, so this stays to the practical minimum:
+ * the name, the official Instagram, rights, and the developer's credit.
+ * The ArpeX mark rests in quiet greyscale and takes its own colours on
+ * hover (on touch screens, which can't hover, it simply shows them).
  */
 export default function Footer() {
-  const hasInstagram = Boolean(contact.instagramHandle);
-
   return (
-    <footer className="border-t border-gold/10 bg-noir">
-      <div className="container-lga py-16 text-center md:py-24">
-        <p className="font-display text-3xl tracking-[0.08em] text-ivory sm:text-4xl md:text-5xl">{brand.name}</p>
-        {/* The thread's last beat — it ends here, tied off, not drawn across the page. */}
-        <div className="mx-auto my-6 flex items-center justify-center gap-0" aria-hidden="true">
-          <div className="h-px w-10 bg-gold/70" />
-          <div className="h-[3px] w-[3px] rounded-full bg-rouge" />
-          <div className="h-px w-10 bg-gold/70" />
-        </div>
-        <p className="font-sans text-xs uppercase tracking-[0.22em] text-muted">{brand.collabLine}</p>
+    <footer className="border-t border-champagne-light/10 bg-noir">
+      <div className="container-lga flex flex-col items-center gap-4 py-12 text-center md:flex-row md:justify-between md:text-left">
+        <p className="font-display text-2xl tracking-[0.08em] text-ivory">{brand.name}</p>
+        {contact.instagramHandle && (
+          <a
+            href={`https://instagram.com/${contact.instagramHandle}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-[44px] items-center font-sans text-sm text-muted transition-colors hover:text-champagne-light"
+          >
+            Instagram @{contact.instagramHandle}
+          </a>
+        )}
       </div>
 
-      <div className="border-t border-gold/10">
-        <div className="container-lga grid gap-10 py-12 sm:grid-cols-2 md:grid-cols-3 md:py-14">
-          <div>
-            <p className="mono-label mb-4">Navegação</p>
-            <nav className="flex flex-col gap-2" aria-label="Navegação do rodapé">
-              {nav.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="font-sans text-sm text-muted transition-colors hover:text-gold"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-
-          {hasInstagram && (
-            <div>
-              <p className="mono-label mb-4">Redes</p>
-              <a
-                href={`https://instagram.com/${contact.instagramHandle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-sans text-sm text-muted transition-colors hover:text-gold"
-              >
-                @{contact.instagramHandle}
-              </a>
-            </div>
-          )}
-
-          <div>
-            <p className="mono-label mb-4">Localização</p>
-            <p className="font-sans text-sm text-muted">{contact.atelierLocation}</p>
-            <p className="mt-1 font-sans text-sm text-muted">{contact.serviceArea}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t border-gold/10">
-        <div className="container-lga flex flex-col items-center gap-2 py-5 text-center sm:flex-row sm:justify-between sm:text-left">
+      <div className="border-t border-champagne-light/10">
+        <div className="container-lga flex flex-col items-center gap-5 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
           <p className="font-sans text-[11px] text-muted">
-            © {new Date().getFullYear()} Flor de Maria Ateliê × Patrícia Marchi. Todos os direitos reservados.
+            © {new Date().getFullYear()} {brand.collabLine}. Todos os direitos reservados.
           </p>
-          <p className="font-sans text-[11px] text-muted">Coleção Lê Grand Amour</p>
+          <p className="group flex items-center gap-3 font-sans text-[11px] text-muted">
+            Desenvolvido por
+            <span className="relative block aspect-[836/244] w-[5.75rem] opacity-100 transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [@media(hover:hover)]:opacity-60 [@media(hover:hover)]:grayscale [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:grayscale-0">
+              <Image src="/assets/arpex/arpex-logo.webp" alt="ArpeX Technology" fill sizes="92px" className="object-contain" />
+            </span>
+          </p>
         </div>
       </div>
     </footer>

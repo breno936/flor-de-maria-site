@@ -1,12 +1,13 @@
 import Image from "next/image";
-import { brand, contact } from "@/data/content";
+import { brand, contact, developer } from "@/data/content";
 
 /**
  * Closing line of the page — the brand signature already lives in the
  * Atendimento block just above, so this stays to the practical minimum:
  * the name, the official Instagram, rights, and the developer's credit.
- * The ArpeX mark rests in quiet greyscale and takes its own colours on
- * hover (on touch screens, which can't hover, it simply shows them).
+ * The ArpeX mark links to its Instagram; it rests in quiet greyscale and
+ * takes its own colours on hover or keyboard focus (on touch screens,
+ * which can't hover, it simply shows them).
  */
 export default function Footer() {
   return (
@@ -30,11 +31,19 @@ export default function Footer() {
           <p className="font-sans text-[11px] text-muted">
             © {new Date().getFullYear()} {brand.collabLine}. Todos os direitos reservados.
           </p>
-          <p className="group flex items-center gap-3 font-sans text-[11px] text-muted">
+          <p className="flex items-center gap-3 font-sans text-[11px] text-muted">
             Desenvolvido por
-            <span className="relative block aspect-[836/244] w-[4.25rem] cursor-pointer opacity-100 transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] [@media(hover:hover)]:opacity-60 [@media(hover:hover)]:grayscale [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:grayscale-0">
-              <Image src="/assets/arpex/arpex-logo.webp" alt="ArpeX Technology" fill sizes="68px" className="object-contain" />
-            </span>
+            <a
+              href={developer.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${developer.name} no Instagram (abre em nova aba)`}
+              className="group inline-flex min-h-[44px] items-center"
+            >
+              <span className="relative block aspect-[836/244] w-[4.25rem] opacity-100 transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-focus-visible:opacity-100 group-focus-visible:grayscale-0 [@media(hover:hover)]:opacity-60 [@media(hover:hover)]:grayscale [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:grayscale-0">
+                <Image src="/assets/arpex/arpex-logo.webp" alt="" fill sizes="68px" className="object-contain" />
+              </span>
+            </a>
           </p>
         </div>
       </div>

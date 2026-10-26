@@ -61,6 +61,12 @@ export const narrativeSteps = [
   { id: "atendimento", number: "04", label: "Atendimento" },
 ] as const;
 
+/** Developer credit in the footer — ArpeX's official Instagram, given by the client. */
+export const developer = {
+  name: "ArpeX Technology",
+  url: "https://www.instagram.com/arpextechnology/",
+};
+
 export const nav = [
   { label: "Criações", href: "#criacoes" },
   { label: "Detalhes", href: "#detalhes" },

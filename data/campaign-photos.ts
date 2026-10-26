@@ -33,6 +33,18 @@ export const heroPhoto = {
   },
 };
 
+/**
+ * IMG_4646 — the petals the opening starts on, before the camera pulls back
+ * out of the bouquet to the whole figure. Same file as the Lê Bouquet's
+ * "Pétalas" frame; `blur` is its 24px copy, so the first frame is already
+ * red petals on a slow connection.
+ */
+export const heroPetals = {
+  src: `${BASE}/detalhe-rosa-luva.webp`,
+  position: "52% 40%",
+  blur: "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAABQBACdASoYABAAPtFUo0uoJKMhsAgBABoJbACdDBRAJ929fM6l3TJKf4mAAP5Lnfga8j9tE/oLC0SQj5VYwalp96pAyeVbGjSms6Pg9CKjlPBRCWr3qDKwe2Ycmv1dE3+0NtZ1KHHp2WET74fQkpP2d4eb1XNvctnHJruChKRvCmxqBIUYw69p3u9/8y6OzC0SdLymrWxHmT/+mIAAAA==",
+};
+
 export type GalleryPhoto = CampaignPhoto & {
   label: string;
   caption: string;

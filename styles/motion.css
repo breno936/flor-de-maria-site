@@ -1,7 +1,9 @@
 /* Shared motion primitives — finish only. Nothing here pins, holds or
    scrubs the scroll, and nothing is invisible without JS: entrances are
    CSS animations that end visible, or `Reveal` (components/motion), which
-   only hides what is still below the fold once JS is running. */
+   only hides what is still below the fold once JS is running. Phones get
+   their own, shorter values through a media query — no JS timelines that
+   would need rebuilding when the window is resized. */
 
 /* ABERTURA — the photograph settles from a slightly closer frame while the
    mark, the line and the button rise in. Plays once per page load, from the
@@ -54,6 +56,40 @@
 
 [data-reveal="pending"] .reveal-zoom {
   transform: scale(1.06);
+}
+
+/* Phones — the same finish, shorter and smaller, so nothing between two
+   swipes is still on its way in. The desktop values above stay as approved. */
+@media (width < 48rem) {
+  .hero-settle {
+    animation-name: hero-settle-short;
+    animation-duration: 1.1s;
+  }
+
+  .hero-rise {
+    animation-duration: 0.5s;
+  }
+
+  [data-reveal] {
+    transition-duration: 0.45s;
+  }
+
+  [data-reveal="pending"] {
+    transform: translateY(10px);
+  }
+
+  [data-reveal="pending"] .reveal-zoom {
+    transform: none;
+  }
+}
+
+@keyframes hero-settle-short {
+  from {
+    transform: scale(1.035);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

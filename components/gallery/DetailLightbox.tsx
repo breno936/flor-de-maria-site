@@ -92,12 +92,27 @@ export default function DetailLightbox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
+  // No tween outlives the dialog: closing, or the card unmounting, stops
+  // whatever is still running on it.
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const el = photoRef.current;
+    return () => {
+      gsap.killTweensOf([dialog, el].filter(Boolean));
+    };
+  }, [isOpen]);
+
   function step(delta: number) {
     if (index === null) return;
     const next = (index + delta + photos.length) % photos.length;
     onIndexChange(next);
     if (!reducedMotion && photoRef.current) {
-      gsap.fromTo(photoRef.current, { opacity: 0, x: delta * 24 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" });
+      // overwrite: a quick double swipe replaces the running crossfade instead of stacking on it.
+      gsap.fromTo(
+        photoRef.current,
+        { opacity: 0, x: delta * 24, y: 0, scale: 1 },
+        { opacity: 1, x: 0, duration: 0.4, ease: "power2.out", overwrite: true }
+      );
     }
   }
 

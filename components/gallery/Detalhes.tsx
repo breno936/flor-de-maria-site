@@ -39,12 +39,12 @@ export default function Detalhes() {
   }
 
   return (
-    <section id="detalhes" className="relative border-t border-champagne-light/10 bg-noir py-20 md:py-28" aria-labelledby="detalhes-title">
+    <section id="detalhes" className="relative border-t border-champagne-light/10 bg-noir py-14 md:py-28" aria-labelledby="detalhes-title">
       <div className="container-lga">
-        <Reveal className="mb-10 flex items-end justify-between gap-6 md:mb-14">
+        <Reveal className="mb-6 flex items-end justify-between gap-6 md:mb-14">
           <div>
             <p className="mono-label text-champagne-light">{detalhes.eyebrow}</p>
-            <h2 id="detalhes-title" className="mt-3 max-w-xl text-[clamp(2rem,3.6vw,3.2rem)] leading-[1.05] text-ivory">
+            <h2 id="detalhes-title" className="mt-3 max-w-xl text-[1.75rem] leading-[1.08] text-ivory md:text-[clamp(2rem,3.6vw,3.2rem)] md:leading-[1.05]">
               {detalhes.title}
             </h2>
           </div>

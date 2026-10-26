@@ -93,8 +93,8 @@ export default function Hero() {
             {hero.phrase}
           </p>
 
-          {startingPrice && (
-            <p className="hero-rise mt-4 font-sans text-[0.95rem] text-ivory/90" style={{ animationDelay: "220ms" }}>
+          {startingPrice !== null && (
+            <p data-hero-price className="hero-rise mt-4 font-sans text-[0.95rem] text-ivory/90" style={{ animationDelay: "220ms" }}>
               Criações a partir de <span className="font-medium text-ivory">{formatPrice(startingPrice)}</span>
             </p>
           )}

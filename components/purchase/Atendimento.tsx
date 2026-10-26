@@ -20,7 +20,7 @@ export default function Atendimento() {
   ].filter((item) => item.value);
 
   return (
-    <section id="atendimento" className="relative overflow-hidden bg-oxblood py-20 md:py-28" aria-labelledby="atendimento-title">
+    <section id="atendimento" className="relative overflow-hidden bg-oxblood py-14 md:py-28" aria-labelledby="atendimento-title">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div
           className="absolute inset-0"
@@ -38,7 +38,7 @@ export default function Atendimento() {
       </div>
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-champagne-light via-champagne/70 to-champagne/0" />
 
-      <div className="container-lga relative grid gap-14 lg:grid-cols-12 lg:items-center lg:gap-x-16">
+      <div className="container-lga relative grid gap-10 md:gap-14 lg:grid-cols-12 lg:items-center lg:gap-x-16">
         <div className="lg:col-span-6">
           <p className="mono-label text-champagne-light">{atendimento.eyebrow}</p>
           <h2 id="atendimento-title" className="mt-3 text-[clamp(2.4rem,4.4vw,4.4rem)] leading-[1] text-ivory">
@@ -54,7 +54,7 @@ export default function Atendimento() {
           </div>
 
           {practical.length > 0 && (
-            <dl className="mt-10 grid gap-4 border-t border-champagne-light/20 pt-6 sm:grid-cols-2">
+            <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-champagne-light/20 pt-6 md:mt-10 md:gap-4">
               {practical.map((item) => (
                 <div key={item.label}>
                   <dt className="mono-label text-champagne-light/85">{item.label}</dt>
@@ -66,8 +66,8 @@ export default function Atendimento() {
         </div>
 
         <Reveal className="lg:col-span-5 lg:col-start-8">
-          <div className="border-t border-champagne-light/20 pt-10 lg:border-l lg:border-t-0 lg:pl-14 lg:pt-0">
-            <span className="relative block aspect-[1171/530] w-[12rem] sm:w-[14rem]">
+          <div className="border-t border-champagne-light/20 pt-8 md:pt-10 lg:border-l lg:border-t-0 lg:pl-14 lg:pt-0">
+            <span className="relative block aspect-[1171/530] w-[10rem] sm:w-[14rem]">
               <Image
                 src="/assets/le-grand-amour/le-grand-amour-wordmark.webp"
                 alt={brand.signatureFull}
@@ -76,9 +76,9 @@ export default function Atendimento() {
                 className="object-contain object-left"
               />
             </span>
-            <p className="mt-6 max-w-sm font-sans text-[0.92rem] leading-relaxed text-ivory/80">{atendimento.authorship}</p>
-            <p className="mt-5 font-display text-[1.7rem] italic text-champagne-light">{atendimento.signatureLine}</p>
-            <p className="mt-6 font-sans text-[0.68rem] font-medium uppercase tracking-[0.22em] text-champagne-light/80">
+            <p className="mt-5 max-w-sm font-sans text-[0.92rem] leading-relaxed text-ivory/80 md:mt-6">{atendimento.authorship}</p>
+            <p className="mt-4 font-display text-[1.7rem] italic text-champagne-light md:mt-5">{atendimento.signatureLine}</p>
+            <p className="mt-5 font-sans text-[0.68rem] font-medium uppercase tracking-[0.22em] text-champagne-light/80 md:mt-6">
               {brand.collabLine}
             </p>
           </div>

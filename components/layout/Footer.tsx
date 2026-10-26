@@ -12,7 +12,7 @@ import { brand, contact, developer } from "@/data/content";
 export default function Footer() {
   return (
     <footer className="border-t border-champagne-light/10 bg-noir">
-      <div className="container-lga flex flex-col items-center gap-4 py-12 text-center md:flex-row md:justify-between md:text-left">
+      <div className="container-lga flex flex-col items-center gap-3 py-9 text-center md:flex-row md:justify-between md:gap-4 md:py-12 md:text-left">
         <p className="font-display text-2xl tracking-[0.08em] text-ivory">{brand.name}</p>
         {contact.instagramHandle && (
           <a

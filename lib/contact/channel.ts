@@ -1,13 +1,13 @@
 import { contact } from "@/data/content";
-import { findProduct, type CreationId } from "@/data/products";
+import { findOption, findProduct, type CreationId } from "@/data/products";
 import { formatPrice } from "@/lib/price";
 
 /**
  * Where every "Pedir pelo WhatsApp" leads: straight into a conversation —
  * no form to fill in, nothing to wait for. The ateliê serves through
  * WhatsApp, directly with the person responsible, and each button opens it
- * with the first message already written: the creation and its confirmed
- * price when the visitor came from a card, so the conversation starts
+ * with the first message already written: the creation, and the version
+ * chosen on its card with that version's price, so the conversation starts
  * where the page left off. If `contact.whatsappNumber` is ever emptied,
  * the same buttons open the official Instagram's Direct instead, which
  * takes no pre-written message — never a dead link.
@@ -24,19 +24,17 @@ export const contactChannel = whatsappNumber
   ? ({ id: "whatsapp", name: "WhatsApp", detail: formatPhone(whatsappNumber) } as const)
   : ({ id: "instagram", name: "Instagram", detail: `@${contact.instagramHandle}` } as const);
 
-export function contactMessage(creation?: CreationId) {
+export function contactMessage(creation?: CreationId, optionId?: string) {
   const product = findProduct(creation);
   if (!product) return "Olá! Vim pelo site da Lê Grand Amour e gostaria de consultar disponibilidade.";
-  const price = product.price
-    ? product.price.from
-      ? `, a partir de ${formatPrice(product.price)},`
-      : ` pelo valor de ${formatPrice(product.price)}`
-    : "";
-  return `Olá! Vi o ${product.title} no site${price} e gostaria de consultar disponibilidade.`;
+  const option = findOption(product, optionId);
+  // Plain spaces in the message (Intl puts a no-break space after "R$").
+  const choice = option ? ` (${option.label.toLowerCase()}, ${formatPrice(option.amount).replace(/\s/g, " ")})` : "";
+  return `Olá! Vi o ${product.title}${choice} no site e gostaria de consultar disponibilidade.`;
 }
 
-export function contactHref(creation?: CreationId) {
+export function contactHref(creation?: CreationId, optionId?: string) {
   return whatsappNumber
-    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(contactMessage(creation))}`
+    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(contactMessage(creation, optionId))}`
     : `https://ig.me/m/${contact.instagramHandle}`;
 }

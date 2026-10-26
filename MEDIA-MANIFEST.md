@@ -7,12 +7,17 @@ A página tem quatro blocos, nesta ordem, sem nenhuma seção fixada ou
 "presa" à rolagem:
 
 1. **Abertura** (`#inicio`, `components/hero/Hero.tsx`) — foto de campanha,
-   logotipo, uma frase, preço inicial (quando confirmado) e "Ver as
-   criações" / "Ver criações e valores".
+   logotipo, uma frase, "Criações a partir de R$ 999" e "Ver criações e
+   valores".
 2. **Criações** (`#criacoes`, `components/products/Criacoes.tsx`) — Lê
    Bouquet (`#le-bouquet`) e Lê Cœur Royale (`#le-coeur-royale`), cada um
-   com foto principal, nome, preço, uma frase, três informações e "Pedir
-   pelo WhatsApp". As âncoras de cada criação servem para links de anúncio.
+   com foto, nome, preço ("a partir de" até o visitante escolher uma
+   versão), uma frase, três informações, as versões com seus preços e
+   "Pedir pelo WhatsApp". No desktop (aprovado pelo cliente), uma linha por
+   criação com a foto principal, que amplia as quatro fotos; no celular, as
+   quatro fotos em galeria de deslize (`PhotoCarousel.tsx`) com as
+   informações logo abaixo. As âncoras de cada criação servem para links de
+   anúncio.
 3. **Detalhes** (`#detalhes`, `components/gallery/Detalhes.tsx`) — seis
    fotos escolhidas para não se repetirem (corpo inteiro, natureza-morta da
    caixa, fundo claro, hastes, assinatura em relevo, entrega): faixa de
@@ -34,17 +39,22 @@ de banco de imagem).
 
 ## Preços e WhatsApp
 
-- **Preços** — `data/products.ts → price` (e `priceNote` para variações e
-  custos extras). Enquanto estiverem vazios, nenhum valor, "a partir de" ou
-  espaço reservado aparece na página, e a mensagem do WhatsApp sai sem
-  valor. "A partir de" só é usado quando uma configuração inicial real sai
-  por aquele valor (`from: true`). Nunca deduzir do ticket aproximado da
-  campanha.
+- **Preços** — tabela oficial enviada pelo cliente em 26/10/2026, em
+  `data/products.ts → options` (e `priceNote` para condições e custos
+  extras, hoje vazio):
+  - Lê Bouquet — 30 rosas R$ 999 · 50 rosas R$ 1.500 · 60 rosas R$ 1.800 ·
+    70 rosas R$ 2.000 · 80 rosas R$ 2.300 · 100 rosas R$ 2.900.
+  - Lê Cœur Royale — rosas e chocolate R$ 1.350 · rosas R$ 1.500.
+
+  O card mostra "a partir de" o menor valor de cada criação até o visitante
+  escolher uma versão (nenhuma vem marcada); a abertura mostra o menor valor
+  da coleção. Nunca deduzir nem arredondar valores.
 - **WhatsApp** — `data/content.ts → contact.whatsappNumber` (número do
   responsável pelo ateliê, informado pelo cliente em 26/10/2026). Cada
   "Pedir pelo WhatsApp" abre a conversa com a mensagem pronta
-  (`lib/contact/channel.ts`): com a criação e o preço confirmado quando vem
-  de um card. A barra fixa do celular e o botão do cabeçalho no desktop só
+  (`lib/contact/channel.ts`): com a criação e, se escolhida, a versão e o
+  seu preço — "Olá! Vi o Lê Bouquet (50 rosas, R$ 1.500) no site e gostaria
+  de consultar disponibilidade." A barra fixa do celular e o botão do cabeçalho no desktop só
   aparecem depois que o visitante chega às criações. O número da Florence
   Boutique de Rosas (catálogo fornecido) é de outra empresa e não deve ser
   usado aqui.
@@ -87,8 +97,10 @@ convertido em transparência).
 
 ## Ainda faltam (não inventados)
 
-- **Preços do Lê Bouquet e do Lê Cœur Royale** e suas condições (variações,
-  custos extras) — ver "Preços e WhatsApp".
+- **Condições dos preços**, se houver (entrega, custos extras) — `priceNote`.
+- **Quantidade de rosas do Lê Cœur Royale por versão** — o card diz
+  "Aproximadamente 60 a 70 rosas" (apresentação da parceria); confirmar se
+  vale também para a versão com chocolate.
 - **Antecedência necessária para pedidos.**
 - **Logotipo Lê Grand Amour em arquivo vetorial** (`.svg`/`.ai`) — hoje é uma
   imagem. `components/layout/LogoMark.tsx` (cabeçalho) é um substituto

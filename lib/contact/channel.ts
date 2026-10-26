@@ -12,8 +12,14 @@ import { products, type CreationId } from "@/data/products";
  */
 const whatsappNumber = contact.whatsappNumber.replace(/\D/g, "");
 
+/** "5519982465984" → "(19) 98246-5984", for visitors without WhatsApp on this device. */
+function formatPhone(digits: string) {
+  const parts = digits.replace(/^55/, "").match(/^(\d{2})(\d{4,5})(\d{4})$/);
+  return parts ? `(${parts[1]}) ${parts[2]}-${parts[3]}` : `+${digits}`;
+}
+
 export const contactChannel = whatsappNumber
-  ? ({ id: "whatsapp", name: "WhatsApp", detail: null } as const)
+  ? ({ id: "whatsapp", name: "WhatsApp", detail: formatPhone(whatsappNumber) } as const)
   : ({ id: "instagram", name: "Instagram", detail: `@${contact.instagramHandle}` } as const);
 
 export function creationTitle(creation?: CreationId) {

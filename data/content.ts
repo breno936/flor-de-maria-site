@@ -128,7 +128,7 @@ export const contact = {
    * code, e.g. "5519999999999". Once filled in, every "Iniciar atendimento"
    * opens WhatsApp; while empty, they open the Instagram Direct below.
    */
-  whatsappNumber: "",
+  whatsappNumber: "5519982465984",
   /** Official Lê Grand Amour Instagram, given directly by the client. */
   instagramHandle: "legrandamour.ofc",
   atelierLocation: "Hortolândia – SP",

@@ -45,6 +45,19 @@ montando o buquê / amarrando o laço (etapa "Criação" e "O último cuidado");
 a tampa do Lê Cœur Royale abrindo; uma entrega real; logotipo em vetor;
 autorização de uso de imagem de todas as pessoas que aparecem.
 
+## Atendimento — contato direto, sem formulário (out/2026)
+
+O formulário de atendimento foi removido a pedido do cliente: o visitante
+deve poder entrar em contato na hora, não enviar dados e esperar. Todo
+"Iniciar atendimento" (menu, abertura, cada criação, autoria, barra fixa do
+celular e a seção final) abre o WhatsApp do responsável pelo ateliê
+(`data/content.ts → contact.whatsappNumber`, informado pelo cliente em
+26/10/2026) com a primeira mensagem já escrita — citando a criação quando o
+clique vem da cena dela (`lib/contact/channel.ts`). Se o número for
+esvaziado, os mesmos botões voltam a abrir o Direct do Instagram oficial. O
+número da Florence Boutique de Rosas (catálogo fornecido) é de outra empresa
+e não deve ser usado aqui.
+
 ## Histórico — antes do ensaio
 
 Até outubro de 2026, nenhum vídeo ou fotografia oficial da coleção existia. A
@@ -317,15 +330,6 @@ precisar tocar no componente além de trocar o asset.
 - **Depoimento real e autorizado de Patrícia Marchi** — `data/content.ts →
   ambassadorSection.testimonialQuote` está vazio de propósito; a seção usa a
   nota de curadoria da Susan (Diretora Criativa) enquanto isso.
-- **WhatsApp do responsável pelo ateliê** — `data/content.ts →
-  contact.whatsappNumber` está vazio. O formulário de atendimento foi
-  removido a pedido do cliente (o visitante deve poder entrar em contato na
-  hora, não enviar dados e esperar): todo "Iniciar atendimento" abre a
-  conversa direto (`lib/contact/channel.ts`). Enquanto o número não chega,
-  abre o Direct do Instagram oficial; preenchido o número, passa a abrir o
-  WhatsApp com a primeira mensagem já escrita, citando a criação quando o
-  clique vem da cena dela. O número da Florence Boutique de Rosas (catálogo
-  fornecido) é de outra empresa e não deve ser usado aqui.
 - **Instagram oficial da Le Grand Amour** — `contact.instagramHandle`.
 - **Dados de escala confirmados** (prazo, personalização, disponibilidade,
   entrega/retirada) — `data/content.ts → scaleSection.facts`. A seção

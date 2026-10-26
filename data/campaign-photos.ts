@@ -173,9 +173,9 @@ export const detailGallery: DetailPhoto[] = [
     position: "50% 60%",
     orientation: "portrait",
   },
-  // IMG_4583
+  // IMG_4583, retouched version supplied by the client (1536px, 2026-10-26)
   {
-    src: `${BASE}/experiencia-entrega.webp`,
+    src: `${BASE}/detalhe-entrega.webp`,
     alt: "O momento da entrega: o buquê Lê Grand Amour passando de uma mão para outra.",
     label: "Entrega",
     caption: "Apresentação e logística pensadas para que a chegada também faça parte do acontecimento.",

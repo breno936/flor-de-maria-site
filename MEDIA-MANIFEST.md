@@ -81,7 +81,8 @@ Adobe RGB para sRGB e exportada em WebP (qualidade 82) para
 | `produto-coeur-escala.webp` | IMG_4413 | Criações — Lê Cœur Royale, foto principal |
 | `detalhe-coeur-fita.webp` / `fita-caixa.webp` / `experiencia-acabamento.webp` | IMG_4407 / IMG_3926 / IMG_4387 | Fotos ampliadas do Lê Cœur Royale |
 | `detalhe-proporcao.webp` / `detalhe-caixa-laco.webp` / `detalhe-escala-coeur.webp` | IMG_4697 / IMG_3902 / IMG_4087 | Detalhes — Proporção, Caixa, Escala |
-| `detalhe-hastes.webp` / `detalhe-assinatura.webp` / `experiencia-entrega.webp` | IMG_4513 / IMG_4183 / IMG_4583 | Detalhes — Hastes, Assinatura, Entrega |
+| `detalhe-hastes.webp` / `detalhe-assinatura.webp` | IMG_4513 / IMG_4183 | Detalhes — Hastes, Assinatura |
+| `detalhe-entrega.webp` (1536px) | IMG_4583, versão retocada enviada pelo cliente em 26/10/2026 | Detalhes — Entrega. Se houver o arquivo retocado em resolução maior, substituir mantendo outro nome de arquivo (o otimizador de imagens guarda cache por endereço) |
 
 O logotipo é `le-grand-amour-wordmark.webp`: a arte oficial com o fundo preto
 convertido em transparência e recortada rente à marca. A imagem de

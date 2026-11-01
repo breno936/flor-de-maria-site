@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { embaixadora } from "@/data/content";
 import { ambassadorFilm } from "@/data/campaign-photos";
@@ -18,6 +18,12 @@ const { poster } = ambassadorFilm;
  * Nothing of the film loads until then (preload="none"). Closing pauses
  * it and puts the page back exactly where it was; reopening resumes.
  *
+ * While the block is on screen the cover itself moves: a short silent loop
+ * cut from the film (browsers only start video on their own without
+ * sound), fetched as the block approaches and paused as soon as it leaves
+ * or the film opens. Not with reduced motion or data saving on; where the
+ * browser still refuses (iOS Low Power Mode) the cover photograph stays.
+ *
  * Phones: a compact row — the vertical cover beside the name — so the
  * block costs under half a screen. From 768px: the text on the left and a
  * 4:5 cover on the right (clear of the chapter mini menu's labels), with
@@ -26,19 +32,60 @@ const { poster } = ambassadorFilm;
 export default function Embaixadora() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const coverRef = useRef<HTMLButtonElement>(null);
+  const teaserRef = useRef<HTMLVideoElement>(null);
   const scrollYBeforeOpen = useRef(0);
+  const [teaserPlaying, setTeaserPlaying] = useState(false);
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
+    const cover = coverRef.current;
+    const teaser = teaserRef.current;
+    if (!dialog || !cover || !teaser) return;
+
+    // The cover's silent loop: plays only while the cover is on screen and the film is closed.
+    let coverOnScreen = false;
+    const syncTeaser = () => {
+      if (!teaser.getAttribute("src")) return;
+      if (coverOnScreen && !dialog.open) teaser.play().catch(() => {});
+      else teaser.pause();
+    };
+    // Fetched one screen ahead, so it is ready when the block arrives.
+    const approach = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        approach.disconnect();
+        teaser.muted = true;
+        teaser.preload = "auto";
+        teaser.src = ambassadorFilm.teaser;
+        syncTeaser();
+      },
+      { rootMargin: "0px 0px 100% 0px" },
+    );
+    const onScreen = new IntersectionObserver(
+      ([entry]) => {
+        coverOnScreen = entry.isIntersecting;
+        syncTeaser();
+      },
+      { threshold: 0.4 },
+    );
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (!saveData && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      approach.observe(cover);
+      onScreen.observe(cover);
+    }
+
     // Every way out (button, backdrop, Esc) ends in the dialog's own close event.
     const onClose = () => {
       videoRef.current?.pause();
       document.documentElement.style.overflow = "";
       window.scrollTo({ top: scrollYBeforeOpen.current, behavior: "instant" });
+      syncTeaser();
     };
     dialog.addEventListener("close", onClose);
     return () => {
+      approach.disconnect();
+      onScreen.disconnect();
       dialog.removeEventListener("close", onClose);
       document.documentElement.style.overflow = "";
     };
@@ -49,6 +96,7 @@ export default function Embaixadora() {
     const video = videoRef.current;
     if (!dialog || !video || dialog.open) return;
     scrollYBeforeOpen.current = window.scrollY;
+    teaserRef.current?.pause();
     dialog.showModal();
     document.documentElement.style.overflow = "hidden";
     // Inside the click itself — that is what lets it play with sound.
@@ -70,6 +118,7 @@ export default function Embaixadora() {
       <div className="container-lga grid grid-cols-[minmax(0,42%)_minmax(0,1fr)] items-center gap-5 md:grid-cols-12 md:gap-10 lg:gap-16">
         <Reveal className="md:order-2 md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-8">
           <button
+            ref={coverRef}
             type="button"
             onClick={open}
             aria-label={label}
@@ -77,19 +126,35 @@ export default function Embaixadora() {
             style={{ backgroundImage: `url(${poster.blur})`, backgroundSize: "cover", backgroundPosition: "50% 30%" }}
           >
             <div className="reveal-zoom absolute inset-0">
-              <Image
-                src={poster.src}
-                alt=""
-                fill
-                sizes="(max-width: 767px) 42vw, (max-width: 1023px) 40vw, 400px"
-                quality={80}
-                className="object-cover object-[50%_30%] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-              />
+              <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]">
+                <Image
+                  src={poster.src}
+                  alt=""
+                  fill
+                  sizes="(max-width: 767px) 42vw, (max-width: 1023px) 40vw, 400px"
+                  quality={80}
+                  className="object-cover object-[50%_30%]"
+                />
+                {/* The silent loop — the source is set by the effect above, once the block approaches. */}
+                <video
+                  ref={teaserRef}
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  aria-hidden="true"
+                  tabIndex={-1}
+                  onPlaying={() => setTeaserPlaying(true)}
+                  className={`absolute inset-0 h-full w-full object-cover object-[50%_30%] transition-opacity duration-700 ${teaserPlaying ? "opacity-100" : "opacity-0"}`}
+                />
+              </div>
             </div>
             <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-noir/55 via-transparent to-transparent" />
             <span
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center md:top-[66%] justify-center rounded-full border border-champagne-light/80 bg-noir/45 text-champagne-light backdrop-blur-sm transition-colors duration-300 group-hover:bg-champagne-light group-hover:text-noir group-focus-visible:bg-champagne-light group-focus-visible:text-noir md:h-16 md:w-16"
+              className="absolute left-1/2 top-[66%] flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-champagne-light/80 bg-noir/45 text-champagne-light backdrop-blur-sm transition-colors duration-300 group-hover:bg-champagne-light group-hover:text-noir group-focus-visible:bg-champagne-light group-focus-visible:text-noir md:h-16 md:w-16"
             >
               <PlayIcon />
             </span>

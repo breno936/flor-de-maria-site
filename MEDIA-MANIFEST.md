@@ -27,7 +27,9 @@ A página tem cinco blocos, nesta ordem, sem nenhuma seção fixada ou
    — Patrícia Marchi, "musa e embaixadora da coleção", com o depoimento em
    vídeo: capa + "Assistir ao depoimento"; o vídeo (2:35, com som, sem
    legendas por decisão de 01/11/2026) abre em tela cheia e só carrega no
-   play.
+   play. Enquanto o bloco está na tela, a capa toca um trecho curto **sem
+   som** (os navegadores não deixam vídeo começar sozinho com som); um
+   toque abre o depoimento inteiro com som.
 5. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
    WhatsApp, informações práticas confirmadas e a assinatura compacta da
    marca (a antiga seção Autoria).
@@ -99,6 +101,7 @@ O original (407 MB) **não** entra no repositório. Para o site:
 |---|---|---|
 | `public/media/embaixadora/patricia-marchi-depoimento.mp4` | IMG_9777, H.264/AAC 9:16, início rápido (faststart) | Vídeo do bloco Embaixadora |
 | `public/assets/le-grand-amour/embaixadora/patricia-marchi-capa.webp` (1080×1920) | quadro de 2:31 do mesmo vídeo | Capa do bloco e do player |
+| `public/media/embaixadora/patricia-marchi-trecho.mp4` (720×1280, 13,6 s, sem áudio, 2,2 MB) | 2:28–2:35 + 1:18–1:25 do mesmo vídeo, com fusão nas duas emendas (repete sem corte) | Capa em movimento, sem som — só baixa quando o bloco se aproxima; não toca com "reduzir movimento" ou economia de dados |
 
 O logotipo é `le-grand-amour-wordmark.webp`: a arte oficial com o fundo preto
 convertido em transparência e recortada rente à marca. A imagem de

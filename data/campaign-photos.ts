@@ -51,9 +51,17 @@ export const heroPetals = {
  * 9:16 with the moov atom up front, so it starts playing while it loads.
  * Nothing is downloaded until the visitor presses play. The cover is the
  * frame at 2:31 — looking at the camera, crown, sash and the roses.
+ *
+ * `teaser` is what moves on the cover, silent, while the block is on
+ * screen (browsers only start video on their own without sound): 13.6 s
+ * cut from the same film — the smile at 2:28–2:35, then the kiss and the
+ * roses lifted at 1:18–1:25 — with a dissolve at both joins, so the loop
+ * never shows a cut. 720×1280, no audio track, 2.2 MB, fetched only when
+ * the block is about to arrive.
  */
 export const ambassadorFilm = {
   src: "/media/embaixadora/patricia-marchi-depoimento.mp4",
+  teaser: "/media/embaixadora/patricia-marchi-trecho.mp4",
   durationLabel: "2 min 35 s",
   duration: "2:35",
   poster: {

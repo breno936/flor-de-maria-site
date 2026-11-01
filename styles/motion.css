@@ -116,6 +116,20 @@
   animation: none;
 }
 
+/* The ambassador's film opens with a short fade (components/ambassador). */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.embaixadora-dialog[open] {
+  animation: dialog-in 0.35s ease-out;
+}
+
 /* Reveal — set by components/motion/Reveal.tsx. */
 [data-reveal] {
   transition:

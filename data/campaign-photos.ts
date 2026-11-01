@@ -45,6 +45,26 @@ export const heroPetals = {
   blur: "data:image/webp;base64,UklGRqoAAABXRUJQVlA4IJ4AAABQBACdASoYABAAPtFUo0uoJKMhsAgBABoJbACdDBRAJ929fM6l3TJKf4mAAP5Lnfga8j9tE/oLC0SQj5VYwalp96pAyeVbGjSms6Pg9CKjlPBRCWr3qDKwe2Ycmv1dE3+0NtZ1KHHp2WET74fQkpP2d4eb1XNvctnHJruChKRvCmxqBIUYw69p3u9/8y6OzC0SdLymrWxHmT/+mIAAAA==",
 };
 
+/**
+ * Patrícia Marchi's testimonial (IMG_9777.MOV, iPhone, vertical 4K, 2:35,
+ * sent by the client on 2026-11-01), re-encoded for the web as H.264/AAC
+ * 9:16 with the moov atom up front, so it starts playing while it loads.
+ * Nothing is downloaded until the visitor presses play. The cover is the
+ * frame at 2:31 — looking at the camera, crown, sash and the roses.
+ */
+export const ambassadorFilm = {
+  src: "/media/embaixadora/patricia-marchi-depoimento.mp4",
+  durationLabel: "2 min 35 s",
+  duration: "2:35",
+  poster: {
+    src: "/assets/le-grand-amour/embaixadora/patricia-marchi-capa.webp",
+    width: 1080,
+    height: 1920,
+    alt: "Patrícia Marchi de coroa e faixa, sorrindo para a câmera, com um buquê de rosas vermelhas.",
+    blur: "data:image/webp;base64,UklGRkwBAABXRUJQVlA4IEABAADwBgCdASoYACsAPtFaqU+oJKOiKrgIAQAaCWYAqSdfb0Ez4g0ALQS/RAPZKC51XPeWgH4azvEJwLmDyjKHAraAAP76+p0rgnchvbwifa/IirkEFoaKocYDeYSIBr0EXr1BpxPoTaqhZ3hHPRSuSTiXC3756XQXVDH8pXS4v76lvHHM7kUpzunK42Z1U+UsyzSe2+wOOenkRFO7axlmBqza0Z9upeFLYSaqGB6UbLaWIx1KX0BkeH6yu2V/3Wc7yxr5e475A8wOfnTw+5JNhDYOdyjFZWJ94N84sldWY7TeLBdV/6MbXVjtyuMDAo36I7QCGZuSc1KCZjV+VSmq8AaP3R346R2GO5i0oLuoZQhfPRDAF5SeDG1exbyuva/WVu/Rx+UJx0dNAJcD8k28RDLNAi1PuCsVIOCCEHo8RGAAAA==",
+  },
+};
+
 export type GalleryPhoto = CampaignPhoto & {
   label: string;
   caption: string;

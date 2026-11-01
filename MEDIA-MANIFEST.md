@@ -3,7 +3,7 @@
 ## Estrutura da página (out/2026 — versão comercial)
 
 O visitante chega pelo Instagram ou por anúncios, já atraído pela campanha.
-A página tem quatro blocos, nesta ordem, sem nenhuma seção fixada ou
+A página tem cinco blocos, nesta ordem, sem nenhuma seção fixada ou
 "presa" à rolagem:
 
 1. **Abertura** (`#inicio`, `components/hero/Hero.tsx`) — foto de campanha,
@@ -23,13 +23,18 @@ A página tem quatro blocos, nesta ordem, sem nenhuma seção fixada ou
    caixa, fundo claro, hastes, assinatura em relevo, entrega): faixa de
    quadros 4:5 com deslize no celular, mosaico vertical/horizontal no
    desktop; amplia em tela cheia.
-4. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
+4. **Embaixadora** (`#embaixadora`, `components/ambassador/Embaixadora.tsx`)
+   — Patrícia Marchi, "musa e embaixadora da coleção", com o depoimento em
+   vídeo: capa + "Assistir ao depoimento"; o vídeo (2:35, com som, sem
+   legendas por decisão de 01/11/2026) abre em tela cheia e só carrega no
+   play.
+5. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
    WhatsApp, informações práticas confirmadas e a assinatura compacta da
    marca (a antiga seção Autoria).
 
 O mini menu de capítulos na lateral direita
-(`components/layout/NarrativeIndicator.tsx`) acompanha os quatro blocos —
-links reais no desktop, selo "02 / 04 — CRIAÇÕES" no celular.
+(`components/layout/NarrativeIndicator.tsx`) acompanha os cinco blocos —
+links reais no desktop, selo "02 / 05 — CRIAÇÕES" no celular.
 
 As seções Conceito, Campanha (arte do buquê branco), Experiência (sequência
 fixada de quatro imagens), Autoria e a vinheta de abertura saíram nesta
@@ -83,6 +88,17 @@ Adobe RGB para sRGB e exportada em WebP (qualidade 82) para
 | `detalhe-proporcao.webp` / `detalhe-caixa-laco.webp` / `detalhe-escala-coeur.webp` | IMG_4697 / IMG_3902 / IMG_4087 | Detalhes — Proporção, Caixa, Escala |
 | `detalhe-hastes.webp` / `detalhe-assinatura.webp` | IMG_4513 / IMG_4183 | Detalhes — Hastes, Assinatura |
 | `detalhe-entrega.webp` (1536px) | IMG_4583, versão retocada enviada pelo cliente em 26/10/2026 | Detalhes — Entrega. Se houver o arquivo retocado em resolução maior, substituir mantendo outro nome de arquivo (o otimizador de imagens guarda cache por endereço) |
+
+### Depoimento de Patrícia Marchi (vídeo)
+
+Enviado pelo cliente em 01/11/2026: `IMG_9777.MOV` (iPhone, vertical 4K
+HEVC, 2:35, com som — já editado, com cortes e um plano em preto e branco).
+O original (407 MB) **não** entra no repositório. Para o site:
+
+| Arquivo | Origem | Uso |
+|---|---|---|
+| `public/media/embaixadora/patricia-marchi-depoimento.mp4` | IMG_9777, H.264/AAC 9:16, início rápido (faststart) | Vídeo do bloco Embaixadora |
+| `public/assets/le-grand-amour/embaixadora/patricia-marchi-capa.webp` (1080×1920) | quadro de 2:31 do mesmo vídeo | Capa do bloco e do player |
 
 O logotipo é `le-grand-amour-wordmark.webp`: a arte oficial com o fundo preto
 convertido em transparência e recortada rente à marca. A imagem de

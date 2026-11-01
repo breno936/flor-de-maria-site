@@ -39,6 +39,19 @@ export const detalhes = {
   title: "Feito à mão, do primeiro ao último detalhe.",
 };
 
+/**
+ * EMBAIXADORA — Patrícia Marchi's video testimonial (sent by the client on
+ * 2026-11-01). Only the name and the role already confirmed in the
+ * partnership ("musa e embaixadora da coleção"); nothing she says in the
+ * film is quoted here.
+ */
+export const embaixadora = {
+  eyebrow: "A embaixadora",
+  name: "Patrícia Marchi",
+  role: "Musa e embaixadora da coleção Le Grand Amour.",
+  cta: "Assistir ao depoimento",
+};
+
 /** ATENDIMENTO — the closing: a compact brand signature and the way to WhatsApp. */
 export const atendimento = {
   eyebrow: "Atendimento",
@@ -53,12 +66,13 @@ export const atendimento = {
   signatureLine: "by Patrícia Marchi",
 };
 
-/** Indicador lateral de capítulos (mini menu) — os quatro blocos, nesta ordem. */
+/** Indicador lateral de capítulos (mini menu) — os cinco blocos, nesta ordem. */
 export const narrativeSteps = [
   { id: "inicio", number: "01", label: "Abertura" },
   { id: "criacoes", number: "02", label: "Criações" },
   { id: "detalhes", number: "03", label: "Detalhes" },
-  { id: "atendimento", number: "04", label: "Atendimento" },
+  { id: "embaixadora", number: "04", label: "Embaixadora" },
+  { id: "atendimento", number: "05", label: "Atendimento" },
 ] as const;
 
 /** Developer credit in the footer — ArpeX's official Instagram, given by the client. */

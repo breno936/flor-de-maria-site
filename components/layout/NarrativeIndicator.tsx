@@ -6,7 +6,7 @@ import { narrativeSteps } from "@/data/content";
 const TOTAL = String(narrativeSteps.length).padStart(2, "0");
 
 /**
- * The discreet chapter "mini menu" on the right edge — the four blocks,
+ * The discreet chapter "mini menu" on the right edge — the five blocks,
  * every number quietly visible, only the active one with its label and
  * colour (`mix-blend-difference` keeps it legible over dark grounds and
  * photographs alike). Each row is a real link to its block, so it reads
@@ -14,7 +14,7 @@ const TOTAL = String(narrativeSteps.length).padStart(2, "0");
  * hover/focus. Desktop only (≥1280px), stepping aside at Atendimento, where
  * the active label would run over the closing signature.
  *
- * Phones get a passive status chip under the header instead ("02 / 04 —
+ * Phones get a passive status chip under the header instead ("02 / 05 —
  * CRIAÇÕES"), hidden at the opening and the closing so it never sits over
  * the main CTAs.
  *

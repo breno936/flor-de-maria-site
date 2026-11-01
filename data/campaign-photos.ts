@@ -73,6 +73,30 @@ export const ambassadorFilm = {
   },
 };
 
+/**
+ * The campaign film ("FILME LE GRAN AMOUR (VERSÃO 1).mov", 4K 16:9, 1:00,
+ * with sound, sent by the client on 2026-11-01). It opens on "11/11" and
+ * "11:11". Re-encoded for the web as 1080p H.264/AAC with the moov atom up
+ * front; nothing is downloaded until the visitor presses play.
+ *
+ * `teaser` is the silent loop on the cover: 20 s from 0:08–0:22 (the rose,
+ * Patrícia, the box, the toast) and 0:29–0:37 (the veil and the roses),
+ * dissolving at both joins. 720p, no audio, 2.3 MB. The cover is the
+ * loop's first frame (0:09).
+ */
+export const campaignFilm = {
+  src: "/media/filme/le-grand-amour-filme.mp4",
+  teaser: "/media/filme/le-grand-amour-filme-trecho.mp4",
+  durationLabel: "1 min",
+  duration: "1:00",
+  poster: {
+    src: "/assets/le-grand-amour/filme/filme-capa.webp",
+    width: 1600,
+    height: 900,
+    blur: "data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAACQBACdASoYAA4APtFWo0uoJKMhsAgBABoJbACdMoR8eCT/wMX+AZqBZe1spqAA/t4dK5VJXSLM4+P2/EQ07hW0i9YtawTFTfrCpcbyeACUe0FodQMqZEAibPvkj3D1zeJSjJ86MMU6KFyk6BU6uBOsKKJT+t4DTu7WXjXzNLe61dkeMUMlG9Svwk7Tq3mFmY5CbDiYAAA=",
+  },
+};
+
 export type GalleryPhoto = CampaignPhoto & {
   label: string;
   caption: string;

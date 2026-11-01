@@ -3,7 +3,7 @@
 ## Estrutura da página (out/2026 — versão comercial)
 
 O visitante chega pelo Instagram ou por anúncios, já atraído pela campanha.
-A página tem cinco blocos, nesta ordem, sem nenhuma seção fixada ou
+A página tem seis blocos, nesta ordem, sem nenhuma seção fixada ou
 "presa" à rolagem:
 
 1. **Abertura** (`#inicio`, `components/hero/Hero.tsx`) — foto de campanha,
@@ -16,27 +16,33 @@ A página tem cinco blocos, nesta ordem, sem nenhuma seção fixada ou
    "Pedir pelo WhatsApp". No desktop (aprovado pelo cliente), uma linha por
    criação com a foto principal, que amplia as quatro fotos; no celular, as
    quatro fotos em galeria de deslize (`PhotoCarousel.tsx`) com as
-   informações logo abaixo. As âncoras de cada criação servem para links de
-   anúncio.
-3. **Detalhes** (`#detalhes`, `components/gallery/Detalhes.tsx`) — seis
+   informações logo abaixo. Nos dois, as fotos trocam sozinhas a cada 3 s
+   enquanto o card está na tela (param com o dedo ou o mouse sobre a foto,
+   com a foto ampliada aberta e com "reduzir movimento"). As âncoras de
+   cada criação servem para links de anúncio.
+3. **Filme** (`#filme`, `components/film/Filme.tsx`) — o filme da campanha
+   num quadro 16:9: enquanto está na tela, toca sozinho um trecho de 20 s
+   **sem som**; um toque ou "Assistir ao filme" abre o filme inteiro
+   (1:00) em tela cheia, com som, do início.
+4. **Detalhes** (`#detalhes`, `components/gallery/Detalhes.tsx`) — seis
    fotos escolhidas para não se repetirem (corpo inteiro, natureza-morta da
    caixa, fundo claro, hastes, assinatura em relevo, entrega): faixa de
    quadros 4:5 com deslize no celular, mosaico vertical/horizontal no
    desktop; amplia em tela cheia.
-4. **Embaixadora** (`#embaixadora`, `components/ambassador/Embaixadora.tsx`)
+5. **Embaixadora** (`#embaixadora`, `components/ambassador/Embaixadora.tsx`)
    — Patrícia Marchi, "musa e embaixadora da coleção", com o depoimento em
    vídeo: capa + "Assistir ao depoimento"; o vídeo (2:35, com som, sem
    legendas por decisão de 01/11/2026) abre em tela cheia e só carrega no
    play. Enquanto o bloco está na tela, a capa toca um trecho curto **sem
    som** (os navegadores não deixam vídeo começar sozinho com som); um
    toque abre o depoimento inteiro com som.
-5. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
+6. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
    WhatsApp, informações práticas confirmadas e a assinatura compacta da
    marca (a antiga seção Autoria).
 
 O mini menu de capítulos na lateral direita
-(`components/layout/NarrativeIndicator.tsx`) acompanha os cinco blocos —
-links reais no desktop, selo "02 / 05 — CRIAÇÕES" no celular.
+(`components/layout/NarrativeIndicator.tsx`) acompanha os seis blocos —
+links reais no desktop, selo "02 / 06 — CRIAÇÕES" no celular.
 
 As seções Conceito, Campanha (arte do buquê branco), Experiência (sequência
 fixada de quatro imagens), Autoria e a vinheta de abertura saíram nesta
@@ -103,6 +109,22 @@ O original (407 MB) **não** entra no repositório. Para o site:
 | `public/assets/le-grand-amour/embaixadora/patricia-marchi-capa.webp` (1080×1920) | quadro de 2:31 do mesmo vídeo | Capa do bloco e do player |
 | `public/media/embaixadora/patricia-marchi-trecho.mp4` (720×1280, 13,6 s, sem áudio, 2,2 MB) | 2:28–2:35 + 1:18–1:25 do mesmo vídeo, com fusão nas duas emendas (repete sem corte) | Capa em movimento, sem som — só baixa quando o bloco se aproxima; não toca com "reduzir movimento" ou economia de dados |
 
+### Filme da campanha
+
+Enviado pelo cliente em 01/11/2026: `FILME LE GRAN AMOUR (VERSÃO 1).mov`
+(4K 16:9 HEVC, 1:00, com som; abre com "11/11" e "11:11"). O original
+(152 MB) **não** entra no repositório. Para o site:
+
+| Arquivo | Origem | Uso |
+|---|---|---|
+| `public/media/filme/le-grand-amour-filme.mp4` (1920×1080, 19 MB) | o filme inteiro, H.264/AAC, início rápido (faststart) | Filme em tela cheia, com som — só carrega no play |
+| `public/media/filme/le-grand-amour-filme-trecho.mp4` (1280×720, 20 s, sem áudio, 2,3 MB) | 0:08–0:22 + 0:29–0:37, com fusão nas duas emendas | Quadro em movimento, sem som — só baixa quando o bloco se aproxima |
+| `public/assets/le-grand-amour/filme/filme-capa.webp` (1600×900) | quadro de 0:09 (primeiro quadro do trecho) | Capa do bloco e do player |
+
+Quando chegar a versão final, refazer os três arquivos com **outros nomes**
+(o navegador e o otimizador de imagens guardam cache por endereço) e
+atualizar `data/campaign-photos.ts → campaignFilm`.
+
 O logotipo é `le-grand-amour-wordmark.webp`: a arte oficial com o fundo preto
 convertido em transparência e recortada rente à marca. A imagem de
 compartilhamento (`public/media/og/le-grand-amour-og.jpg`, 1200×630) é um
@@ -135,6 +157,6 @@ convertido em transparência).
 - **Autorização de uso de imagem** de todas as pessoas que aparecem nas
   fotos, e qual das modelos é Patrícia Marchi (as descrições não nomeiam
   ninguém).
-- **Vídeos** da diária, se a equipe de filmagem entregar.
+- **Versão final do filme** — o arquivo recebido é a "VERSÃO 1".
 - **Data de lançamento oficial** — o contrato prevê vigência de 10 meses a
   partir do lançamento.

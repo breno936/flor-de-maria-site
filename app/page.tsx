@@ -1,5 +1,6 @@
 import Hero from "@/components/hero/Hero";
 import Criacoes from "@/components/products/Criacoes";
+import Filme from "@/components/film/Filme";
 import Detalhes from "@/components/gallery/Detalhes";
 import Embaixadora from "@/components/ambassador/Embaixadora";
 import Atendimento from "@/components/purchase/Atendimento";
@@ -20,8 +21,8 @@ const jsonLd = {
 };
 
 /**
- * Five blocks, in this order: ABERTURA → CRIAÇÕES (e valores) → DETALHES →
- * EMBAIXADORA → ATENDIMENTO. Contemplative in the photographs, objective in the selling;
+ * Six blocks, in this order: ABERTURA → CRIAÇÕES (e valores) → FILME →
+ * DETALHES → EMBAIXADORA → ATENDIMENTO. Contemplative in the photographs, objective in the selling;
  * nothing pins or holds the scroll.
  */
 export default function Home() {
@@ -33,6 +34,7 @@ export default function Home() {
       />
       <Hero />
       <Criacoes />
+      <Filme />
       <Detalhes />
       <Embaixadora />
       <Atendimento />

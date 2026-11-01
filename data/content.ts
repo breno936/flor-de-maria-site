@@ -45,6 +45,12 @@ export const detalhes = {
  * partnership ("musa e embaixadora da coleção"); nothing she says in the
  * film is quoted here.
  */
+export const filme = {
+  eyebrow: "O filme",
+  title: "Le Grand Amour",
+  cta: "Assistir ao filme",
+};
+
 export const embaixadora = {
   eyebrow: "A embaixadora",
   name: "Patrícia Marchi",
@@ -70,9 +76,10 @@ export const atendimento = {
 export const narrativeSteps = [
   { id: "inicio", number: "01", label: "Abertura" },
   { id: "criacoes", number: "02", label: "Criações" },
-  { id: "detalhes", number: "03", label: "Detalhes" },
-  { id: "embaixadora", number: "04", label: "Embaixadora" },
-  { id: "atendimento", number: "05", label: "Atendimento" },
+  { id: "filme", number: "03", label: "Filme" },
+  { id: "detalhes", number: "04", label: "Detalhes" },
+  { id: "embaixadora", number: "05", label: "Embaixadora" },
+  { id: "atendimento", number: "06", label: "Atendimento" },
 ] as const;
 
 /** Developer credit in the footer — ArpeX's official Instagram, given by the client. */

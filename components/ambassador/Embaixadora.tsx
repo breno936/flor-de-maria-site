@@ -1,28 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { embaixadora } from "@/data/content";
 import { ambassadorFilm } from "@/data/campaign-photos";
 import AtelierButton from "@/components/ui/AtelierButton";
 import Reveal from "@/components/motion/Reveal";
+import FilmDialog, { type FilmDialogHandle } from "@/components/media/FilmDialog";
+import SilentLoop from "@/components/media/SilentLoop";
+import PlayIcon from "@/components/media/PlayIcon";
 
 const { poster } = ambassadorFilm;
 
 /**
  * EMBAIXADORA — Patrícia Marchi and her video testimonial, between the
  * details and the closing. The block itself is only a cover and two
- * lines; the film (2:35, with sound) opens in a full-screen native
- * <dialog> — focus trap, Esc and focus return come from the platform —
- * and starts in the same click, so browsers let it play with sound.
- * Nothing of the film loads until then (preload="none"). Closing pauses
- * it and puts the page back exactly where it was; reopening resumes.
- *
- * While the block is on screen the cover itself moves: a short silent loop
- * cut from the film (browsers only start video on their own without
- * sound), fetched as the block approaches and paused as soon as it leaves
- * or the film opens. Not with reduced motion or data saving on; where the
- * browser still refuses (iOS Low Power Mode) the cover photograph stays.
+ * lines; the film (2:35, with sound) opens full screen (FilmDialog) and
+ * starts in the same click. While the block is on screen the cover itself
+ * moves — a short silent loop cut from the film (SilentLoop), held while
+ * the film is open.
  *
  * Phones: a compact row — the vertical cover beside the name — so the
  * block costs under half a screen. From 768px: the text on the left and a
@@ -30,83 +26,9 @@ const { poster } = ambassadorFilm;
  * the same entrance as the creations' photographs.
  */
 export default function Embaixadora() {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const coverRef = useRef<HTMLButtonElement>(null);
-  const teaserRef = useRef<HTMLVideoElement>(null);
-  const scrollYBeforeOpen = useRef(0);
-  const [teaserPlaying, setTeaserPlaying] = useState(false);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    const cover = coverRef.current;
-    const teaser = teaserRef.current;
-    if (!dialog || !cover || !teaser) return;
-
-    // The cover's silent loop: plays only while the cover is on screen and the film is closed.
-    let coverOnScreen = false;
-    const syncTeaser = () => {
-      if (!teaser.getAttribute("src")) return;
-      if (coverOnScreen && !dialog.open) teaser.play().catch(() => {});
-      else teaser.pause();
-    };
-    // Fetched one screen ahead, so it is ready when the block arrives.
-    const approach = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        approach.disconnect();
-        teaser.muted = true;
-        teaser.preload = "auto";
-        teaser.src = ambassadorFilm.teaser;
-        syncTeaser();
-      },
-      { rootMargin: "0px 0px 100% 0px" },
-    );
-    const onScreen = new IntersectionObserver(
-      ([entry]) => {
-        coverOnScreen = entry.isIntersecting;
-        syncTeaser();
-      },
-      { threshold: 0.4 },
-    );
-    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-    if (!saveData && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      approach.observe(cover);
-      onScreen.observe(cover);
-    }
-
-    // Every way out (button, backdrop, Esc) ends in the dialog's own close event.
-    const onClose = () => {
-      videoRef.current?.pause();
-      document.documentElement.style.overflow = "";
-      window.scrollTo({ top: scrollYBeforeOpen.current, behavior: "instant" });
-      syncTeaser();
-    };
-    dialog.addEventListener("close", onClose);
-    return () => {
-      approach.disconnect();
-      onScreen.disconnect();
-      dialog.removeEventListener("close", onClose);
-      document.documentElement.style.overflow = "";
-    };
-  }, []);
-
-  function open() {
-    const dialog = dialogRef.current;
-    const video = videoRef.current;
-    if (!dialog || !video || dialog.open) return;
-    scrollYBeforeOpen.current = window.scrollY;
-    teaserRef.current?.pause();
-    dialog.showModal();
-    document.documentElement.style.overflow = "hidden";
-    // Inside the click itself — that is what lets it play with sound.
-    video.play().catch(() => {});
-  }
-
-  function close() {
-    dialogRef.current?.close();
-  }
-
+  const filmRef = useRef<FilmDialogHandle>(null);
+  const [filmOpen, setFilmOpen] = useState(false);
+  const open = () => filmRef.current?.open();
   const label = `${embaixadora.cta}: ${embaixadora.name} (${ambassadorFilm.durationLabel}, com som)`;
 
   return (
@@ -118,7 +40,6 @@ export default function Embaixadora() {
       <div className="container-lga grid grid-cols-[minmax(0,42%)_minmax(0,1fr)] items-center gap-5 md:grid-cols-12 md:gap-10 lg:gap-16">
         <Reveal className="md:order-2 md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-8">
           <button
-            ref={coverRef}
             type="button"
             onClick={open}
             aria-label={label}
@@ -135,20 +56,7 @@ export default function Embaixadora() {
                   quality={80}
                   className="object-cover object-[50%_30%]"
                 />
-                {/* The silent loop — the source is set by the effect above, once the block approaches. */}
-                <video
-                  ref={teaserRef}
-                  muted
-                  loop
-                  playsInline
-                  preload="none"
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  aria-hidden="true"
-                  tabIndex={-1}
-                  onPlaying={() => setTeaserPlaying(true)}
-                  className={`absolute inset-0 h-full w-full object-cover object-[50%_30%] transition-opacity duration-700 ${teaserPlaying ? "opacity-100" : "opacity-0"}`}
-                />
+                <SilentLoop src={ambassadorFilm.teaser} paused={filmOpen} position="50% 30%" />
               </div>
             </div>
             <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-noir/55 via-transparent to-transparent" />
@@ -197,51 +105,15 @@ export default function Embaixadora() {
         </div>
       </div>
 
-      <dialog
-        ref={dialogRef}
-        aria-label={`${embaixadora.name}: depoimento em vídeo`}
-        onClick={(event) => {
-          // A click on the dark surround (the dialog itself, not its content) closes it.
-          if (event.target === event.currentTarget) close();
-        }}
-        className="embaixadora-dialog fixed inset-0 m-0 h-[100dvh] max-h-none w-screen max-w-none border-0 bg-noir p-0 text-ivory backdrop:bg-noir"
-      >
-        <div className="pointer-events-none flex h-full w-full flex-col items-center justify-center gap-4 px-4 pb-6 pt-20 md:pb-8 md:pt-24">
-          <video
-            ref={videoRef}
-            src={ambassadorFilm.src}
-            poster={poster.src}
-            controls
-            playsInline
-            preload="none"
-            controlsList="nodownload"
-            className="pointer-events-auto block aspect-[9/16] h-auto bg-noir-soft"
-            style={{ width: "min(100%, calc((100dvh - 9.5rem) * 9 / 16))" }}
-          >
-            Seu navegador não reproduz este vídeo.
-          </video>
-          <p className="mono-label text-center text-champagne-light">{embaixadora.name} — embaixadora da coleção</p>
-        </div>
-        <button
-          type="button"
-          onClick={close}
-          aria-label="Fechar o vídeo"
-          className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full border border-champagne-light/50 text-champagne-light transition-colors hover:border-champagne-light hover:text-ivory md:right-8 md:top-6"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.2" />
-          </svg>
-        </button>
-      </dialog>
+      <FilmDialog
+        ref={filmRef}
+        src={ambassadorFilm.src}
+        poster={poster.src}
+        ratio="9/16"
+        label={`${embaixadora.name}: depoimento em vídeo`}
+        caption={`${embaixadora.name} — embaixadora da coleção`}
+        onOpenChange={setFilmOpen}
+      />
     </section>
-  );
-}
-
-function PlayIcon({ small = false }: { small?: boolean }) {
-  const size = small ? 9 : 14;
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden="true" className="translate-x-[1px]">
-      <path d="M2.5 1.5v9l7-4.5-7-4.5Z" fill="currentColor" />
-    </svg>
   );
 }

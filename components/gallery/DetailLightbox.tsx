@@ -93,8 +93,11 @@ export default function DetailLightbox({
   }, [isOpen]);
 
   // No tween outlives the dialog: closing, or the card unmounting, stops
-  // whatever is still running on it.
+  // whatever is still running on it. Only while open — a cleanup left by
+  // the closed state would run right after opening and freeze the fade-in
+  // at its first frame (an invisible dialog over a dimmed page).
   useEffect(() => {
+    if (!isOpen) return;
     const dialog = dialogRef.current;
     const el = photoRef.current;
     return () => {

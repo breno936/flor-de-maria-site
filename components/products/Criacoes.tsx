@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import Image from "next/image";
 import { findOption, products, type Product } from "@/data/products";
 import { criacoes } from "@/data/content";
-import { productGalleries } from "@/data/campaign-photos";
+import { productGalleries, type GalleryPhoto } from "@/data/campaign-photos";
 import { formatPrice, fromPrice, pricesConfirmed } from "@/lib/price";
 import { setChosenVersion } from "@/lib/ui/chosenVersion";
+import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import WhatsAppCTA from "@/components/cta/WhatsAppCTA";
 import DetailLightbox from "@/components/gallery/DetailLightbox";
 import Reveal from "@/components/motion/Reveal";
-import PhotoCarousel from "./PhotoCarousel";
+import PhotoCarousel, { PHOTO_INTERVAL_MS } from "./PhotoCarousel";
 
 /**
  * CRIAÇÕES (e valores). Le Bouquet and Le Coeur Royale, one card each —
@@ -24,7 +25,8 @@ import PhotoCarousel from "./PhotoCarousel";
  * beside its information, sides alternating — and the photo opens the
  * lightbox. On phones the card is compact and continuous: the four
  * photographs as a swipe gallery, the information right under it, the
- * facts on one line. Nothing pins or holds the scroll; only the desktop
+ * facts on one line. On both, the photographs change on their own every
+ * 3 s while the card is on screen. Nothing pins or holds the scroll; only the desktop
  * photograph has an entrance (Reveal) — prices, versions and buttons are
  * always visible. Each card carries the creation's id as its anchor, so
  * an ad can link straight to the piece it showed (/#le-coeur-royale).
@@ -52,7 +54,6 @@ export default function Criacoes() {
 
 function CreationCard({ product, flipped }: { product: Product; flipped: boolean }) {
   const gallery = productGalleries[product.id];
-  const main = gallery[0];
   const [lightbox, setLightbox] = useState<{ index: number; origin: DOMRect | null } | null>(null);
   const [optionId, setOptionId] = useState<string>();
   const chosen = findOption(product, optionId);
@@ -68,31 +69,10 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
       className="grid gap-5 md:grid-cols-12 md:items-center md:gap-10 lg:gap-16"
     >
       <div className={`-mx-6 md:col-span-6 md:mx-0 lg:col-span-7 ${flipped ? "md:order-2" : ""}`}>
-        <PhotoCarousel title={product.title} photos={gallery} onOpen={open} className="md:hidden" />
+        <PhotoCarousel title={product.title} photos={gallery} paused={lightbox !== null} onOpen={open} className="md:hidden" />
 
         <Reveal className="hidden md:block">
-          <button
-            type="button"
-            onClick={(event) => open(0, event)}
-            aria-label={`Ampliar fotos: ${product.title}`}
-            className="group relative block aspect-[4/5] w-full overflow-hidden bg-noir-soft lg:aspect-auto lg:h-[min(80vh,780px)]"
-          >
-            <div className="reveal-zoom absolute inset-0">
-              <Image
-                src={main.src}
-                alt={main.alt}
-                fill
-                sizes="(max-width: 1023px) 50vw, 760px"
-                quality={80}
-                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                style={{ objectPosition: main.position }}
-              />
-            </div>
-            <span className="pointer-events-none absolute bottom-5 right-5 flex items-center gap-2 rounded-full border border-ivory/30 bg-noir/60 px-3.5 py-2 font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-ivory backdrop-blur-sm transition-colors group-hover:border-champagne-light group-hover:text-champagne-light group-focus-visible:border-champagne-light">
-              {gallery.length} fotos
-              <span aria-hidden="true">+</span>
-            </span>
-          </button>
+          <RotatingPhoto title={product.title} photos={gallery} paused={lightbox !== null} onOpen={open} />
         </Reveal>
       </div>
 
@@ -148,6 +128,79 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
         onClose={() => setLightbox(null)}
       />
     </article>
+  );
+}
+
+/**
+ * From 768px: the card's photograph, which crossfades through the four
+ * photographs, one every 3 s, while it is on screen — holding while the
+ * mouse is over it or it has keyboard focus, while the lightbox is open,
+ * and with reduced motion. A click opens the lightbox on the photo showing.
+ */
+function RotatingPhoto({
+  title,
+  photos,
+  paused,
+  onOpen,
+}: {
+  title: string;
+  photos: GalleryPhoto[];
+  paused: boolean;
+  onOpen: (index: number, event: MouseEvent<HTMLElement>) => void;
+}) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const [shown, setShown] = useState(0);
+  const [onScreen, setOnScreen] = useState(false);
+  const [held, setHeld] = useState(false);
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), { threshold: 0.5 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!onScreen || held || paused || reducedMotion) return;
+    const timer = window.setInterval(() => setShown((i) => (i + 1) % photos.length), PHOTO_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [onScreen, held, paused, reducedMotion, photos.length]);
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={(event) => onOpen(shown, event)}
+      onPointerEnter={(event) => event.pointerType === "mouse" && setHeld(true)}
+      onPointerLeave={() => setHeld(false)}
+      onFocus={(event) => event.currentTarget.matches(":focus-visible") && setHeld(true)}
+      onBlur={() => setHeld(false)}
+      aria-label={`Ampliar fotos: ${title}`}
+      className="group relative block aspect-[4/5] w-full overflow-hidden bg-noir-soft lg:aspect-auto lg:h-[min(80vh,780px)]"
+    >
+      <div className="reveal-zoom absolute inset-0">
+        <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]">
+          {photos.map((photo, i) => (
+            <Image
+              key={photo.src}
+              src={photo.src}
+              alt={i === 0 ? photo.alt : ""}
+              fill
+              sizes="(max-width: 1023px) 50vw, 760px"
+              quality={80}
+              className={`object-cover transition-opacity duration-1000 ease-out ${i === shown ? "opacity-100" : "opacity-0"}`}
+              style={{ objectPosition: photo.position }}
+            />
+          ))}
+        </div>
+      </div>
+      <span className="pointer-events-none absolute bottom-5 right-5 flex items-center gap-2 rounded-full border border-ivory/30 bg-noir/60 px-3.5 py-2 font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-ivory backdrop-blur-sm transition-colors group-hover:border-champagne-light group-hover:text-champagne-light group-focus-visible:border-champagne-light">
+        {photos.length} fotos
+        <span aria-hidden="true">+</span>
+      </span>
+    </button>
   );
 }
 

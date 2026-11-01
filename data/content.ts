@@ -15,22 +15,22 @@
 
 export const brand = {
   collabLine: "Flor de Maria Ateliê × Patrícia Marchi",
-  name: "LÊ GRAND AMOUR",
+  name: "LE GRAND AMOUR",
   /** Full signature as used on official cards/plaques. */
-  signatureFull: "LÊ GRAND AMOUR by Flor de Maria",
+  signatureFull: "LE GRAND AMOUR by Flor de Maria",
 };
 
 /** ABERTURA — the campaign photograph, the mark, one line and the way to the creations. */
 export const hero = {
   /** Rendered as the official logo image, never reconstructed in a web font. */
-  logoAlt: "Lê Grand Amour",
+  logoAlt: "Le Grand Amour",
   signature: "by Flor de Maria",
   phrase: "Amor em sua forma mais grandiosa.",
 };
 
 /** CRIAÇÕES — see data/products.ts for the two pieces and their prices. */
 export const criacoes = {
-  eyebrow: "Coleção Lê Grand Amour",
+  eyebrow: "Coleção Le Grand Amour",
 };
 
 /** DETALHES — a short gallery; captions live with the photos in data/campaign-photos.ts. */
@@ -85,7 +85,7 @@ export const contact = {
    * opens it; if emptied, they open the Instagram Direct below instead.
    */
   whatsappNumber: "5519982465984",
-  /** Official Lê Grand Amour Instagram, given directly by the client. */
+  /** Official Le Grand Amour Instagram, given directly by the client. */
   instagramHandle: "legrandamour.ofc",
   atelierLocation: "Hortolândia – SP",
   serviceArea: "Região Metropolitana de Campinas",

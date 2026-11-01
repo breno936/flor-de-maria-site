@@ -9,7 +9,7 @@ const jsonLd = {
   "@type": "Florist",
   name: "Flor de Maria Ateliê",
   description:
-    "Alta Floricultura. Amor em sua forma mais grandiosa. Coleção Lê Grand Amour, em parceria com Patrícia Marchi.",
+    "Alta Floricultura. Amor em sua forma mais grandiosa. Coleção Le Grand Amour, em parceria com Patrícia Marchi.",
   areaServed: contact.serviceArea,
   address: {
     "@type": "PostalAddress",

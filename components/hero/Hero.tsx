@@ -42,7 +42,7 @@ export default function Hero() {
     <section
       id="inicio"
       className="relative flex min-h-[88svh] w-full flex-col overflow-hidden bg-noir md:min-h-[100svh]"
-      aria-label="Lê Grand Amour — amor em sua forma mais grandiosa"
+      aria-label="Le Grand Amour — amor em sua forma mais grandiosa"
     >
       <HeroOpeningSkip />
       <div className="absolute inset-0 overflow-hidden">

@@ -40,8 +40,8 @@ export const products: Product[] = [
   {
     id: "le-bouquet",
     eyebrow: "Criação I",
-    name: "LÊ BOUQUET",
-    title: "Lê Bouquet",
+    name: "LE BOUQUET",
+    title: "Le Bouquet",
     tagline: "Uma presença impossível de ignorar.",
     facts: ["Buquê monumental de design autoral", "Rosas selecionadas", "Acabamento premium"],
     optionsLabel: "Quantidade de rosas",
@@ -57,8 +57,8 @@ export const products: Product[] = [
   {
     id: "le-coeur-royale",
     eyebrow: "Criação II",
-    name: "LÊ CŒUR ROYALE",
-    title: "Lê Cœur Royale",
+    name: "LE COEUR ROYALE",
+    title: "Le Coeur Royale",
     tagline: "O amor em sua forma mais emblemática.",
     facts: ["Aproximadamente 60 a 70 rosas", "Caixa rígida autoral em formato de coração", "Acabamento premium"],
     optionsLabel: "Versão",

@@ -1,4 +1,4 @@
-# Lê Grand Amour — inventário de mídia
+# Le Grand Amour — inventário de mídia
 
 ## Estrutura da página (out/2026 — versão comercial)
 
@@ -9,8 +9,8 @@ A página tem quatro blocos, nesta ordem, sem nenhuma seção fixada ou
 1. **Abertura** (`#inicio`, `components/hero/Hero.tsx`) — foto de campanha,
    logotipo, uma frase, "Criações a partir de R$ 999" e "Ver criações e
    valores".
-2. **Criações** (`#criacoes`, `components/products/Criacoes.tsx`) — Lê
-   Bouquet (`#le-bouquet`) e Lê Cœur Royale (`#le-coeur-royale`), cada um
+2. **Criações** (`#criacoes`, `components/products/Criacoes.tsx`) — Le
+   Bouquet (`#le-bouquet`) e Le Coeur Royale (`#le-coeur-royale`), cada um
    com foto, nome, preço ("a partir de" até o visitante escolher uma
    versão), uma frase, três informações, as versões com seus preços e
    "Pedir pelo WhatsApp". No desktop (aprovado pelo cliente), uma linha por
@@ -42,9 +42,9 @@ de banco de imagem).
 - **Preços** — tabela oficial enviada pelo cliente em 26/10/2026, em
   `data/products.ts → options` (e `priceNote` para condições e custos
   extras, hoje vazio):
-  - Lê Bouquet — 30 rosas R$ 999 · 50 rosas R$ 1.500 · 60 rosas R$ 1.800 ·
+  - Le Bouquet — 30 rosas R$ 999 · 50 rosas R$ 1.500 · 60 rosas R$ 1.800 ·
     70 rosas R$ 2.000 · 80 rosas R$ 2.300 · 100 rosas R$ 2.900.
-  - Lê Cœur Royale — rosas e chocolate R$ 1.350 · rosas R$ 1.500.
+  - Le Coeur Royale — rosas e chocolate R$ 1.350 · rosas R$ 1.500.
 
   O card mostra "a partir de" o menor valor de cada criação até o visitante
   escolher uma versão (nenhuma vem marcada); a abertura mostra o menor valor
@@ -53,7 +53,7 @@ de banco de imagem).
   responsável pelo ateliê, informado pelo cliente em 26/10/2026). Cada
   "Pedir pelo WhatsApp" abre a conversa com a mensagem pronta
   (`lib/contact/channel.ts`): com a criação e, se escolhida, a versão e o
-  seu preço — "Olá! Vi o Lê Bouquet (50 rosas, R$ 1.500) no site e gostaria
+  seu preço — "Olá! Vi o Le Bouquet (50 rosas, R$ 1.500) no site e gostaria
   de consultar disponibilidade." A barra fixa do celular e o botão do cabeçalho no desktop só
   aparecem depois que o visitante chega às criações. O número da Florence
   Boutique de Rosas (catálogo fornecido) é de outra empresa e não deve ser
@@ -76,10 +76,10 @@ Adobe RGB para sRGB e exportada em WebP (qualidade 82) para
 | Arquivo | Original | Usado em |
 |---|---|---|
 | `abertura-desktop.webp` (2560px) / `abertura-mobile.webp` (1290px) | IMG_4521 / IMG_4480 | Abertura — a partir de 768px / no celular (`<picture>`), com miniatura desfocada embutida para o carregamento |
-| `produto-bouquet-escala.webp` | IMG_4606 | Criações — Lê Bouquet, foto principal |
-| `detalhe-bouquet-rosas.webp` / `bouquet-embalagem.webp` / `detalhe-rosa-luva.webp` | IMG_4629 / IMG_4621 / IMG_4646 | Fotos ampliadas do Lê Bouquet |
-| `produto-coeur-escala.webp` | IMG_4413 | Criações — Lê Cœur Royale, foto principal |
-| `detalhe-coeur-fita.webp` / `fita-caixa.webp` / `experiencia-acabamento.webp` | IMG_4407 / IMG_3926 / IMG_4387 | Fotos ampliadas do Lê Cœur Royale |
+| `produto-bouquet-escala.webp` | IMG_4606 | Criações — Le Bouquet, foto principal |
+| `detalhe-bouquet-rosas.webp` / `bouquet-embalagem.webp` / `detalhe-rosa-luva.webp` | IMG_4629 / IMG_4621 / IMG_4646 | Fotos ampliadas do Le Bouquet |
+| `produto-coeur-escala.webp` | IMG_4413 | Criações — Le Coeur Royale, foto principal |
+| `detalhe-coeur-fita.webp` / `fita-caixa.webp` / `experiencia-acabamento.webp` | IMG_4407 / IMG_3926 / IMG_4387 | Fotos ampliadas do Le Coeur Royale |
 | `detalhe-proporcao.webp` / `detalhe-caixa-laco.webp` / `detalhe-escala-coeur.webp` | IMG_4697 / IMG_3902 / IMG_4087 | Detalhes — Proporção, Caixa, Escala |
 | `detalhe-hastes.webp` / `detalhe-assinatura.webp` | IMG_4513 / IMG_4183 | Detalhes — Hastes, Assinatura |
 | `detalhe-entrega.webp` (1536px) | IMG_4583, versão retocada enviada pelo cliente em 26/10/2026 | Detalhes — Entrega. Se houver o arquivo retocado em resolução maior, substituir mantendo outro nome de arquivo (o otimizador de imagens guarda cache por endereço) |
@@ -99,13 +99,20 @@ convertido em transparência).
 ## Ainda faltam (não inventados)
 
 - **Condições dos preços**, se houver (entrega, custos extras) — `priceNote`.
-- **Quantidade de rosas do Lê Cœur Royale por versão** — o card diz
+- **Quantidade de rosas do Le Coeur Royale por versão** — o card diz
   "Aproximadamente 60 a 70 rosas" (apresentação da parceria); confirmar se
   vale também para a versão com chocolate.
 - **Antecedência necessária para pedidos.**
-- **Logotipo Lê Grand Amour em arquivo vetorial** (`.svg`/`.ai`) — hoje é uma
+- **Logotipo Le Grand Amour em arquivo vetorial** (`.svg`/`.ai`) — hoje é uma
   imagem. `components/layout/LogoMark.tsx` (cabeçalho) é um substituto
   tipográfico.
+- **Logotipo sem acento.** Desde 01/11/2026 os nomes são escritos sem acento
+  (Le Grand Amour, Le Bouquet, Le Coeur Royale) em todo o texto do site, mas
+  a arte oficial do logotipo (`le-grand-amour-wordmark.webp`, usada na
+  Abertura e no Atendimento) ainda tem "LÊ" desenhado. Trocar quando a
+  versão sem acento for entregue — com outro nome de arquivo (o otimizador
+  de imagens guarda cache por endereço). As fitas, a placa e o relevo nas
+  fotos do ensaio também trazem "LÊ"; são as peças físicas, não mudam.
 - **Autorização de uso de imagem** de todas as pessoas que aparecem nas
   fotos, e qual das modelos é Patrícia Marchi (as descrições não nomeiam
   ninguém).

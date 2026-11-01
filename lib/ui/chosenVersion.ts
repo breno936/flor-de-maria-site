@@ -6,7 +6,7 @@ import type { CreationId } from "@/data/products";
 export type ChosenVersion = { creation: CreationId; option: string };
 
 /**
- * The last version the visitor picked on a card ("Lê Bouquet, 50 rosas"),
+ * The last version the visitor picked on a card ("Le Bouquet, 50 rosas"),
  * shared with the WhatsApp buttons that don't belong to one card — the
  * phone's bottom bar, the header and the closing — so whichever one they
  * tap, the message names what they chose. Lives for the page view only.

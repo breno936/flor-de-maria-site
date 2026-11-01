@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Lê Grand Amour — Alta Floricultura by Flor de Maria",
-    short_name: "Lê Grand Amour",
+    name: "Le Grand Amour — Alta Floricultura by Flor de Maria",
+    short_name: "Le Grand Amour",
     description: "Alta Floricultura. Amor em sua forma mais grandiosa.",
     start_url: "/",
     display: "standalone",

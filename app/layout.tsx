@@ -27,35 +27,35 @@ const siteUrl = "https://www.legrandamour.com.br";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Lê Grand Amour — Alta Floricultura by Flor de Maria",
-    template: "%s — Lê Grand Amour",
+    default: "Le Grand Amour — Alta Floricultura by Flor de Maria",
+    template: "%s — Le Grand Amour",
   },
   description:
-    "Alta Floricultura. Amor em sua forma mais grandiosa. Uma coleção autoral da Lê Grand Amour by Flor de Maria, em parceria com Patrícia Marchi.",
+    "Alta Floricultura. Amor em sua forma mais grandiosa. Uma coleção autoral da Le Grand Amour by Flor de Maria, em parceria com Patrícia Marchi.",
   keywords: [
-    "Lê Grand Amour",
+    "Le Grand Amour",
     "Flor de Maria",
     "alta floricultura",
     "Patrícia Marchi",
     "buquê de rosas de luxo",
     "presente de luxo Campinas",
-    "Lê Bouquet",
-    "Lê Cœur Royale",
+    "Le Bouquet",
+    "Le Coeur Royale",
   ],
   alternates: { canonical: siteUrl },
   openGraph: {
     type: "website",
     locale: "pt_BR",
     url: siteUrl,
-    siteName: "Lê Grand Amour",
-    title: "Lê Grand Amour — Amor em sua forma mais grandiosa.",
+    siteName: "Le Grand Amour",
+    title: "Le Grand Amour — Amor em sua forma mais grandiosa.",
     description:
       "Alta Floricultura by Flor de Maria, em parceria com Patrícia Marchi.",
     images: [{ url: "/media/og/le-grand-amour-og.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lê Grand Amour",
+    title: "Le Grand Amour",
     description: "Alta Floricultura. Amor em sua forma mais grandiosa.",
   },
   icons: {

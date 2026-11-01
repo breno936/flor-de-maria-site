@@ -14,10 +14,10 @@ export default function LogoMark({ className = "", compact = false }: LogoMarkPr
   return (
     <span
       className={`inline-flex select-none flex-col items-center leading-none text-gold ${className}`}
-      aria-label="Lê Grand Amour"
+      aria-label="Le Grand Amour"
     >
       {!compact && (
-        <span className="font-display text-[0.55em] tracking-[0.5em]">LÊ</span>
+        <span className="font-display text-[0.55em] tracking-[0.5em]">LE</span>
       )}
       <span className="font-display text-lg tracking-[0.18em]">GRAND AMOUR</span>
     </span>

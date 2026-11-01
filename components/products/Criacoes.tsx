@@ -14,7 +14,7 @@ import Reveal from "@/components/motion/Reveal";
 import PhotoCarousel from "./PhotoCarousel";
 
 /**
- * CRIAÇÕES (e valores). Lê Bouquet and Lê Cœur Royale, one card each —
+ * CRIAÇÕES (e valores). Le Bouquet and Le Coeur Royale, one card each —
  * photograph, name, price, one line, three facts, the versions with their
  * prices and "Pedir pelo WhatsApp" read as a single unit. The price shows
  * "a partir de" the cheapest version until one is chosen, then that

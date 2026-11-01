@@ -1,7 +1,7 @@
 import type { CreationId } from "./products";
 
 /**
- * Official campaign photography — the Lê Grand Amour studio shoot
+ * Official campaign photography — the Le Grand Amour studio shoot
  * (photographer Rafael Gimenes, Oct 2026). Every file in
  * /public/assets/le-grand-amour/campanha/ is a colour-managed (Adobe RGB →
  * sRGB) WebP export of one original frame; the IMG_ number on each entry is
@@ -24,7 +24,7 @@ export type CampaignPhoto = { src: string; alt: string };
 export const heroPhoto = {
   desktop: { src: `${BASE}/abertura-desktop.webp`, width: 2560, height: 1707 },
   mobile: { src: `${BASE}/abertura-mobile.webp`, width: 1290, height: 1935 },
-  alt: "Campanha Lê Grand Amour: modelo de vestido preto, capa branca e véu de tule segurando um grande buquê de rosas vermelhas, sobre fundo escuro.",
+  alt: "Campanha Le Grand Amour: modelo de vestido preto, capa branca e véu de tule segurando um grande buquê de rosas vermelhas, sobre fundo escuro.",
   blur: {
     desktop:
       "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAAAwBACdASoYABAAPrVKnkonJCKhsAgA4BaJQBYdjSwzWB3q6Nv+5XLVXhgA/v6IJR+KpaYAvHTXP1XMZuSKtk2A3kQH1i2GKVwXfmMKe9VzMgRL8PTQHlTsBDlUOOdj5UZiV/RnVja3TBzCZARr6vC2BMTUV19mdsBfnluWwAMCWIhYppr0uAAA",
@@ -35,7 +35,7 @@ export const heroPhoto = {
 
 /**
  * IMG_4646 — the petals the opening starts on, before the camera pulls back
- * out of the bouquet to the whole figure. Same file as the Lê Bouquet's
+ * out of the bouquet to the whole figure. Same file as the Le Bouquet's
  * "Pétalas" frame; `blur` is its 24px copy, so the first frame is already
  * red petals on a slow connection.
  */
@@ -63,7 +63,7 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
     // IMG_4606
     {
       src: `${BASE}/produto-bouquet-escala.webp`,
-      alt: "Lê Bouquet nas mãos de uma modelo de vestido preto e capa branca, de corpo inteiro: o buquê ocupa todo o torso.",
+      alt: "Le Bouquet nas mãos de uma modelo de vestido preto e capa branca, de corpo inteiro: o buquê ocupa todo o torso.",
       label: "Escala",
       caption: "O buquê inteiro nas mãos: a dimensão real da criação.",
       position: "50% 30%",
@@ -71,7 +71,7 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
     // IMG_4629
     {
       src: `${BASE}/detalhe-bouquet-rosas.webp`,
-      alt: "Close das rosas vermelhas do Lê Bouquet, com uma mão de luva de renda pousada sobre elas.",
+      alt: "Close das rosas vermelhas do Le Bouquet, com uma mão de luva de renda pousada sobre elas.",
       label: "Rosas",
       caption: "Rosas vermelhas em composição densa, do centro à borda.",
       position: "50% 55%",
@@ -79,7 +79,7 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
     // IMG_4621
     {
       src: `${BASE}/bouquet-embalagem.webp`,
-      alt: "O Lê Bouquet envolto em embalagem preta com bordas douradas.",
+      alt: "O Le Bouquet envolto em embalagem preta com bordas douradas.",
       label: "Embalagem",
       caption: "Embalagem preta com bordas douradas envolvendo todo o volume.",
       position: "56% 50%",
@@ -97,7 +97,7 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
     // IMG_4413
     {
       src: `${BASE}/produto-coeur-escala.webp`,
-      alt: "Lê Cœur Royale nas mãos de uma modelo de roupa preta: a caixa em formato de coração repleta de rosas vermelhas.",
+      alt: "Le Coeur Royale nas mãos de uma modelo de roupa preta: a caixa em formato de coração repleta de rosas vermelhas.",
       label: "Escala",
       caption: "A caixa nas mãos: o coração inteiro preenchido por rosas.",
       position: "50% 55%",
@@ -105,7 +105,7 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
     // IMG_4407
     {
       src: `${BASE}/detalhe-coeur-fita.webp`,
-      alt: "Rosas vermelhas preenchendo a caixa em formato de coração, com a fita preta Lê Grand Amour.",
+      alt: "Rosas vermelhas preenchendo a caixa em formato de coração, com a fita preta Le Grand Amour.",
       label: "Rosas",
       caption: "Rosas vermelhas preenchendo todo o formato de coração.",
       position: "50% 40%",
@@ -113,17 +113,17 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
     // IMG_3926
     {
       src: `${BASE}/fita-caixa.webp`,
-      alt: "Fita de cetim vermelha e o logotipo Lê Grand Amour na caixa em formato de coração.",
+      alt: "Fita de cetim vermelha e o logotipo Le Grand Amour na caixa em formato de coração.",
       label: "Fita",
-      caption: "Fita de cetim vermelha e a assinatura Lê Grand Amour na caixa.",
+      caption: "Fita de cetim vermelha e a assinatura Le Grand Amour na caixa.",
       position: "40% 62%",
     },
     // IMG_4387
     {
       src: `${BASE}/experiencia-acabamento.webp`,
-      alt: "Mãos sobre a caixa Lê Cœur Royale, com a fita preta que leva o logotipo Lê Grand Amour.",
+      alt: "Mãos sobre a caixa Le Coeur Royale, com a fita preta que leva o logotipo Le Grand Amour.",
       label: "Assinatura",
-      caption: "A fita com o logotipo Lê Grand Amour contornando a caixa rígida.",
+      caption: "A fita com o logotipo Le Grand Amour contornando a caixa rígida.",
       position: "68% 70%",
     },
   ],
@@ -152,43 +152,43 @@ export const detailGallery: DetailPhoto[] = [
   // IMG_3902
   {
     src: `${BASE}/detalhe-caixa-laco.webp`,
-    alt: "Lê Cœur Royale sobre uma mesa: caixa preta em formato de coração repleta de rosas vermelhas, com laço de cetim vermelho e a placa Lê Grand Amour na frente.",
+    alt: "Le Coeur Royale sobre uma mesa: caixa preta em formato de coração repleta de rosas vermelhas, com laço de cetim vermelho e a placa Le Grand Amour na frente.",
     label: "Caixa",
-    caption: "Lê Cœur Royale: caixa rígida com laço de cetim vermelho e a assinatura Lê Grand Amour.",
+    caption: "Le Coeur Royale: caixa rígida com laço de cetim vermelho e a assinatura Le Grand Amour.",
     position: "60% 55%",
     orientation: "landscape",
   },
   // IMG_4087
   {
     src: `${BASE}/detalhe-escala-coeur.webp`,
-    alt: "Lê Cœur Royale nas mãos de uma modelo de roupa branca, sobre fundo claro: o coração inteiro preenchido por rosas vermelhas e o laço de cetim.",
+    alt: "Le Coeur Royale nas mãos de uma modelo de roupa branca, sobre fundo claro: o coração inteiro preenchido por rosas vermelhas e o laço de cetim.",
     label: "Escala",
-    caption: "Lê Cœur Royale nas mãos: o coração inteiro preenchido por rosas.",
+    caption: "Le Coeur Royale nas mãos: o coração inteiro preenchido por rosas.",
     position: "45% 50%",
     orientation: "landscape",
   },
   // IMG_4513
   {
     src: `${BASE}/detalhe-hastes.webp`,
-    alt: "Mãos de luva de renda segurando o buquê de cabeça para baixo atrás das costas: hastes longas amarradas com fitas pretas Lê Grand Amour.",
+    alt: "Mãos de luva de renda segurando o buquê de cabeça para baixo atrás das costas: hastes longas amarradas com fitas pretas Le Grand Amour.",
     label: "Hastes",
-    caption: "Rosas de haste longa, amarradas com as fitas pretas Lê Grand Amour.",
+    caption: "Rosas de haste longa, amarradas com as fitas pretas Le Grand Amour.",
     position: "50% 50%",
     orientation: "portrait",
   },
   // IMG_4183
   {
     src: `${BASE}/detalhe-assinatura.webp`,
-    alt: "Uma rosa vermelha pousada sobre a assinatura Lê Grand Amour gravada em relevo dourado.",
+    alt: "Uma rosa vermelha pousada sobre a assinatura Le Grand Amour gravada em relevo dourado.",
     label: "Assinatura",
-    caption: "A assinatura Lê Grand Amour, gravada em relevo.",
+    caption: "A assinatura Le Grand Amour, gravada em relevo.",
     position: "50% 60%",
     orientation: "portrait",
   },
   // IMG_4583, retouched version supplied by the client (1536px, 2026-10-26)
   {
     src: `${BASE}/detalhe-entrega.webp`,
-    alt: "O momento da entrega: o buquê Lê Grand Amour passando de uma mão para outra.",
+    alt: "O momento da entrega: o buquê Le Grand Amour passando de uma mão para outra.",
     label: "Entrega",
     caption: "Apresentação e logística pensadas para que a chegada também faça parte do acontecimento.",
     position: "52% 50%",

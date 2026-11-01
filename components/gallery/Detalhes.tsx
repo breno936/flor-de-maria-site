@@ -95,7 +95,7 @@ export default function Detalhes() {
       </Reveal>
 
       <DetailLightbox
-        title="Lê Grand Amour"
+        title="Le Grand Amour"
         photos={detailGallery}
         index={lightbox?.index ?? null}
         originRect={lightbox?.origin ?? null}

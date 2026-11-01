@@ -26,7 +26,7 @@ export const contactChannel = whatsappNumber
 
 export function contactMessage(creation?: CreationId, optionId?: string) {
   const product = findProduct(creation);
-  if (!product) return "Olá! Vim pelo site da Lê Grand Amour e gostaria de consultar disponibilidade.";
+  if (!product) return "Olá! Vim pelo site da Le Grand Amour e gostaria de consultar disponibilidade.";
   const option = findOption(product, optionId);
   // Plain spaces in the message (Intl puts a no-break space after "R$").
   const choice = option ? ` (${option.label.toLowerCase()}, ${formatPrice(option.amount).replace(/\s/g, " ")})` : "";

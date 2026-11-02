@@ -67,9 +67,9 @@ export default function Atendimento() {
 
         <Reveal className="lg:col-span-5 lg:col-start-8">
           <div className="border-t border-champagne-light/20 pt-8 md:pt-10 lg:border-l lg:border-t-0 lg:pl-14 lg:pt-0">
-            <span className="relative block aspect-[1171/530] w-[10rem] sm:w-[14rem]">
+            <span className="relative block aspect-[1172/506] w-[10rem] sm:w-[14rem]">
               <Image
-                src="/assets/le-grand-amour/le-grand-amour-wordmark.webp"
+                src="/assets/le-grand-amour/le-grand-amour-logo-dourado.webp"
                 alt={brand.signatureFull}
                 fill
                 sizes="14rem"

@@ -103,9 +103,9 @@ export default function Hero() {
           {/* The official logo as an image — never rebuilt in a web font —
               and the page's h1: the alt text is the accessible name. */}
           <h1 className="hero-step hero-step-logo inline-block">
-            <span className="relative inline-block aspect-[1171/530] w-[15rem] sm:w-[19rem] lg:w-[23rem]">
+            <span className="relative inline-block aspect-[1172/506] w-[15rem] sm:w-[19rem] lg:w-[23rem]">
               <Image
-                src="/assets/le-grand-amour/le-grand-amour-wordmark.webp"
+                src="/assets/le-grand-amour/le-grand-amour-logo-dourado.webp"
                 alt={hero.logoAlt}
                 fill
                 loading="eager"

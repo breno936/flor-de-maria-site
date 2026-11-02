@@ -137,13 +137,23 @@ Quando chegar a versão final, refazer os três arquivos com **outros nomes**
 (o navegador e o otimizador de imagens guardam cache por endereço) e
 atualizar `data/campaign-photos.ts → campaignFilm`.
 
-O logotipo é `le-grand-amour-wordmark.webp`: a arte oficial com o fundo preto
-convertido em transparência e recortada rente à marca. A imagem de
+O logotipo é `le-grand-amour-logo-dourado.webp` (1172×506): a arte oficial
+**sem acento** (dourada sobre preto, enviada pelo cliente em 02/11/2026), com
+o fundo preto convertido em transparência e recortada rente à marca — usada
+na Abertura e no Atendimento. O cliente também enviou a versão preta sobre
+branco, que fica fora do site (não há fundo claro onde usá-la). A imagem de
 compartilhamento (`public/media/og/le-grand-amour-og.jpg`, 1200×630) é um
-recorte da foto da abertura.
+recorte da foto da abertura, sem logotipo.
+
+Os ícones — aba do navegador (`app/favicon.ico`, 16/32/48 px), tela inicial
+do iPhone (`app/apple-icon.png`, 180 px) e do Android
+(`public/icons/icon-192.png`, `icon-512.png`, no `app/manifest.ts`) — são o
+emblema do mesmo logotipo, dourado sobre o preto do site.
 
 As artes `campanha-buque-branco`, `le-bouquet-vermelho`, `le-coeur-royale` e
-o logotipo quadrado original ficam no disco, sem referência ativa.
+o logotipo quadrado original (`le-grand-amour-logo`, ainda com "LÊ") ficam
+no disco, sem referência ativa. As fitas, a placa e o relevo nas fotos do
+ensaio trazem "LÊ": são as peças físicas, não mudam.
 
 O crédito "Desenvolvido por ArpeX" no rodapé usa
 `public/assets/arpex/arpex-logo.webp` (a arte enviada, com o fundo preto
@@ -159,13 +169,6 @@ convertido em transparência).
 - **Logotipo Le Grand Amour em arquivo vetorial** (`.svg`/`.ai`) — hoje é uma
   imagem. `components/layout/LogoMark.tsx` (cabeçalho) é um substituto
   tipográfico.
-- **Logotipo sem acento.** Desde 01/11/2026 os nomes são escritos sem acento
-  (Le Grand Amour, Le Bouquet, Le Coeur Royale) em todo o texto do site, mas
-  a arte oficial do logotipo (`le-grand-amour-wordmark.webp`, usada na
-  Abertura e no Atendimento) ainda tem "LÊ" desenhado. Trocar quando a
-  versão sem acento for entregue — com outro nome de arquivo (o otimizador
-  de imagens guarda cache por endereço). As fitas, a placa e o relevo nas
-  fotos do ensaio também trazem "LÊ"; são as peças físicas, não mudam.
 - **Autorização de uso de imagem** de todas as pessoas que aparecem nas
   fotos, e qual das modelos é Patrícia Marchi (as descrições não nomeiam
   ninguém).

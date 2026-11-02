@@ -58,9 +58,7 @@ export const metadata: Metadata = {
     title: "Le Grand Amour",
     description: "Alta Floricultura. Amor em sua forma mais grandiosa.",
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
+  // Icons come from the files themselves: app/favicon.ico and app/apple-icon.png.
 };
 
 export default function RootLayout({

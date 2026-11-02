@@ -9,6 +9,8 @@
 html {
   background: var(--noir);
   scroll-behavior: smooth;
+  /* Locking the scroll under a dialog must not shift the page sideways. */
+  scrollbar-gutter: stable;
 }
 
 body {

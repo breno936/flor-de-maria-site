@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { MouseEvent } from "react";
 import Image from "next/image";
 import { embaixadora } from "@/data/content";
 import { ambassadorFilm } from "@/data/campaign-photos";
@@ -15,8 +16,8 @@ const { poster } = ambassadorFilm;
 /**
  * EMBAIXADORA — Patrícia Marchi and her video testimonial, between the
  * details and the closing. The block itself is only a cover and two
- * lines; the film (2:35, with sound) opens full screen (FilmDialog) and
- * starts in the same click. While the block is on screen the cover itself
+ * lines; the cover grows into the player (2:35, with sound — FilmDialog)
+ * and the film starts in the same click. While the block is on screen the cover itself
  * moves — a short silent loop cut from the film (SilentLoop), held while
  * the film is open.
  *
@@ -27,8 +28,10 @@ const { poster } = ambassadorFilm;
  */
 export default function Embaixadora() {
   const filmRef = useRef<FilmDialogHandle>(null);
+  const coverRef = useRef<HTMLButtonElement>(null);
   const [filmOpen, setFilmOpen] = useState(false);
-  const open = () => filmRef.current?.open();
+  // The player always grows out of the cover; focus returns to whichever button was pressed.
+  const open = (event: MouseEvent<HTMLElement>) => filmRef.current?.open({ from: coverRef.current, opener: event.currentTarget });
   const label = `${embaixadora.cta}: ${embaixadora.name} (${ambassadorFilm.durationLabel}, com som)`;
 
   return (
@@ -40,6 +43,7 @@ export default function Embaixadora() {
       <div className="container-lga grid grid-cols-[minmax(0,42%)_minmax(0,1fr)] items-center gap-5 md:grid-cols-12 md:gap-10 lg:gap-16">
         <Reveal className="md:order-2 md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-8">
           <button
+            ref={coverRef}
             type="button"
             onClick={open}
             aria-label={label}
@@ -109,7 +113,9 @@ export default function Embaixadora() {
         ref={filmRef}
         src={ambassadorFilm.src}
         poster={poster.src}
+        blur={poster.blur}
         ratio="9/16"
+        coverPosition="50% 30%"
         label={`${embaixadora.name}: depoimento em vídeo`}
         caption={`${embaixadora.name} — embaixadora da coleção`}
         onOpenChange={setFilmOpen}

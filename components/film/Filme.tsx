@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { MouseEvent } from "react";
 import Image from "next/image";
 import { filme } from "@/data/content";
 import { campaignFilm } from "@/data/campaign-photos";
@@ -17,8 +18,8 @@ const { poster } = campaignFilm;
  * the prices, a moment of pure image before the closer look. A wide 16:9
  * frame that moves on its own, silently, while it is on screen
  * (SilentLoop — 20 s of the film's own shots); a tap or "Assistir ao
- * filme" opens the whole film (1:00) full screen with sound, from the
- * start (FilmDialog). Nothing of the film itself loads before that.
+ * filme" grows the frame into the player and plays the whole film (1:00)
+ * with sound, from the start (FilmDialog). Nothing of the film itself loads before that.
  *
  * Phones: the frame runs edge to edge under a one-line heading, with a
  * light text action below — under half a screen. From 768px: heading and
@@ -26,8 +27,9 @@ const { poster } = campaignFilm;
  */
 export default function Filme() {
   const filmRef = useRef<FilmDialogHandle>(null);
+  const coverRef = useRef<HTMLButtonElement>(null);
   const [filmOpen, setFilmOpen] = useState(false);
-  const open = () => filmRef.current?.open();
+  const open = (event: MouseEvent<HTMLElement>) => filmRef.current?.open({ from: coverRef.current, opener: event.currentTarget });
   const label = `${filme.cta}: ${filme.title} (${campaignFilm.durationLabel}, com som)`;
 
   return (
@@ -50,6 +52,7 @@ export default function Filme() {
 
         <Reveal className="-mx-6 mt-5 md:mx-0 md:mt-10">
           <button
+            ref={coverRef}
             type="button"
             onClick={open}
             aria-label={label}
@@ -97,6 +100,7 @@ export default function Filme() {
         ref={filmRef}
         src={campaignFilm.src}
         poster={poster.src}
+        blur={poster.blur}
         ratio="16/9"
         label={`${filme.title}: o filme`}
         caption={`${filme.title} — o filme da coleção`}

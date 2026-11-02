@@ -23,7 +23,7 @@ A página tem seis blocos, nesta ordem, sem nenhuma seção fixada ou
 3. **Filme** (`#filme`, `components/film/Filme.tsx`) — o filme da campanha
    num quadro 16:9: enquanto está na tela, toca sozinho um trecho de 20 s
    **sem som**; um toque ou "Assistir ao filme" abre o filme inteiro
-   (1:00) em tela cheia, com som, do início.
+   (1:00), com som, do início — o quadro cresce até o player (ver abaixo).
 4. **Detalhes** (`#detalhes`, `components/gallery/Detalhes.tsx`) — seis
    fotos escolhidas para não se repetirem (corpo inteiro, natureza-morta da
    caixa, fundo claro, hastes, assinatura em relevo, entrega): faixa de
@@ -32,10 +32,22 @@ A página tem seis blocos, nesta ordem, sem nenhuma seção fixada ou
 5. **Embaixadora** (`#embaixadora`, `components/ambassador/Embaixadora.tsx`)
    — Patrícia Marchi, "musa e embaixadora da coleção", com o depoimento em
    vídeo: capa + "Assistir ao depoimento"; o vídeo (2:35, com som, sem
-   legendas por decisão de 01/11/2026) abre em tela cheia e só carrega no
-   play. Enquanto o bloco está na tela, a capa toca um trecho curto **sem
-   som** (os navegadores não deixam vídeo começar sozinho com som); um
-   toque abre o depoimento inteiro com som.
+   legendas por decisão de 01/11/2026) só carrega no play. Enquanto o bloco
+   está na tela, a capa toca um trecho curto **sem som** (os navegadores não
+   deixam vídeo começar sozinho com som); um toque abre o depoimento
+   inteiro com som.
+
+   **Player dos dois filmes** (`components/media/FilmDialog.tsx`): a capa
+   tocada se expande e se desloca até o player (~0,4 s, escala uniforme —
+   nunca estica; a capa 4:5 do desktop se abre até o quadro 9:16 inteiro) e,
+   ao fechar, encolhe de volta para ela. O fundo escurece aos poucos (no
+   desktop, também com um leve desfoque), deixando a página perceptível. O
+   player ocupa a altura disponível com a legenda, com contorno champagne
+   finíssimo e sombra suave; o botão de fechar fica junto ao canto superior
+   da moldura (44 × 44 px). A imagem da capa segura a moldura até o
+   primeiro quadro do vídeo aparecer. Fechar corta o som na hora, devolve a
+   rolagem exata e o foco ao botão que abriu. "Reduzir movimento": o mesmo
+   player, sem o movimento.
 6. **Atendimento** (`#atendimento`, `components/purchase/Atendimento.tsx`) —
    WhatsApp, informações práticas confirmadas e a assinatura compacta da
    marca (a antiga seção Autoria).

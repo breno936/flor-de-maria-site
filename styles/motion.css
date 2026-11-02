@@ -116,18 +116,38 @@
   animation: none;
 }
 
-/* The films open full screen with a short fade (components/media/FilmDialog). */
-@keyframes dialog-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* The film frame (components/media/FilmDialog): as tall as the screen
+   allows with the caption under it, at the film's own proportion
+   (--film-ratio, set inline), never wider than the screen minus a small
+   margin; inside the device's safe areas. */
+.film-stage {
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+    max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
 }
 
-.film-dialog[open] {
-  animation: dialog-in 0.35s ease-out;
+.film-frame {
+  --film-gutter: 12px;
+  --film-reserve: calc(56px + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+  width: min(
+    calc(100vw - 2 * var(--film-gutter) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)),
+    calc((100dvh - var(--film-reserve)) * var(--film-ratio))
+  );
+  aspect-ratio: var(--film-ratio);
+}
+
+.film-caption {
+  margin-top: 12px;
+}
+
+@media (width >= 48rem) and (height >= 32rem) {
+  .film-frame {
+    --film-gutter: 32px;
+    --film-reserve: 104px;
+  }
+
+  .film-caption {
+    margin-top: 16px;
+  }
 }
 
 /* Reveal — set by components/motion/Reveal.tsx. */

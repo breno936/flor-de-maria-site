@@ -63,8 +63,9 @@ export const atendimento = {
   eyebrow: "Atendimento",
   title: "Faça seu pedido.",
   body: {
-    whatsapp: "Direto com o responsável pelo ateliê, pelo WhatsApp.",
-    instagram: "Direto com o ateliê, pelo Instagram.",
+    // The channel is named on the button right below ("Pedir pelo WhatsApp"), not repeated here.
+    whatsapp: "Fale direto com o responsável do ateliê.",
+    instagram: "Fale direto com o ateliê.",
   },
   /** Autoria, compact — the approved curator note, kept as the closing signature. */
   authorship:

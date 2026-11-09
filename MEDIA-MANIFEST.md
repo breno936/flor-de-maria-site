@@ -83,6 +83,10 @@ de banco de imagem).
   aparecem depois que o visitante chega às criações. O número da Florence
   Boutique de Rosas (catálogo fornecido) é de outra empresa e não deve ser
   usado aqui.
+- **Atendimento e entrega** — `data/content.ts → contact.serviceAreas`, texto
+  do cliente (09/11/2026): Campinas e Região, entrega cortesia; Grande São
+  Paulo, sob consulta. Aparece no Atendimento e nos dados estruturados da
+  página (`areaServed`).
 - **Antecedência** — `data/content.ts → contact.leadTime`; aparece no
   Atendimento assim que preenchida.
 
@@ -161,7 +165,7 @@ convertido em transparência).
 
 ## Ainda faltam (não inventados)
 
-- **Condições dos preços**, se houver (entrega, custos extras) — `priceNote`.
+- **Condições dos preços**, se houver (custos extras) — `priceNote`.
 - **Quantidade de rosas do Le Coeur Royale por versão** — o card diz
   "Aproximadamente 60 a 70 rosas" (apresentação da parceria); confirmar se
   vale também para a versão com chocolate.

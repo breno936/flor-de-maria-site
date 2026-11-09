@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { atendimento, brand, contact } from "@/data/content";
 import { contactChannel } from "@/lib/contact/channel";
@@ -13,11 +14,18 @@ import Reveal from "@/components/motion/Reveal";
  * have been seen; this is where the visitor acts.
  */
 export default function Atendimento() {
-  const practical = [
-    { label: "Região atendida", value: contact.serviceArea },
-    { label: "Ateliê", value: contact.atelierLocation },
-    { label: "Antecedência", value: contact.leadTime },
-  ].filter((item) => item.value);
+  const practical: { label: string; values: ReactNode[] }[] = [
+    {
+      label: "Atendimento & entrega",
+      values: contact.serviceAreas.map((area) => (
+        <>
+          <strong className="font-semibold text-ivory">{area.region}</strong>&nbsp;— <span className="whitespace-nowrap">{area.terms}</span>
+        </>
+      )),
+    },
+    { label: "Ateliê", values: [contact.atelierLocation] },
+    { label: "Antecedência", values: contact.leadTime ? [contact.leadTime] : [] },
+  ].filter((item) => item.values.length > 0);
 
   return (
     <section id="atendimento" className="relative overflow-hidden bg-oxblood py-14 md:py-28" aria-labelledby="atendimento-title">
@@ -54,11 +62,18 @@ export default function Atendimento() {
           </div>
 
           {practical.length > 0 && (
-            <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-champagne-light/20 pt-6 md:mt-10 md:gap-4">
-              {practical.map((item) => (
-                <div key={item.label}>
-                  <dt className="mono-label text-champagne-light/85">{item.label}</dt>
-                  <dd className="mt-1.5 font-sans text-[0.95rem] text-ivory/90">{item.value}</dd>
+            // The first column takes what the second (a short place name) leaves it; on the
+            // narrowest phones the labels tighten, so "Atendimento & entrega" keeps to one line
+            // (the "!" is needed: .mono-label is unlayered and beats any plain utility).
+            <dl className="mt-8 grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-5 min-[380px]:gap-x-5 border-t border-champagne-light/20 pt-6 md:mt-10 md:grid-cols-[auto_auto] md:justify-start md:gap-x-12">
+              {practical.map((item, i) => (
+                <div key={item.label} className={i === 1 ? "border-l border-champagne-light/20 pl-3 min-[380px]:pl-5 md:pl-12" : i > 1 ? "col-span-2" : undefined}>
+                  <dt className="mono-label text-champagne-light/85 max-[379px]:tracking-[0.16em]!">{item.label}</dt>
+                  {item.values.map((value, j) => (
+                    <dd key={j} className="mt-1.5 font-sans text-[0.95rem] leading-snug text-ivory/90">
+                      {value}
+                    </dd>
+                  ))}
                 </div>
               ))}
             </dl>

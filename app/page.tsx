@@ -12,7 +12,7 @@ const jsonLd = {
   name: "Flor de Maria Ateliê",
   description:
     "Alta Floricultura. Amor em sua forma mais grandiosa. Coleção Le Grand Amour, em parceria com Patrícia Marchi.",
-  areaServed: contact.serviceArea,
+  areaServed: contact.serviceAreas.map((area) => area.region),
   address: {
     "@type": "PostalAddress",
     addressLocality: contact.atelierLocation,

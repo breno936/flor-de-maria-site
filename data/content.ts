@@ -110,7 +110,11 @@ export const contact = {
   /** Official Le Grand Amour Instagram, given directly by the client. */
   instagramHandle: "legrandamour.ofc",
   atelierLocation: "Hortolândia – SP",
-  serviceArea: "Região Metropolitana de Campinas",
+  /** Where the ateliê serves and delivers, and on what terms — as given by the client (2026-11-09). */
+  serviceAreas: [
+    { region: "Campinas e Região", terms: "entrega cortesia" },
+    { region: "Grande São Paulo", terms: "sob consulta" },
+  ],
   /** EDITABLE — confirmed order lead time, e.g. "Pedidos com 2 dias de antecedência". */
   leadTime: "",
 };

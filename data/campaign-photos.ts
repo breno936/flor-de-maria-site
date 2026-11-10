@@ -102,6 +102,10 @@ export type GalleryPhoto = CampaignPhoto & {
   caption: string;
   /** object-position for the cropped frame. */
   position: string;
+  /** A 24px copy, shown blurred while the photo loads. */
+  blur?: string;
+  /** Label and caption are also set on the photo itself — a version's proportion reference. */
+  captionOnPhoto?: boolean;
 };
 
 /**
@@ -179,6 +183,59 @@ export const productGalleries: Record<CreationId, GalleryPhoto[]> = {
       position: "68% 70%",
     },
   ],
+};
+
+/**
+ * One proportion reference per version, sent by the client on 2026-11-10
+ * (WhatsApp, 1024×1536 JPEG): the same model and framing, the bouquet at
+ * each size. The client's caption, burned into the foot of each photo
+ * ("Aproximadamente N rosas / Imagem de referência de proporção"), is
+ * cropped off the files — all six cut at the same height, 1024×1327 — and
+ * set as text on the photo instead, word for word, so no crop can lose it.
+ * Keyed by the option ids in data/products.ts; a version without an entry
+ * keeps the card's gallery.
+ */
+const VERSIONS = "/assets/le-grand-amour/versoes";
+
+function bouquetVersion(roses: number, blur: string): GalleryPhoto {
+  return {
+    src: `${VERSIONS}/le-bouquet-${roses}-rosas.webp`,
+    alt: `Le Bouquet com aproximadamente ${roses} rosas vermelhas nas mãos de uma modelo de vestido preto, capa branca e véu: imagem de referência de proporção.`,
+    label: `Aproximadamente ${roses} rosas`,
+    caption: "Imagem de referência de proporção",
+    position: "50% 72%",
+    blur,
+    captionOnPhoto: true,
+  };
+}
+
+export const versionPhotos: Partial<Record<CreationId, Record<string, GalleryPhoto>>> = {
+  "le-bouquet": {
+    "30-rosas": bouquetVersion(
+      30,
+      "data:image/webp;base64,UklGRvYAAABXRUJQVlA4IOoAAACwBQCdASoYAB8APu1ur1IppiQiqAgBMB2JbAC1GurZWIHs9C9T+jtw4485b7uba/PrRkyB6vAA/vxG/XUpsLpYoj5nhulnNST7KwmW43TbqppnhfpSF23qe0x9ahVZJ8eFpn9rhlPD6B9K/gtEFnH3xmHiacGoeisuKG1FoZPJ1PcP0g1hftcvA57FS9fa9IWFFPu2+39C0V5uiZADeizDCpCtSEAhJ6ppCdrOimrOyJEX1dA+iqaZwLJ6IrjTnUOl5UqlEy7EQ/EX8mLAZ3FZm+dpXxdog7wCVRXAxdix//+hvcQKAcNAAAA=",
+    ),
+    "50-rosas": bouquetVersion(
+      50,
+      "data:image/webp;base64,UklGRuoAAABXRUJQVlA4IN4AAADwBQCdASoYAB8APu1sq1EppaOiqAqpMB2JbAC06YwnWx7gO2Ptu1Js3nsQP92r/auo8LZjLCu6AAD++l8HB/th9X6WIXAYxQLkQvDbJr4ffYKwVzRc1m2j3wETu8V2hBZq++/Q1Uqdxj0NUE60r4f9pbR+SLVzWTdd+R7S0N+3X2Ko56QzMIDqIbKGrmsgrdh60xG4tsyQPYoECph5QdIbo1rlK9XjpyJ1BuP2nVhhwrrZFE1llT55YVxV15YWsRNxGrd4BwMd6/0c1N28Qqa0Y5g1ICQh2Fk9b+RUAAA=",
+    ),
+    "60-rosas": bouquetVersion(
+      60,
+      "data:image/webp;base64,UklGRt4AAABXRUJQVlA4INIAAACQBQCdASoYAB8APu1oqk+ppiOiKA1RMB2JbAC06Yvhym7yZWyXc8sTAUjcqGd95mbmc7qaQAD++cGntOMm2pb1LVbedaS4tTGF/qFU4+ri/qRTVD5yFS/tQLxKZh90lEICfnqm1n3sYMRsRLQoNWH8cyyaXuTXJ76hxK5q300eN/h2so9IMZ4c50dsM2Pyx/b2duJYWAmRaw5P/n2a8volMnHQHkn+Ohi2ebXZFLuq7kuPDf43ekqHo8iN/aMhQ2KtcxwMdznHXWpYbb7AuqiPcAA=",
+    ),
+    "70-rosas": bouquetVersion(
+      70,
+      "data:image/webp;base64,UklGRuYAAABXRUJQVlA4INoAAABQBQCdASoYAB8APu1qsFAppaSiqAqpMB2JbACw7Yv1Wzd5k1Bg4e0j15kjbkazmHUAhoAA/vhNvrTCp6UKR4GE6grZufsCnq2sD6nN60gO1jB3Sxp+xdyq2/ESV21yL0jW3XcjZAeyoJUvK369bBDEpyEYlflCHdOy/L/Q2afq4BFaUhxkxrJmQe+zGMbawuhiH7wXhu6zOl5zo8Cf8LltbyD4mWVlf+L4ICj5AR0kzbx15Y4EfSOFMU3dXE4zjt7CQLYIzk1tsuOYUNTkDK6CLjIlNtzUBluoAA==",
+    ),
+    "80-rosas": bouquetVersion(
+      80,
+      "data:image/webp;base64,UklGRuYAAABXRUJQVlA4INoAAACwBQCdASoYAB8APu1qrVEppaQiqAqpMB2JbACsAYtLWzeRJs3eVkVDOc8iBxRa02VZjKJCygAA/vnCOVORhoyDiaIsl2OkVZZL8TZxiVg49gJpOeBZ2+03Bc/YudlQyJW6wglfXZVK+qoqJdyan5tE76kQMdyHVYbqtl+NNXCx2pvtU7e5IAFG+mc7wEQMEpAciShdMumaGYnyLRMGPO8yqEeOKTJieMUzurwtZz5Ww0kvZ+tHyJO2kgZJCh76Ug+drE5y8fIun0u/J7eChwIvdXLDIobBGVRAAA==",
+    ),
+    "100-rosas": bouquetVersion(
+      100,
+      "data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAABQBQCdASoYAB8APu1qqE8ppiOiMBgIATAdiWwArAGL/1m2seJJ4AtRKqBBv9d+LK6mJJQA/vaIuO7qopoY2pEb+yC6aKbDrWHm4WlaurXzLxCiLAgPbVKt9dxKOMJeyCI+oD2VBKl5W/dcKvRGH+Nz4LT2kU6K4O2CRyXrdzEhtLJm92rZ09UzhrVdMKOxP17YfV+j6E8CRSoCELdt7f+M71P4+dobdwi8NUy16pX+RsvC3/4IQ7Mc3WcbgUzdEP4L7PRXwZnIKFk/TOpgCcWPLiIAAA==",
+    ),
+  },
 };
 
 export type DetailPhoto = GalleryPhoto & { orientation: "portrait" | "landscape" };

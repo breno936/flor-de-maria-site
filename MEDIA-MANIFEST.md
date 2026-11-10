@@ -113,6 +113,21 @@ Adobe RGB para sRGB e exportada em WebP (qualidade 82) para
 | `detalhe-hastes.webp` / `detalhe-assinatura.webp` | IMG_4513 / IMG_4183 | Detalhes — Hastes, Assinatura |
 | `detalhe-entrega.webp` (1536px) | IMG_4583, versão retocada enviada pelo cliente em 26/10/2026 | Detalhes — Entrega. Se houver o arquivo retocado em resolução maior, substituir mantendo outro nome de arquivo (o otimizador de imagens guarda cache por endereço) |
 
+### Fotos de referência por versão (Le Bouquet)
+
+Enviadas pelo cliente em 10/11/2026 (WhatsApp, seis JPG 1024×1536): a mesma
+modelo e o mesmo enquadramento, com o buquê em cada tamanho — 30, 50, 60, 70,
+80 e 100 rosas. A legenda que veio gravada no pé de cada foto
+("Aproximadamente N rosas / Imagem de referência de proporção") foi
+**recortada** dos arquivos (as seis no mesmo corte, 1024×1327) e é escrita
+sobre a foto pelo site, com as mesmas palavras, para não se perder em nenhum
+recorte de tela. Ficam em `public/assets/le-grand-amour/versoes/`
+(`le-bouquet-30-rosas.webp` … `le-bouquet-100-rosas.webp`), registradas em
+`data/campaign-photos.ts → versionPhotos`. Ao escolher uma quantidade no card,
+a foto daquela versão aparece na frente e fica (deixa de girar); a galeria
+continua a um deslize / no "fotos +". Se chegarem os arquivos originais em
+resolução maior, substituir com outros nomes de arquivo.
+
 ### Depoimento de Patrícia Marchi (vídeo)
 
 Enviado pelo cliente em 01/11/2026: `IMG_9777.MOV` (iPhone, vertical 4K

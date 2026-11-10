@@ -5,14 +5,14 @@ import type { MouseEvent } from "react";
 import Image from "next/image";
 import { findOption, products, type Product } from "@/data/products";
 import { criacoes } from "@/data/content";
-import { productGalleries, type GalleryPhoto } from "@/data/campaign-photos";
+import { productGalleries, versionPhotos, type GalleryPhoto } from "@/data/campaign-photos";
 import { formatPrice, fromPrice, pricesConfirmed } from "@/lib/price";
 import { setChosenVersion } from "@/lib/ui/chosenVersion";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import WhatsAppCTA from "@/components/cta/WhatsAppCTA";
 import DetailLightbox from "@/components/gallery/DetailLightbox";
 import Reveal from "@/components/motion/Reveal";
-import PhotoCarousel, { PHOTO_INTERVAL_MS } from "./PhotoCarousel";
+import PhotoCarousel, { PHOTO_INTERVAL_MS, PhotoNote } from "./PhotoCarousel";
 
 /**
  * CRIAÇÕES (e valores). Le Bouquet and Le Coeur Royale, one card each —
@@ -26,7 +26,9 @@ import PhotoCarousel, { PHOTO_INTERVAL_MS } from "./PhotoCarousel";
  * lightbox. On phones the card is compact and continuous: the four
  * photographs as a swipe gallery, the information right under it, the
  * facts on one line. On both, the photographs change on their own every
- * 3 s while the card is on screen. Nothing pins or holds the scroll; only the desktop
+ * 3 s while the card is on screen — until a version with its own photograph
+ * is chosen (the Le Bouquet sizes): that proportion reference comes to the
+ * front and stays. Nothing pins or holds the scroll; only the desktop
  * photograph has an entrance (Reveal) — prices, versions and buttons are
  * always visible. Each card carries the creation's id as its anchor, so
  * an ad can link straight to the piece it showed (/#le-coeur-royale).
@@ -54,9 +56,14 @@ export default function Criacoes() {
 
 function CreationCard({ product, flipped }: { product: Product; flipped: boolean }) {
   const gallery = productGalleries[product.id];
+  const versions = versionPhotos[product.id];
   const [lightbox, setLightbox] = useState<{ index: number; origin: DOMRect | null } | null>(null);
   const [optionId, setOptionId] = useState<string>();
+  // Set once the visitor reaches for the versions, so their photos are loading before one is chosen.
+  const [warm, setWarm] = useState(false);
   const chosen = findOption(product, optionId);
+  const version = optionId ? versions?.[optionId] : undefined;
+  const photos = version ? [version, ...gallery] : gallery;
 
   function open(index: number, event: MouseEvent<HTMLElement>) {
     setLightbox({ index, origin: event.currentTarget.getBoundingClientRect() });
@@ -69,10 +76,23 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
       className="grid gap-5 md:grid-cols-12 md:items-center md:gap-10 lg:gap-16"
     >
       <div className={`-mx-6 md:col-span-6 md:mx-0 lg:col-span-7 ${flipped ? "md:order-2" : ""}`}>
-        <PhotoCarousel title={product.title} photos={gallery} paused={lightbox !== null} onOpen={open} className="md:hidden" />
+        <PhotoCarousel
+          title={product.title}
+          photos={photos}
+          paused={lightbox !== null || version !== undefined}
+          onOpen={open}
+          className="md:hidden"
+        />
 
         <Reveal className="hidden md:block">
-          <RotatingPhoto title={product.title} photos={gallery} paused={lightbox !== null} onOpen={open} />
+          <RotatingPhoto
+            title={product.title}
+            photos={gallery}
+            versions={versions && (warm || version) ? Object.values(versions) : []}
+            version={version}
+            paused={lightbox !== null}
+            onOpen={open}
+          />
         </Reveal>
       </div>
 
@@ -111,6 +131,7 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
             setOptionId(option);
             setChosenVersion({ creation: product.id, option });
           }}
+          onReach={versions ? () => setWarm(true) : undefined}
         />
 
         <div className="mt-5 md:mt-8">
@@ -121,7 +142,7 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
 
       <DetailLightbox
         title={product.title}
-        photos={gallery}
+        photos={photos}
         index={lightbox?.index ?? null}
         originRect={lightbox?.origin ?? null}
         onIndexChange={(index) => setLightbox((current) => (current ? { ...current, index } : current))}
@@ -136,15 +157,23 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
  * photographs, one every 3 s, while it is on screen — holding while the
  * mouse is over it or it has keyboard focus, while the lightbox is open,
  * and with reduced motion. A click opens the lightbox on the photo showing.
+ *
+ * A chosen version's own photograph crossfades in over the gallery, with
+ * its caption, and stays; the lightbox then opens on it, first of the set.
  */
 function RotatingPhoto({
   title,
   photos,
+  versions,
+  version,
   paused,
   onOpen,
 }: {
   title: string;
   photos: GalleryPhoto[];
+  /** Every version's own photograph, layered in hidden so the crossfade has it loaded. */
+  versions: GalleryPhoto[];
+  version?: GalleryPhoto;
   paused: boolean;
   onOpen: (index: number, event: MouseEvent<HTMLElement>) => void;
 }) {
@@ -163,16 +192,16 @@ function RotatingPhoto({
   }, []);
 
   useEffect(() => {
-    if (!onScreen || held || paused || reducedMotion) return;
+    if (!onScreen || held || paused || reducedMotion || version) return;
     const timer = window.setInterval(() => setShown((i) => (i + 1) % photos.length), PHOTO_INTERVAL_MS);
     return () => window.clearInterval(timer);
-  }, [onScreen, held, paused, reducedMotion, photos.length]);
+  }, [onScreen, held, paused, reducedMotion, version, photos.length]);
 
   return (
     <button
       ref={ref}
       type="button"
-      onClick={(event) => onOpen(shown, event)}
+      onClick={(event) => onOpen(version ? 0 : shown, event)}
       onPointerEnter={(event) => event.pointerType === "mouse" && setHeld(true)}
       onPointerLeave={() => setHeld(false)}
       onFocus={(event) => event.currentTarget.matches(":focus-visible") && setHeld(true)}
@@ -182,7 +211,7 @@ function RotatingPhoto({
     >
       <div className="reveal-zoom absolute inset-0">
         <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]">
-          {photos.map((photo, i) => (
+          {[...photos, ...versions].map((photo, i) => (
             <Image
               key={photo.src}
               src={photo.src}
@@ -190,14 +219,25 @@ function RotatingPhoto({
               fill
               sizes="(max-width: 1023px) 50vw, 760px"
               quality={80}
-              className={`object-cover transition-opacity duration-1000 ease-out ${i === shown ? "opacity-100" : "opacity-0"}`}
+              placeholder={photo.blur ? "blur" : "empty"}
+              blurDataURL={photo.blur}
+              className={`object-cover transition-opacity duration-1000 ease-out ${
+                (version ? photo === version : i === shown) ? "opacity-100" : "opacity-0"
+              }`}
               style={{ objectPosition: photo.position }}
             />
           ))}
         </div>
       </div>
+      {versions.map((photo) => (
+        <PhotoNote
+          key={photo.src}
+          photo={photo}
+          className={`transition-opacity duration-700 ${photo === version ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
       <span className="pointer-events-none absolute bottom-5 right-5 flex items-center gap-2 rounded-full border border-ivory/30 bg-noir/60 px-3.5 py-2 font-sans text-[10px] font-medium uppercase tracking-[0.18em] text-ivory backdrop-blur-sm transition-colors group-hover:border-champagne-light group-hover:text-champagne-light group-focus-visible:border-champagne-light">
-        {photos.length} fotos
+        {version ? photos.length + 1 : photos.length} fotos
         <span aria-hidden="true">+</span>
       </span>
     </button>
@@ -214,17 +254,20 @@ function PriceOptions({
   product,
   value,
   onChange,
+  onReach,
 }: {
   product: Product;
   value: string | undefined;
   onChange: (id: string) => void;
+  /** The pointer or focus has come to the versions — a choice may follow. */
+  onReach?: () => void;
 }) {
   const columns = product.options.length > 2 ? "grid-cols-3" : "grid-cols-2";
 
   return (
     // From 1024px the list stops short of the right edge, where the chapter
     // mini menu's active label runs (≥1280px).
-    <fieldset className="mt-4 md:mt-7 lg:max-w-[24rem]">
+    <fieldset onPointerEnter={onReach} onFocus={onReach} className="mt-4 md:mt-7 lg:max-w-[24rem]">
       <legend className="mono-label text-champagne-light/85">{product.optionsLabel}</legend>
       <div className={`mt-2 grid ${columns} gap-2 md:mt-2.5`}>
         {product.options.map((option) => {

@@ -13,7 +13,7 @@ type PhotoCarouselProps = {
   title: string;
   photos: GalleryPhoto[];
   className?: string;
-  /** Holds the rotation — while the lightbox is open over it. */
+  /** Holds the rotation — while the lightbox is open over it, or while a chosen version's photo leads. */
   paused?: boolean;
   onOpen: (index: number, event: MouseEvent<HTMLElement>) => void;
 };
@@ -31,6 +31,9 @@ type PhotoCarouselProps = {
  * once the scroll rests on it. The rotation only runs while the gallery is
  * on screen, and holds while it is touched, hovered or keyboard-focused,
  * while the lightbox is open, and with reduced motion.
+ *
+ * A version with its own photograph (the Le Bouquet sizes) puts that photo
+ * first: the strip goes back to it and stays, the others a swipe away.
  */
 export default function PhotoCarousel({ title, photos, className = "", paused = false, onOpen }: PhotoCarouselProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -38,6 +41,12 @@ export default function PhotoCarousel({ title, photos, className = "", paused = 
   const [active, setActive] = useState(0);
   const reducedMotion = useReducedMotion();
   const count = photos.length;
+  const lead = photos[0]?.src;
+
+  // A new first photo (a version just chosen): back to it.
+  useEffect(() => {
+    listRef.current?.scrollTo({ left: 0, behavior: "instant" });
+  }, [lead]);
 
   // Scroll position → dots and counter; and the loop seam.
   useEffect(() => {
@@ -216,10 +225,31 @@ function Slide({
           sizes="100vw"
           quality={80}
           draggable={false}
+          placeholder={photo.blur ? "blur" : "empty"}
+          blurDataURL={photo.blur}
           className="object-cover"
           style={{ objectPosition: photo.position }}
         />
+        {photo.captionOnPhoto && <PhotoNote photo={photo} />}
       </button>
     </li>
+  );
+}
+
+/**
+ * A version's caption set on its photograph, in the client's own words —
+ * "Aproximadamente 70 rosas" over "Imagem de referência de proporção" — at
+ * the top left, over the dark studio ground. Hidden from assistive tech:
+ * the photo's alt already says it.
+ */
+export function PhotoNote({ photo, className = "" }: { photo: GalleryPhoto; className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-x-0 top-0 block bg-gradient-to-b from-noir/65 to-transparent px-4 pb-12 pt-3.5 text-left md:px-6 md:pt-5 ${className}`}
+    >
+      <span className="block font-display text-[1.1rem] italic leading-tight text-ivory md:text-[1.35rem]">{photo.label}</span>
+      <span className="mt-1 block font-sans text-[0.7rem] leading-snug text-champagne-light/85 md:text-[0.78rem]">{photo.caption}</span>
+    </span>
   );
 }

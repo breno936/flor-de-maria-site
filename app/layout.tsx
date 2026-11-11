@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import HashScrollFix from "@/components/layout/HashScrollFix";
 import MobileStickyCta from "@/components/layout/MobileStickyCta";
 import NarrativeIndicator from "@/components/layout/NarrativeIndicator";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 
 const bodoniModa = Bodoni_Moda({
   variable: "--font-bodoni",
@@ -79,6 +80,7 @@ export default function RootLayout({
         <Footer />
         <MobileStickyCta />
         <NarrativeIndicator />
+        <GoogleAnalytics />
       </body>
     </html>
   );

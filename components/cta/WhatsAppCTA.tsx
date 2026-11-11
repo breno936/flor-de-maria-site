@@ -1,9 +1,10 @@
 "use client";
 
-import type { MouseEventHandler } from "react";
+import type { MouseEvent, MouseEventHandler } from "react";
 import AtelierButton from "@/components/ui/AtelierButton";
 import { findOption, findProduct, type CreationId } from "@/data/products";
 import { contactChannel, contactHref } from "@/lib/contact/channel";
+import { trackLead } from "@/lib/analytics";
 import { useChosenVersion } from "@/lib/ui/chosenVersion";
 
 /** The one commercial action on the site — fixed text, one destination: the conversation itself. */
@@ -12,6 +13,8 @@ export const CTA_LABEL = `Pedir pelo ${contactChannel.name}`;
 type Variant = "primary" | "secondary" | "header";
 
 type WhatsAppCTAProps = {
+  /** Where the button sits, as reported to Analytics: "card", "cabecalho", "menu", "atendimento". */
+  placement: string;
   variant?: Variant;
   className?: string;
   /**
@@ -32,7 +35,7 @@ type WhatsAppCTAProps = {
  * conversation directly (see lib/contact/channel.ts) in a new tab — on a
  * phone, the WhatsApp app itself.
  */
-export default function WhatsAppCTA({ variant = "primary", className, creation, option, onClick, tabIndex }: WhatsAppCTAProps) {
+export default function WhatsAppCTA({ placement, variant = "primary", className, creation, option, onClick, tabIndex }: WhatsAppCTAProps) {
   const lastChoice = useChosenVersion();
   const target = creation ? { creation, option } : { creation: lastChoice?.creation, option: lastChoice?.option };
   const product = findProduct(target.creation);
@@ -46,7 +49,10 @@ export default function WhatsAppCTA({ variant = "primary", className, creation, 
       rel="noopener noreferrer"
       variant={variant}
       className={className}
-      onClick={onClick}
+      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+        trackLead(placement, target.creation, target.option);
+        onClick?.(event);
+      }}
       tabIndex={tabIndex}
       aria-label={`${CTA_LABEL}${subject} (abre em nova aba)`}
     >

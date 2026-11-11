@@ -57,7 +57,7 @@ export default function Atendimento() {
           </p>
 
           <div className="mt-8">
-            <WhatsAppCTA className="w-full sm:w-auto" />
+            <WhatsAppCTA placement="atendimento" className="w-full sm:w-auto" />
             <p className="mt-4 font-sans text-sm text-champagne-light">{contactChannel.detail}</p>
           </div>
 

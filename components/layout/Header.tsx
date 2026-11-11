@@ -61,7 +61,7 @@ export default function Header() {
             }`}
             aria-hidden={!seenCreations}
           >
-            <WhatsAppCTA variant="header" tabIndex={seenCreations ? 0 : -1} />
+            <WhatsAppCTA placement="cabecalho" variant="header" tabIndex={seenCreations ? 0 : -1} />
           </span>
           <button
             type="button"
@@ -118,7 +118,7 @@ export default function Header() {
             menuOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
           }`}
         >
-          <WhatsAppCTA className="w-full" onClick={() => setMenuOpen(false)} />
+          <WhatsAppCTA placement="menu" className="w-full" onClick={() => setMenuOpen(false)} />
         </div>
       </div>
     </header>

@@ -185,6 +185,12 @@ convertido em transparência).
   "Aproximadamente 60 a 70 rosas" (apresentação da parceria); confirmar se
   vale também para a versão com chocolate.
 - **Antecedência necessária para pedidos.**
+- **ID do Google Analytics (GA4, "G-…")** — o código já está no site e
+  desligado (`lib/analytics.ts`). Para ativar: variável `NEXT_PUBLIC_GA_ID`
+  na Vercel, só no ambiente Production, e publicar de novo. Sem banner de
+  cookies (decidido em 11/11/2026). No GA4: registrar `placement`,
+  `creation` e `version` como dimensões personalizadas (escopo de evento) e
+  marcar `generate_lead` como evento principal.
 - **Logotipo Le Grand Amour em arquivo vetorial** (`.svg`/`.ai`) — hoje é uma
   imagem. `components/layout/LogoMark.tsx` (cabeçalho) é um substituto
   tipográfico.

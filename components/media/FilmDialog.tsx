@@ -4,6 +4,7 @@ import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { CSSProperties, Ref } from "react";
 import { gsap } from "gsap";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
+import { track } from "@/lib/analytics";
 import PlayIcon from "./PlayIcon";
 
 export type FilmDialogHandle = {
@@ -162,6 +163,7 @@ export default function FilmDialog({ ref, src, poster, blur, ratio, coverPositio
         // Inside the click itself — that is what lets it play with sound.
         play();
         onOpenChangeRef.current?.(true);
+        track("video_start", { video_title: label, video_url: src });
         if (from && pose) from.style.visibility = "hidden";
         const tl = gsap.timeline();
         if (reducedMotion) {

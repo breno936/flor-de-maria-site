@@ -7,6 +7,7 @@ import { detalhes } from "@/data/content";
 import { detailGallery } from "@/data/campaign-photos";
 import DetailLightbox from "./DetailLightbox";
 import Reveal from "@/components/motion/Reveal";
+import { track } from "@/lib/analytics";
 
 /**
  * DETALHES — a short gallery of proportion, finishing and packaging, each
@@ -25,6 +26,7 @@ export default function Detalhes() {
 
   function open(index: number, event: MouseEvent<HTMLElement>) {
     setLightbox({ index, origin: event.currentTarget.getBoundingClientRect() });
+    track("open_photos", { gallery: detalhes.eyebrow, photo: detailGallery[index]?.label });
   }
 
   function scrollStrip(direction: 1 | -1) {

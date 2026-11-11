@@ -3,6 +3,7 @@
 import { CTA_LABEL } from "@/components/cta/WhatsAppCTA";
 import { findOption, findProduct } from "@/data/products";
 import { contactHref } from "@/lib/contact/channel";
+import { trackLead } from "@/lib/analytics";
 import { formatPrice } from "@/lib/price";
 import { useChosenVersion } from "@/lib/ui/chosenVersion";
 import { useCommerceZone } from "@/lib/ui/useCommerceZone";
@@ -35,6 +36,7 @@ export default function MobileStickyCta() {
         href={contactHref(choice?.creation, choice?.option)}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackLead("barra-celular", choice?.creation, choice?.option)}
         aria-label={`${CTA_LABEL}${summary ? `: ${summary}` : ""} (abre em nova aba)`}
         tabIndex={visible ? 0 : -1}
         className="group flex min-h-[52px] flex-col items-center justify-center px-6 py-2 active:bg-champagne-light/10"

@@ -8,6 +8,7 @@ import { criacoes } from "@/data/content";
 import { productGalleries, versionPhotos, type GalleryPhoto } from "@/data/campaign-photos";
 import { formatPrice, fromPrice, pricesConfirmed } from "@/lib/price";
 import { setChosenVersion } from "@/lib/ui/chosenVersion";
+import { track, trackVersion } from "@/lib/analytics";
 import { useReducedMotion } from "@/lib/accessibility/useReducedMotion";
 import WhatsAppCTA from "@/components/cta/WhatsAppCTA";
 import DetailLightbox from "@/components/gallery/DetailLightbox";
@@ -67,6 +68,7 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
 
   function open(index: number, event: MouseEvent<HTMLElement>) {
     setLightbox({ index, origin: event.currentTarget.getBoundingClientRect() });
+    track("open_photos", { gallery: product.title, photo: photos[index]?.label });
   }
 
   return (
@@ -130,12 +132,13 @@ function CreationCard({ product, flipped }: { product: Product; flipped: boolean
           onChange={(option) => {
             setOptionId(option);
             setChosenVersion({ creation: product.id, option });
+            trackVersion(product.id, option);
           }}
           onReach={versions ? () => setWarm(true) : undefined}
         />
 
         <div className="mt-5 md:mt-8">
-          <WhatsAppCTA creation={product.id} option={optionId} className="w-full sm:w-auto" />
+          <WhatsAppCTA placement="card" creation={product.id} option={optionId} className="w-full sm:w-auto" />
           {product.priceNote && <p className="mt-3 font-sans text-[0.85rem] text-ivory/70">{product.priceNote}</p>}
         </div>
       </div>
